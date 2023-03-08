@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 The Flutter Authors.
+ * Copyright 2020 Suragch.
  * Copyright 2023 Satsrag.
  * All rights reserved.
  * Use of this source code is governed by a BSD-style license that can be
@@ -74,7 +75,6 @@ final keyMap = {
   PhysicalKeyboardKey.equal: const Case('+', '='),
   PhysicalKeyboardKey.bracketLeft: const Case('{', '['),
   PhysicalKeyboardKey.bracketRight: const Case('}', ']'),
-  PhysicalKeyboardKey.backslash: const Case('|', '\\'),
   PhysicalKeyboardKey.backslash: const Case('|', '\\'),
   PhysicalKeyboardKey.semicolon: const Case(';', ':'),
   PhysicalKeyboardKey.quote: const Case('"', "'"),

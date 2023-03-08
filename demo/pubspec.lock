@@ -129,6 +129,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  mongol:
+    dependency: "direct main"
+    description:
+      name: mongol
+      sha256: "66830605cfb6c16eb81ccafac430cf3f50f923201aedf1e00c6a522a1e3b34ee"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
+  mongol_code:
+    dependency: transitive
+    description:
+      name: mongol_code
+      sha256: "6f2225d3c7c98203c528ca681e6e7c484657509889da1315fef289fcc0969dd1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   path:
     dependency: transitive
     description:

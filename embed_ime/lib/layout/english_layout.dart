@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 The Flutter Authors.
+ * Copyright 2020 Suragch.
  * Copyright 2023 Satsrag.
  * All rights reserved.
  * Use of this source code is governed by a BSD-style license that can be
@@ -7,9 +8,7 @@
  */
 
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-
 import 'embed_keyboard_layout.dart';
 
 class EnglishLayout extends EmbedKeyboardLayout {
@@ -19,7 +18,8 @@ class EnglishLayout extends EmbedKeyboardLayout {
   State<StatefulWidget> createState() => _EnglishLayoutState();
 }
 
-class _EnglishLayoutState extends State<EnglishLayout> {
+class _EnglishLayoutState
+    extends BaseEmbedTextInputControlState<EnglishLayout> {
   var _type = EnglishLayoutType.letter;
   var _capslock = false;
   var _qwerty = 'qwertyuiopasdfghjklzxcvbnm';
@@ -107,7 +107,7 @@ class _EnglishLayoutState extends State<EnglishLayout> {
             width: letterKeyWidth * 3 / 2 + 2.5,
             height: letterHeight,
             child: _buildIconKey(Icons.backspace_outlined, light, () {
-              widget.inputControl.backspace();
+              widget.embedTextInput.backspace();
             }),
           ),
         ],
@@ -181,7 +181,7 @@ class _EnglishLayoutState extends State<EnglishLayout> {
             width: (letterKeyWidth + 2) * 5 / 3,
             height: letterHeight,
             child: _buildIconKey(Icons.backspace_outlined, light, () {
-              widget.inputControl.backspace();
+              widget.embedTextInput.backspace();
             }),
           ),
         ],
@@ -209,7 +209,7 @@ class _EnglishLayoutState extends State<EnglishLayout> {
       ),
       onPressed: onPressed ??
           () {
-            widget.inputControl.insert(letter);
+            widget.embedTextInput.insert(letter);
             if (letter == letter.toUpperCase()) {
               setState(() => _capslock = false);
             }
@@ -219,7 +219,7 @@ class _EnglishLayoutState extends State<EnglishLayout> {
               final uppercase = letter.toUpperCase();
               final lowercase = letter.toLowerCase();
               final isUppercase = uppercase == letter;
-              widget.inputControl.insert(isUppercase ? lowercase : uppercase);
+              widget.embedTextInput.insert(isUppercase ? lowercase : uppercase);
             }
           : null,
       child: Text(
@@ -283,7 +283,7 @@ class _EnglishLayoutState extends State<EnglishLayout> {
           child: _buildIconKey(
             Icons.language,
             light,
-            () => widget.inputControl.switchLayout(),
+            () => widget.embedTextInput.switchLayout(),
           ),
         ),
         SizedBox(
@@ -293,7 +293,7 @@ class _EnglishLayoutState extends State<EnglishLayout> {
             'English',
             light,
             fontSize: 20,
-            onPressed: () => widget.inputControl.insert(' '),
+            onPressed: () => widget.embedTextInput.insert(' '),
           ),
         ),
         SizedBox(
@@ -302,7 +302,7 @@ class _EnglishLayoutState extends State<EnglishLayout> {
           child: _buildIconKey(
             Icons.keyboard_return,
             light,
-            () => widget.inputControl.insert('\n'),
+            () => widget.embedTextInput.insert('\n'),
           ),
         ),
       ],

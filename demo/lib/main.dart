@@ -1,7 +1,8 @@
 import 'package:embed_ime/keyboard/embed_keyboard.dart';
-import 'package:embed_ime/keyboard/english_layout.dart';
+import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
+import 'package:mongol/mongol.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,9 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Embed IME Demo',
       theme: ThemeData(
+        fontFamily: 'OnonSans',
         primarySwatch: Colors.blue,
       ),
       darkTheme: ThemeData(
+        fontFamily: 'OnonSans',
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
@@ -42,32 +45,39 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: const Text("ImeInput Demo")),
       body: Column(
         children: [
-          const Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Center(
-                child: TextField(
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                ),
-              ),
-            ),
+          Expanded(
+              child: Row(
+                children: const [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: MongolTextField(
+                          decoration: InputDecoration(border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: TextField(
+                          decoration: InputDecoration(border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
           ),
-          const Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Center(
-                child: TextField(
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                ),
-              ),
-            ),
-          ),
+
           EmbedKeyboard(
             layoutProviders: [
               const LayoutProvider(layoutBuilder: EnglishLayout.create),
               LayoutProvider(
                 layoutBuilder: EnglishLayout.create,
-                layoutTextConverter: MenkInputTextConvertor(),
+                layoutTextConverter: MenkLayoutTextConverter(),
               ),
             ],
           ),

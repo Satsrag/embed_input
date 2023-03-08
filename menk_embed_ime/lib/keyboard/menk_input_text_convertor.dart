@@ -6,20 +6,22 @@
  * found in the LICENSE file.
  */
 
-import 'package:embed_ime/keyboard/input_text_converter.dart';
+import 'package:embed_ime/keyboard/layout_text_converter.dart';
 
-class MenkInputTextConvertor with LayoutTextConverter {
+import 'char_convertor.dart';
 
-
+class MenkLayoutTextConverter with LayoutTextConverter {
   @override
   void appendTextForSuggestionWords(String text) {
     super.appendTextForSuggestionWords(text);
+    suggestionWords.clear();
+    suggestionWords.addAll(suggestion(layoutText));
   }
 
   @override
   void confirmWord(String word) {
+    final nextWords = nextSuggestion(layoutText, word);
     super.confirmWord(word);
+    suggestionWords.addAll(nextWords);
   }
-
-  MenkInputTextConvertor();
 }

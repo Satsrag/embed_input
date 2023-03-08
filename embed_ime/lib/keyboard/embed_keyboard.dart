@@ -1,24 +1,29 @@
 /*
  * Copyright 2014 The Flutter Authors.
+ * Copyright 2020 Suragch.
  * Copyright 2023 Satsrag.
  * All rights reserved.
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
 
+import 'dart:math';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'embed_keyboard_layout.dart';
-import 'english_layout.dart';
-import 'input_text_converter.dart';
+import 'package:mongol/mongol.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
+import '../layout/embed_keyboard_layout.dart';
+import '../util/util.dart';
+import 'embed_text_input.dart';
+import '../layout/english_layout.dart';
+import 'layout_text_converter.dart';
 import 'key_map.dart';
 
 typedef ConfirmedTextCallback = Function(String confirmedText);
 
 typedef LayoutBuilder = EmbedKeyboardLayout Function(
-    // todo EmbedKeyboardState replace with interface
-  EmbedKeyboardState embedKeyboardState,
+  EmbedTextInput embedTextInput,
 );
 
 class LayoutProvider {
@@ -42,11 +47,22 @@ class EmbedKeyboard extends StatefulWidget {
   State<StatefulWidget> createState() => EmbedKeyboardState();
 }
 
-class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
-  bool visible = false;
+class EmbedKeyboardState extends State<EmbedKeyboard>
+    with TextInputControl, EmbedTextInput {
+  EmbedTextInputControl? _inputControl;
+
+  bool _visible = false;
+  bool _attached = false;
   int _index = 0;
   TextEditingValue _editingState = const TextEditingValue();
   bool _stopEditingState = false;
+  Size _editableBoxSize = Size.zero;
+  Matrix4 _editableTransform = Matrix4.identity();
+  Rect _caretRect = Rect.zero;
+
+  int _currentPage = 0;
+  OverlayEntry? _candidateBox;
+  OverlayEntry? _keyboardSwitcher;
 
   LayoutTextConverter? get _layoutTextConverter {
     return widget.layoutProviders[_index].layoutTextConverter;
@@ -57,27 +73,116 @@ class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
     super.initState();
     const LayoutProvider(layoutBuilder: EnglishLayout.create);
     TextInput.setInputControl(this);
+    HardwareKeyboard.instance.removeHandler(onKeyEvent);
+    HardwareKeyboard.instance.addHandler(onKeyEvent);
   }
 
   @override
   void dispose() {
     super.dispose();
     TextInput.restorePlatformInputControl();
+    HardwareKeyboard.instance.removeHandler(onKeyEvent);
+    _hideCandidate();
+  }
+
+  @override
+  void setTextInputControl(EmbedTextInputControl inputControl) {
+    if (_inputControl == inputControl) {
+      return;
+    }
+    _inputControl = inputControl;
+    _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
+    _inputControl?.setEditingState(_editingState);
+  }
+
+  @override
+  void attach(TextInputClient client, TextInputConfiguration configuration) {
+    super.attach(client, configuration);
+    _attached = true;
+  }
+
+  @override
+  void detach(TextInputClient client) {
+    super.detach(client);
+    _attached = false;
   }
 
   @override
   void show() {
     super.show();
-    setState(() => visible = true);
-    HardwareKeyboard.instance.removeHandler(onKeyEvent);
-    HardwareKeyboard.instance.addHandler(onKeyEvent);
+    _visible = true;
+    _inputControl?.show();
+    _showOrRefreshKeyboardSwitcher();
   }
 
   @override
   void hide() {
     super.hide();
-    setState(() => visible = false);
-    HardwareKeyboard.instance.removeHandler(onKeyEvent);
+    _visible = false;
+    _hideCandidate();
+    _inputControl?.hide();
+    _hideKeyboardSwitcher();
+  }
+
+  void _showOrRefreshKeyboardSwitcher() {
+    if (_keyboardSwitcher != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _keyboardSwitcher?.markNeedsBuild();
+      });
+      return;
+    }
+    _keyboardSwitcher = OverlayEntry(
+      builder: _buildKeyboardSwitcherContent,
+    );
+    Overlay.of(context).insert(_keyboardSwitcher!);
+  }
+
+  Widget _buildKeyboardSwitcherContent(BuildContext context) {
+    debugPrint("embed_keyboard -> _editableBoxSize: $_editableBoxSize");
+    const switcherSize = 30.0;
+    final editableVector =
+        _editableTransform.transform3(vector.Vector3(0, 0, 0));
+    debugPrint("embed_keyboard -> editableVector: $editableVector");
+    final double? switcherLeft;
+    final double? switcherRight;
+    if (editableVector.x <= switcherSize + 20) {
+      switcherLeft = null;
+      switcherRight = Util.windowWidth - 20;
+    } else {
+      switcherLeft = 20;
+      switcherRight = null;
+    }
+    final double switcherTop = editableVector.y;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final onSurface = colorScheme.onSurface;
+    return Positioned(
+        left: switcherLeft,
+        top: switcherTop,
+        right: switcherRight,
+        child: TextFieldTapRegion(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: onSurface.withOpacity(0.1)),
+              color: colorScheme.surface,
+            ),
+            width: switcherSize,
+            height: switcherSize,
+            child: GestureDetector(
+              onTap: () {
+                if (!_attached) {
+                  TextInput.setInputControl(this);
+                }
+              },
+              child: const Icon(Icons.keyboard_outlined, size: 20),
+            ),
+          ),
+        ));
+  }
+
+  void _hideKeyboardSwitcher() {
+    _keyboardSwitcher?.remove();
+    _keyboardSwitcher = null;
   }
 
   @override
@@ -95,9 +200,22 @@ class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
   @override
   void setCaretRect(Rect rect) {
     super.setCaretRect(rect);
+    _caretRect = rect;
+    _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
+  }
+
+  @override
+  void setEditableSizeAndTransform(Size editableBoxSize, Matrix4 transform) {
+    super.setEditableSizeAndTransform(editableBoxSize, transform);
+    _editableTransform = transform;
+    _editableBoxSize = editableBoxSize;
+    _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
+    _showOrRefreshKeyboardSwitcher();
   }
 
   bool onKeyEvent(KeyEvent event) {
+    final handled = _inputControl?.onKeyEvent(event) ?? false;
+    return handled;
     // todo move to layout
     final case_ = keyMap[event.physicalKey];
     if ((event is KeyDownEvent) && case_ != null) {
@@ -107,6 +225,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
     }
     if (event is KeyUpEvent && case_ != null) {
       _stopEditingState = false;
+      TextInput.updateEditingValue(_editingState);
       return true;
     }
     return false;
@@ -120,13 +239,10 @@ class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
   }
 
   Widget _buildKeyboard() {
-    if (visible) {
-      return widget.layoutProviders[_index].layoutBuilder(this);
-    } else {
-      return const SizedBox.shrink();
-    }
+    return widget.layoutProviders[_index].layoutBuilder(this);
   }
 
+  @override
   void insert(String text) {
     final layoutTextConverter = _layoutTextConverter;
     if (layoutTextConverter == null) {
@@ -135,10 +251,14 @@ class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
     }
     final selectSuggestions = text.length == 1 && '1234567890 '.contains(text);
     if (selectSuggestions) {
-      _insert(_selectWordFromSuggestions(text));
+      final insertText = _selectWordFromSuggestions(text);
+      _insert(insertText);
+      layoutTextConverter.confirmWord(insertText);
+      _showOrRefreshCandidate();
       return;
     }
     layoutTextConverter.appendTextForSuggestionWords(text);
+    _showOrRefreshCandidate();
   }
 
   String _selectWordFromSuggestions(String index) {
@@ -156,6 +276,101 @@ class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
       return layoutTextConverter.suggestionWords[numberIndex];
     }
     return index;
+  }
+
+  void _showOrRefreshCandidate() {
+    if (_candidateBox != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _candidateBox?.markNeedsBuild();
+      });
+      return;
+    }
+    _candidateBox = OverlayEntry(
+      builder: (context) => _buildCandidateContent(context),
+    );
+    Overlay.of(context).insert(_candidateBox!);
+  }
+
+  Widget _buildCandidateContent(BuildContext context) {
+    final layoutTextConverter = _layoutTextConverter;
+    final transform = _editableTransform;
+    final caretRect = _caretRect;
+    if (layoutTextConverter == null || transform == null || caretRect == null) {
+      return const SizedBox.shrink();
+    }
+    final suggestionWords = layoutTextConverter.suggestionWords;
+    if (suggestionWords.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final layoutText = layoutTextConverter.layoutText;
+    final caretEndPoint = vector.Vector3(caretRect.right, caretRect.bottom, 0);
+    debugPrint("embed_keyboard -> caretEndPoint: $caretEndPoint");
+    transform.transform3(caretEndPoint);
+    debugPrint("embed_keyboard -> abs caretEndPoint: $caretEndPoint");
+    const candidateHeight = 200.0;
+    final maxLength = min(10 * _currentPage + 10, suggestionWords.length);
+    final candidateWidth = (maxLength - 10 * _currentPage) * 30.0;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final onSurface = colorScheme.onSurface;
+    final textTheme = theme.textTheme;
+    return Positioned(
+      top: caretEndPoint.y,
+      left: caretEndPoint.x,
+      child: Container(
+        constraints: const BoxConstraints(
+          maxHeight: candidateHeight,
+        ),
+        decoration: BoxDecoration(
+          border: Border.all(color: onSurface.withOpacity(0.1)),
+          color: colorScheme.surface,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+              child: Text(
+                layoutText,
+                style: textTheme.bodyLarge,
+              ),
+            ),
+            SizedBox(
+              width: candidateWidth,
+              child: const Divider(),
+            ),
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (int index = 10 * _currentPage;
+                      index < maxLength;
+                      index++)
+                    SizedBox(
+                      width: 30,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: MongolText(
+                          '${(index + 1) % 10}. ${suggestionWords[index]}',
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: index % 10 == 0 ? colorScheme.primary : null,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _hideCandidate() {
+    _candidateBox?.remove();
+    _candidateBox = null;
   }
 
   void _insert(String insert) {
@@ -182,6 +397,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
 
   /// [length] want to delete char count. If there is a selection, just delete
   /// selection and ignore length
+  @override
   void backspace({int length = 1}) {
     final text = _editingState.text;
     final textSelection = _editingState.selection;
@@ -224,6 +440,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard> with TextInputControl {
     TextInput.updateEditingValue(_editingState);
   }
 
+  @override
   void switchLayout() {
     setState(() {
       ++_index;
