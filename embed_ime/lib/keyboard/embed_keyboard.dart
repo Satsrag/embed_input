@@ -39,12 +39,16 @@ class EmbedKeyboard extends StatefulWidget {
     this.layoutProviders = const [
       LayoutProvider(layoutBuilder: EnglishLayout.create),
     ],
+    this.attachNotifier,
   }) : assert(layoutProviders.isNotEmpty);
 
   final List<LayoutProvider> layoutProviders;
+  final ValueNotifier<bool>? attachNotifier;
 
   @override
-  State<StatefulWidget> createState() => EmbedKeyboardState();
+  State<StatefulWidget> createState() {
+    return EmbedKeyboardState();
+  }
 }
 
 class EmbedKeyboardState extends State<EmbedKeyboard>
@@ -52,6 +56,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   EmbedTextInputControl? _inputControl;
 
   bool _visible = false;
+  ValueNotifier<bool>? _internalAttachNotifier;
   bool _attached = false;
   int _index = 0;
   TextEditingValue _editingState = const TextEditingValue();
@@ -68,21 +73,37 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     return widget.layoutProviders[_index].layoutTextConverter;
   }
 
+  ValueNotifier<bool> get _attachNotifier {
+    return widget.attachNotifier ??
+        (_internalAttachNotifier ??= ValueNotifier(true));
+  }
+
   @override
   void initState() {
     super.initState();
     const LayoutProvider(layoutBuilder: EnglishLayout.create);
-    TextInput.setInputControl(this);
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
     HardwareKeyboard.instance.addHandler(onKeyEvent);
+    _attachNotifier.addListener(_attachChange);
+    TextInput.setInputControl(this);
   }
 
   @override
   void dispose() {
     super.dispose();
+    _attachNotifier.removeListener(_attachChange);
+    _internalAttachNotifier?.dispose();
     TextInput.restorePlatformInputControl();
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
     _hideCandidate();
+  }
+
+  void _attachChange() {
+    if (_attachNotifier.value) {
+      TextInput.setInputControl(this);
+    } else {
+      TextInput.restorePlatformInputControl();
+    }
   }
 
   @override
@@ -99,12 +120,14 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   void attach(TextInputClient client, TextInputConfiguration configuration) {
     super.attach(client, configuration);
     _attached = true;
+    _attachNotifier.value = true;
   }
 
   @override
   void detach(TextInputClient client) {
     super.detach(client);
     _attached = false;
+    _attachNotifier.value = false;
   }
 
   @override
@@ -138,11 +161,9 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   }
 
   Widget _buildKeyboardSwitcherContent(BuildContext context) {
-    debugPrint("embed_keyboard -> _editableBoxSize: $_editableBoxSize");
     const switcherSize = 30.0;
     final editableVector =
         _editableTransform.transform3(vector.Vector3(0, 0, 0));
-    debugPrint("embed_keyboard -> editableVector: $editableVector");
     final double? switcherLeft;
     final double? switcherRight;
     if (editableVector.x <= switcherSize + 20) {
