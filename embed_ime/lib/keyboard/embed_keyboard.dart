@@ -54,8 +54,9 @@ class EmbedKeyboard extends StatefulWidget {
 class EmbedKeyboardState extends State<EmbedKeyboard>
     with TextInputControl, EmbedTextInput {
   EmbedTextInputControl? _inputControl;
-
-  bool _visible = false;
+  bool _hasHardKeyboard = false;
+  bool _layoutShowing = false;
+  bool _handleShowHideLayout = !Util.isDesktop;
   ValueNotifier<bool>? _internalAssumeControlNotifier;
   int _index = 0;
   TextEditingValue _editingState = const TextEditingValue();
@@ -96,10 +97,12 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _internalAssumeControlNotifier?.dispose();
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
     _hideCandidate();
+    _hideLayoutShower();
   }
 
   void _assumeControlChange() {
-    debugPrint("embed_keyboard -> _assumeControlChange: ${_assumeControlNotifier.value}");
+    debugPrint(
+        "embed_keyboard -> _assumeControlChange: ${_assumeControlNotifier.value}");
     if (_assumeControlNotifier.value) {
       TextInput.setInputControl(this);
     } else {
@@ -118,45 +121,47 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   }
 
   @override
-  void attach(TextInputClient client, TextInputConfiguration configuration) {
-    super.attach(client, configuration);
-  }
-
-  @override
-  void detach(TextInputClient client) {
-    super.detach(client);
-  }
-
-  @override
   void show() {
     super.show();
     debugPrint('embed_keyboard -> keyboard show');
-    _visible = true;
-    _inputControl?.show();
-    // _showOrRefreshKeyboardSwitcher();
+    if (_handleShowHideLayout) {
+      _layoutShowing = true;
+      _inputControl?.show();
+    }
+    if (_hasHardKeyboard && !_layoutShowing) {
+      _showLayoutShower();
+    }
   }
 
   @override
   void hide() {
     super.hide();
     debugPrint('embed_keyboard -> keyboard hide');
-    _visible = false;
     _hideCandidate();
-    _inputControl?.hide();
-    _hideKeyboardSwitcher();
+    if (_handleShowHideLayout) {
+      _layoutShowing = false;
+      _inputControl?.hide();
+    }
+    _hideLayoutShower();
   }
 
-  void _showOrRefreshKeyboardSwitcher() {
+  void _showLayoutShower() {
     if (_keyboardSwitcher != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _keyboardSwitcher?.markNeedsBuild();
-      });
+      _refreshLayoutShower();
       return;
     }
     _keyboardSwitcher = OverlayEntry(
       builder: _buildKeyboardSwitcherContent,
     );
     Overlay.of(context).insert(_keyboardSwitcher!);
+  }
+
+  void _refreshLayoutShower() {
+    if (_keyboardSwitcher != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _keyboardSwitcher?.markNeedsBuild();
+      });
+    }
   }
 
   Widget _buildKeyboardSwitcherContent(BuildContext context) {
@@ -190,9 +195,10 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
             height: switcherSize,
             child: GestureDetector(
               onTap: () {
-                // if (!_attached) {
-                //   TextInput.setInputControl(this);
-                // }
+                _layoutShowing = true;
+                _inputControl?.show();
+                _handleShowHideLayout = true;
+                _hideLayoutShower();
               },
               child: const Icon(Icons.keyboard_outlined, size: 20),
             ),
@@ -200,7 +206,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
         ));
   }
 
-  void _hideKeyboardSwitcher() {
+  void _hideLayoutShower() {
     _keyboardSwitcher?.remove();
     _keyboardSwitcher = null;
   }
@@ -230,10 +236,15 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _editableTransform = transform;
     _editableBoxSize = editableBoxSize;
     _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
-    // _showOrRefreshKeyboardSwitcher();
   }
 
   bool onKeyEvent(KeyEvent event) {
+    debugPrint("embed_keyboard -> onKeyEvent: $event");
+    _hasHardKeyboard = true;
+    _layoutShowing = false;
+    _inputControl?.hide();
+    _handleShowHideLayout = false;
+    _showLayoutShower();
     final handled = _inputControl?.onKeyEvent(event) ?? false;
     return handled;
     // todo move to layout
