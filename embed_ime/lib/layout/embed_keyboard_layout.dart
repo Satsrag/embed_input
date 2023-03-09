@@ -1,13 +1,10 @@
 /*
  * Copyright 2014 The Flutter Authors.
- * Copyright 2020 Suragch.
  * Copyright 2023 Satsrag.
  * All rights reserved.
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-import 'dart:io';
 
 import 'package:embed_ime/keyboard/embed_text_input.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +24,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
   TextEditingValue editingValue = TextEditingValue.empty;
   Offset caretRightBottomOffset = Offset.zero;
   bool isSoftLayoutVisible = !Util.isDesktop;
+  bool visible = false;
 
   @override
   void initState() {
@@ -42,10 +40,14 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
 
   @override
   void show() {
+    if (visible) return;
+    setState(() => visible = true);
   }
 
   @override
   void hide() {
+    if (!visible) return;
+    setState(() => visible = false);
   }
 
   @override

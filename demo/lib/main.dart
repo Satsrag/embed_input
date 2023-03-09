@@ -1,88 +1,72 @@
-import 'package:embed_ime/keyboard/embed_keyboard.dart';
-import 'package:embed_ime/layout/english_layout.dart';
+import 'package:demo/demos/embed_ime_demo.dart';
 import 'package:flutter/material.dart';
-import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
 import 'package:mongol/mongol.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const DemoApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class DemoApp extends StatelessWidget {
+  const DemoApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      builder: (context, child) => MongolTextEditingShortcuts(child: child),
       title: 'Embed IME Demo',
       theme: ThemeData(
         fontFamily: 'OnonSans',
-        primarySwatch: Colors.blue,
       ),
       darkTheme: ThemeData(
         fontFamily: 'OnonSans',
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
-      home: const MyHomePage(title: 'Embed IME Demo'),
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Embed IME Demo')),
+        body: const HomeScreen(),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("ImeInput Demo")),
-      body: Column(
-        children: [
-          Expanded(
-              child: Row(
-                children: const [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Center(
-                        child: MongolTextField(
-                          decoration: InputDecoration(border: OutlineInputBorder()),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Center(
-                        child: TextField(
-                          decoration: InputDecoration(border: OutlineInputBorder()),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-          ),
+    return ListView(
+      children: const <Widget>[
+        DemoTile(
+          title: 'Embed Ime Demo',
+          destination: EmbedImeDemo(),
+        ),
+      ],
+    );
+  }
+}
 
-          EmbedKeyboard(
-            layoutProviders: [
-              const LayoutProvider(layoutBuilder: EnglishLayout.create),
-              LayoutProvider(
-                layoutBuilder: EnglishLayout.create,
-                layoutTextConverter: MenkLayoutTextConverter(),
-              ),
-            ],
-          ),
-        ],
-      ),
+class DemoTile extends StatelessWidget {
+  const DemoTile({
+    Key? key,
+    required this.title,
+    required this.destination,
+  }) : super(key: key);
+
+  final String title;
+  final Widget destination;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => destination),
+        );
+      },
     );
   }
 }

@@ -39,11 +39,11 @@ class EmbedKeyboard extends StatefulWidget {
     this.layoutProviders = const [
       LayoutProvider(layoutBuilder: EnglishLayout.create),
     ],
-    this.attachNotifier,
+    this.assumeControlNotifier,
   }) : assert(layoutProviders.isNotEmpty);
 
   final List<LayoutProvider> layoutProviders;
-  final ValueNotifier<bool>? attachNotifier;
+  final ValueNotifier<bool>? assumeControlNotifier;
 
   @override
   State<StatefulWidget> createState() {
@@ -56,8 +56,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   EmbedTextInputControl? _inputControl;
 
   bool _visible = false;
-  ValueNotifier<bool>? _internalAttachNotifier;
-  bool _attached = false;
+  ValueNotifier<bool>? _internalAssumeControlNotifier;
   int _index = 0;
   TextEditingValue _editingState = const TextEditingValue();
   bool _stopEditingState = false;
@@ -73,33 +72,35 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     return widget.layoutProviders[_index].layoutTextConverter;
   }
 
-  ValueNotifier<bool> get _attachNotifier {
-    return widget.attachNotifier ??
-        (_internalAttachNotifier ??= ValueNotifier(true));
+  ValueNotifier<bool> get _assumeControlNotifier {
+    return widget.assumeControlNotifier ??
+        (_internalAssumeControlNotifier ??= ValueNotifier(false));
   }
 
   @override
   void initState() {
     super.initState();
+    debugPrint('embed_keyboard -> initState');
     const LayoutProvider(layoutBuilder: EnglishLayout.create);
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
     HardwareKeyboard.instance.addHandler(onKeyEvent);
-    _attachNotifier.addListener(_attachChange);
-    TextInput.setInputControl(this);
+    _assumeControlNotifier.addListener(_assumeControlChange);
+    _assumeControlNotifier.value = true;
   }
 
   @override
   void dispose() {
     super.dispose();
-    _attachNotifier.removeListener(_attachChange);
-    _internalAttachNotifier?.dispose();
-    TextInput.restorePlatformInputControl();
+    _assumeControlNotifier.value = false;
+    _assumeControlNotifier.removeListener(_assumeControlChange);
+    _internalAssumeControlNotifier?.dispose();
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
     _hideCandidate();
   }
 
-  void _attachChange() {
-    if (_attachNotifier.value) {
+  void _assumeControlChange() {
+    debugPrint("embed_keyboard -> _assumeControlChange: ${_assumeControlNotifier.value}");
+    if (_assumeControlNotifier.value) {
       TextInput.setInputControl(this);
     } else {
       TextInput.restorePlatformInputControl();
@@ -119,28 +120,26 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void attach(TextInputClient client, TextInputConfiguration configuration) {
     super.attach(client, configuration);
-    _attached = true;
-    _attachNotifier.value = true;
   }
 
   @override
   void detach(TextInputClient client) {
     super.detach(client);
-    _attached = false;
-    _attachNotifier.value = false;
   }
 
   @override
   void show() {
     super.show();
+    debugPrint('embed_keyboard -> keyboard show');
     _visible = true;
     _inputControl?.show();
-    _showOrRefreshKeyboardSwitcher();
+    // _showOrRefreshKeyboardSwitcher();
   }
 
   @override
   void hide() {
     super.hide();
+    debugPrint('embed_keyboard -> keyboard hide');
     _visible = false;
     _hideCandidate();
     _inputControl?.hide();
@@ -191,9 +190,9 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
             height: switcherSize,
             child: GestureDetector(
               onTap: () {
-                if (!_attached) {
-                  TextInput.setInputControl(this);
-                }
+                // if (!_attached) {
+                //   TextInput.setInputControl(this);
+                // }
               },
               child: const Icon(Icons.keyboard_outlined, size: 20),
             ),
@@ -231,7 +230,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _editableTransform = transform;
     _editableBoxSize = editableBoxSize;
     _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
-    _showOrRefreshKeyboardSwitcher();
+    // _showOrRefreshKeyboardSwitcher();
   }
 
   bool onKeyEvent(KeyEvent event) {
@@ -255,11 +254,11 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   Widget build(BuildContext context) {
     return TextFieldTapRegion(
-      child: _buildKeyboard(),
+      child: _buildLayout(),
     );
   }
 
-  Widget _buildKeyboard() {
+  Widget _buildLayout() {
     return widget.layoutProviders[_index].layoutBuilder(this);
   }
 

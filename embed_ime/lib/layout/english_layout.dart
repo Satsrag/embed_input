@@ -28,6 +28,9 @@ class _EnglishLayoutState
 
   @override
   Widget build(BuildContext context) {
+    if (!visible) {
+      return const SizedBox.shrink();
+    }
     final theme = Theme.of(context);
     final light = theme.brightness == Brightness.light;
     final query = MediaQuery.of(context);
