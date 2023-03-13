@@ -18,9 +18,13 @@ mixin EmbedTextInput {
 mixin EmbedTextInputControl {
   String get layoutName;
 
-  void show();
+  void attach();
 
-  void hide();
+  void detach();
+
+  void showSoftLayout();
+
+  void hideSoftLayout();
 
   void setEditingState(TextEditingValue value);
   /// Informs the text input control about caret area changes.

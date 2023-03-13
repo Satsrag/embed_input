@@ -50,15 +50,15 @@ class EmbedKeyboard extends StatefulWidget {
 class EmbedKeyboardState extends State<EmbedKeyboard>
     with TextInputControl, EmbedTextInput {
   EmbedTextInputControl? _inputControl;
+  bool _layoutDidAttach = false;
   bool _hasHardKeyboard = Util.isDesktop;
-  bool _layoutShowing = false;
-  bool _handleShowHideLayout = !Util.isDesktop;
+  bool _softLayoutShowing = false;
+  bool _handleShowLayout = !Util.isDesktop;
   ValueNotifier<bool>? _internalAssumeControlNotifier;
   int _index = 0;
   TextEditingValue _editingState = const TextEditingValue();
   Matrix4 _editableTransform = Matrix4.identity();
   Rect _caretRect = Rect.zero;
-
 
   OverlayEntry? _keyboardSwitcher;
 
@@ -89,8 +89,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   }
 
   void _assumeControlChange() {
-    debugPrint(
-        "embed_keyboard -> _assumeControlChange: ${_assumeControlNotifier.value}");
     if (_assumeControlNotifier.value) {
       TextInput.setInputControl(this);
     } else {
@@ -104,19 +102,32 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       return;
     }
     _inputControl = inputControl;
+    if (_layoutDidAttach) {
+      _inputControl?.attach();
+    }
+    if (_softLayoutShowing) {
+      _inputControl?.showSoftLayout();
+    } else {
+      _inputControl?.hideSoftLayout();
+    }
     _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
     _inputControl?.setEditingState(_editingState);
+    if (!_layoutDidAttach) {
+      _inputControl?.detach();
+    }
   }
 
   @override
   void show() {
     super.show();
     debugPrint('embed_keyboard -> keyboard show');
-    if (_handleShowHideLayout) {
-      _layoutShowing = true;
-      _inputControl?.show();
+    _inputControl?.attach();
+    _layoutDidAttach = true;
+    if (_handleShowLayout) {
+      _softLayoutShowing = true;
+      _inputControl?.showSoftLayout();
     }
-    if (_hasHardKeyboard && !_layoutShowing) {
+    if (_hasHardKeyboard && !_softLayoutShowing) {
       _showLayoutShower();
     }
   }
@@ -125,10 +136,10 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   void hide() {
     super.hide();
     debugPrint('embed_keyboard -> keyboard hide');
-    if (_handleShowHideLayout) {
-      _layoutShowing = false;
-      _inputControl?.hide();
-    }
+    _softLayoutShowing = false;
+    _inputControl?.hideSoftLayout();
+    _inputControl?.detach();
+    _layoutDidAttach = false;
     _hideLayoutShower();
   }
 
@@ -194,9 +205,9 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
               children: [
                 GestureDetector(
                   onTap: () {
-                    _layoutShowing = true;
-                    _inputControl?.show();
-                    _handleShowHideLayout = true;
+                    _softLayoutShowing = true;
+                    _inputControl?.showSoftLayout();
+                    _handleShowLayout = true;
                     _hideLayoutShower();
                   },
                   child: const Icon(Icons.keyboard_outlined, size: 20),
@@ -249,9 +260,11 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   bool onKeyEvent(KeyEvent event) {
     debugPrint("embed_keyboard -> onKeyEvent: $event");
     _hasHardKeyboard = true;
-    _layoutShowing = false;
-    _inputControl?.hide();
-    _handleShowHideLayout = false;
+    if (_softLayoutShowing) {
+      _softLayoutShowing = false;
+      _inputControl?.hideSoftLayout();
+    }
+    _handleShowLayout = false;
     _showLayoutShower();
     final handled = _inputControl?.onKeyEvent(event) ?? false;
     return handled;
@@ -266,6 +279,10 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
 
   @override
   void switchLayout() {
+    if (_softLayoutShowing) {
+      _inputControl?.hideSoftLayout();
+    }
+    _inputControl?.detach();
     _refreshLayoutSwitcher();
     setState(() {
       ++_index;

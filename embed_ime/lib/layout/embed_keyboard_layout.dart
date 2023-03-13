@@ -23,7 +23,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
     extends State<T> with EmbedTextInputControl {
   TextEditingValue editingValue = TextEditingValue.empty;
   Offset caretRightBottomOffset = Offset.zero;
-  bool visible = false;
+  bool visibleSoftLayout = false;
 
   @override
   void initState() {
@@ -38,15 +38,21 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
   }
 
   @override
-  void show() {
-    if (visible) return;
-    setState(() => visible = true);
+  void attach() {}
+
+  @override
+  void detach() {}
+
+  @override
+  void showSoftLayout() {
+    if (visibleSoftLayout) return;
+    setState(() => visibleSoftLayout = true);
   }
 
   @override
-  void hide() {
-    if (!visible) return;
-    setState(() => visible = false);
+  void hideSoftLayout() {
+    if (!visibleSoftLayout) return;
+    setState(() => visibleSoftLayout = false);
   }
 
   @override

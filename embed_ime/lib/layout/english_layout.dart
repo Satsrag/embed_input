@@ -31,7 +31,7 @@ class _EnglishLayoutState
 
   @override
   Widget build(BuildContext context) {
-    if (!visible) {
+    if (!visibleSoftLayout) {
       return const SizedBox.shrink();
     }
     final theme = Theme.of(context);

@@ -32,6 +32,12 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   String get layoutName => 'Menk';
 
   @override
+  void detach() {
+    super.detach();
+    _hideCandidate();
+  }
+
+  @override
   bool onKeyEvent(KeyEvent event) {
     final case_ = keyMap[event.physicalKey];
     if ((event is KeyDownEvent) && case_ != null) {
@@ -77,6 +83,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   }
 
   void _showOrRefreshCandidate() {
+    debugPrint("menk_layout -> _showOrRefreshCandidate");
     if (_candidateBox != null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _candidateBox?.markNeedsBuild();
@@ -172,14 +179,6 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   }
 
   @override
-  void hide() {
-    if (!visible) return;
-    _hideCandidate();
-    debugPrint('menk_layout -> hide');
-    super.hide();
-  }
-
-  @override
   void dispose() {
     super.dispose();
     _hideCandidate();
@@ -187,6 +186,9 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox.shrink();
+    if (!visibleSoftLayout) {
+      return const SizedBox.shrink();
+    }
+    return const SizedBox(height: 100);
   }
 }
