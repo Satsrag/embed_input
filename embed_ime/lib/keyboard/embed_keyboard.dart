@@ -7,18 +7,14 @@
  * found in the LICENSE file.
  */
 
-import 'dart:math';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mongol/mongol.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 import '../layout/embed_keyboard_layout.dart';
 import '../util/util.dart';
 import 'embed_text_input.dart';
 import '../layout/english_layout.dart';
 import 'layout_text_converter.dart';
-import 'key_map.dart';
 
 typedef ConfirmedTextCallback = Function(String confirmedText);
 
@@ -60,18 +56,11 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   ValueNotifier<bool>? _internalAssumeControlNotifier;
   int _index = 0;
   TextEditingValue _editingState = const TextEditingValue();
-  bool _stopEditingState = false;
-  Size _editableBoxSize = Size.zero;
   Matrix4 _editableTransform = Matrix4.identity();
   Rect _caretRect = Rect.zero;
 
-  int _currentPage = 0;
-  OverlayEntry? _candidateBox;
-  OverlayEntry? _keyboardSwitcher;
 
-  LayoutTextConverter? get _layoutTextConverter {
-    return widget.layoutProviders[_index].layoutTextConverter;
-  }
+  OverlayEntry? _keyboardSwitcher;
 
   ValueNotifier<bool> get _assumeControlNotifier {
     return widget.assumeControlNotifier ??
@@ -96,7 +85,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _assumeControlNotifier.removeListener(_assumeControlChange);
     _internalAssumeControlNotifier?.dispose();
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
-    _hideCandidate();
     _hideLayoutShower();
   }
 
@@ -137,7 +125,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   void hide() {
     super.hide();
     debugPrint('embed_keyboard -> keyboard hide');
-    _hideCandidate();
     if (_handleShowHideLayout) {
       _layoutShowing = false;
       _inputControl?.hide();
@@ -241,13 +228,8 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void setEditingState(TextEditingValue value) {
     super.setEditingState(value);
-    if (kDebugMode) {
-      print("embed_keyboard -> setEditingState: $value");
-    }
-    if (_stopEditingState) {
-      return;
-    }
     _editingState = value;
+    _inputControl?.setEditingState(_editingState);
   }
 
   @override
@@ -261,7 +243,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   void setEditableSizeAndTransform(Size editableBoxSize, Matrix4 transform) {
     super.setEditableSizeAndTransform(editableBoxSize, transform);
     _editableTransform = transform;
-    _editableBoxSize = editableBoxSize;
     _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
   }
 
@@ -274,19 +255,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _showLayoutShower();
     final handled = _inputControl?.onKeyEvent(event) ?? false;
     return handled;
-    // todo move to layout
-    final case_ = keyMap[event.physicalKey];
-    if ((event is KeyDownEvent) && case_ != null) {
-      _stopEditingState = true;
-      insert(case_.character);
-      return true;
-    }
-    if (event is KeyUpEvent && case_ != null) {
-      _stopEditingState = false;
-      TextInput.updateEditingValue(_editingState);
-      return true;
-    }
-    return false;
   }
 
   @override
@@ -294,204 +262,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     return TextFieldTapRegion(
       child: widget.layoutProviders[_index].layoutBuilder(this),
     );
-  }
-
-  @override
-  void insert(String text) {
-    final layoutTextConverter = _layoutTextConverter;
-    if (layoutTextConverter == null) {
-      _insert(text);
-      return;
-    }
-    final selectSuggestions = text.length == 1 && '1234567890 '.contains(text);
-    if (selectSuggestions) {
-      final insertText = _selectWordFromSuggestions(text);
-      _insert(insertText);
-      layoutTextConverter.confirmWord(insertText);
-      _showOrRefreshCandidate();
-      return;
-    }
-    layoutTextConverter.appendTextForSuggestionWords(text);
-    _showOrRefreshCandidate();
-  }
-
-  String _selectWordFromSuggestions(String index) {
-    var numberIndex = 0;
-    if (index == ' ') {
-      numberIndex = 0;
-    } else {
-      numberIndex = '1234567890 '.indexOf(index);
-    }
-    final layoutTextConverter = _layoutTextConverter;
-    if (layoutTextConverter == null) {
-      return index;
-    }
-    if (layoutTextConverter.suggestionWords.length > numberIndex) {
-      return layoutTextConverter.suggestionWords[numberIndex];
-    }
-    return index;
-  }
-
-  void _showOrRefreshCandidate() {
-    if (_candidateBox != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _candidateBox?.markNeedsBuild();
-      });
-      return;
-    }
-    _candidateBox = OverlayEntry(
-      builder: (context) => _buildCandidateContent(context),
-    );
-    Overlay.of(context).insert(_candidateBox!);
-  }
-
-  Widget _buildCandidateContent(BuildContext context) {
-    final layoutTextConverter = _layoutTextConverter;
-    final transform = _editableTransform;
-    final caretRect = _caretRect;
-    if (layoutTextConverter == null || transform == null || caretRect == null) {
-      return const SizedBox.shrink();
-    }
-    final suggestionWords = layoutTextConverter.suggestionWords;
-    if (suggestionWords.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    final layoutText = layoutTextConverter.layoutText;
-    final caretEndPoint = vector.Vector3(caretRect.right, caretRect.bottom, 0);
-    debugPrint("embed_keyboard -> caretEndPoint: $caretEndPoint");
-    transform.transform3(caretEndPoint);
-    debugPrint("embed_keyboard -> abs caretEndPoint: $caretEndPoint");
-    const candidateHeight = 200.0;
-    final maxLength = min(10 * _currentPage + 10, suggestionWords.length);
-    final candidateWidth = (maxLength - 10 * _currentPage) * 30.0;
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final onSurface = colorScheme.onSurface;
-    final textTheme = theme.textTheme;
-    return Positioned(
-      top: caretEndPoint.y,
-      left: caretEndPoint.x,
-      child: Container(
-        constraints: const BoxConstraints(
-          maxHeight: candidateHeight,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(color: onSurface.withOpacity(0.1)),
-          color: colorScheme.surface,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-              child: Text(
-                layoutText,
-                style: textTheme.bodyLarge,
-              ),
-            ),
-            SizedBox(
-              width: candidateWidth,
-              child: const Divider(),
-            ),
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (int index = 10 * _currentPage;
-                      index < maxLength;
-                      index++)
-                    SizedBox(
-                      width: 30,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: MongolText(
-                          '${(index + 1) % 10}. ${suggestionWords[index]}',
-                          style: textTheme.bodyLarge?.copyWith(
-                            color: index % 10 == 0 ? colorScheme.primary : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _hideCandidate() {
-    _candidateBox?.remove();
-    _candidateBox = null;
-  }
-
-  void _insert(String insert) {
-    final text = _editingState.text;
-    final textSelection = _editingState.selection;
-    final start = textSelection.start;
-    final end = textSelection.end;
-    final newText = text.replaceRange(start, end, insert);
-    final textLength = insert.length;
-    _editingState = _editingState.copyWith(
-      text: newText,
-      selection: textSelection.copyWith(
-        baseOffset: textSelection.start + textLength,
-        extentOffset: textSelection.start + textLength,
-      ),
-      composing: TextRange.empty,
-    );
-    if (kDebugMode) {
-      print("embed_keyboard -> insert: $_editingState");
-    }
-    // Request the attached client to update accordingly.
-    TextInput.updateEditingValue(_editingState);
-  }
-
-  /// [length] want to delete char count. If there is a selection, just delete
-  /// selection and ignore length
-  @override
-  void backspace({int length = 1}) {
-    final text = _editingState.text;
-    final textSelection = _editingState.selection;
-    final selectionLength = textSelection.end - textSelection.start;
-
-    // There is a selection.
-    if (selectionLength > 0) {
-      final newText =
-          text.replaceRange(textSelection.start, textSelection.end, '');
-      _editingState = _editingState.copyWith(
-          text: newText,
-          selection: textSelection.copyWith(
-            baseOffset: textSelection.start,
-            extentOffset: textSelection.start,
-          ));
-      // Request the attached client to update accordingly.
-      TextInput.updateEditingValue(_editingState);
-      return;
-    }
-
-    // The cursor is at the beginning.
-    if (textSelection.start == 0) {
-      return;
-    }
-
-    // Delete the previous character
-    var newStart = textSelection.start - length;
-    if (newStart < 0) {
-      newStart = 0;
-    }
-    final newEnd = textSelection.start;
-    final newText = text.replaceRange(newStart, newEnd, '');
-    _editingState = _editingState.copyWith(
-        text: newText,
-        selection: textSelection.copyWith(
-          baseOffset: newStart,
-          extentOffset: newStart,
-        ));
-    // Request the attached client to update accordingly.
-    TextInput.updateEditingValue(_editingState);
   }
 
   @override

@@ -113,7 +113,7 @@ class _EnglishLayoutState
             width: letterKeyWidth * 3 / 2 + 2.5,
             height: letterHeight,
             child: _buildIconKey(Icons.backspace_outlined, light, () {
-              widget.embedTextInput.backspace();
+              backspace();
             }),
           ),
         ],
@@ -187,7 +187,7 @@ class _EnglishLayoutState
             width: (letterKeyWidth + 2) * 5 / 3,
             height: letterHeight,
             child: _buildIconKey(Icons.backspace_outlined, light, () {
-              widget.embedTextInput.backspace();
+              backspace();
             }),
           ),
         ],
@@ -215,7 +215,7 @@ class _EnglishLayoutState
       ),
       onPressed: onPressed ??
           () {
-            widget.embedTextInput.insert(letter);
+            insert(letter);
             if (letter == letter.toUpperCase()) {
               setState(() => _capslock = false);
             }
@@ -225,7 +225,7 @@ class _EnglishLayoutState
               final uppercase = letter.toUpperCase();
               final lowercase = letter.toLowerCase();
               final isUppercase = uppercase == letter;
-              widget.embedTextInput.insert(isUppercase ? lowercase : uppercase);
+              insert(isUppercase ? lowercase : uppercase);
             }
           : null,
       child: Text(
@@ -299,7 +299,7 @@ class _EnglishLayoutState
             'English',
             light,
             fontSize: 20,
-            onPressed: () => widget.embedTextInput.insert(' '),
+            onPressed: () => insert(' '),
           ),
         ),
         SizedBox(
@@ -308,7 +308,7 @@ class _EnglishLayoutState
           child: _buildIconKey(
             Icons.keyboard_return,
             light,
-            () => widget.embedTextInput.insert('\n'),
+            () => insert('\n'),
           ),
         ),
       ],

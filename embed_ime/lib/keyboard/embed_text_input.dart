@@ -13,12 +13,6 @@ mixin EmbedTextInput {
   void setTextInputControl(EmbedTextInputControl inputControl);
 
   void switchLayout();
-
-  void insert(String text);
-
-  /// [length] want to delete char count. If there is a selection, just delete
-  /// selection and ignore length
-  void backspace({int length = 1});
 }
 
 mixin EmbedTextInputControl {
