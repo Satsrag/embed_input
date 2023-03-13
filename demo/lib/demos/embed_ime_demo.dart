@@ -45,8 +45,8 @@ class _EmbedImeDemoState extends State<EmbedImeDemo> {
           )),
           EmbedKeyboard(
             layoutProviders: const [
-              LayoutProvider(layoutBuilder: MenkLayout.create),
               LayoutProvider(layoutBuilder: EnglishLayout.create),
+              LayoutProvider(layoutBuilder: MenkLayout.create),
             ],
           ),
         ],

@@ -47,17 +47,19 @@ class _EnglishLayoutState
     } else {
       _qwerty = _qwerty.toLowerCase();
     }
-    return Container(
-      width: double.infinity,
-      color: light
-          ? const Color.fromARGB(255, 200, 201, 208)
-          : const Color.fromARGB(255, 83, 83, 83),
-      child: Center(
-        child: SizedBox(
-          width: width,
-          child: _type == EnglishLayoutType.letter
-              ? _buildLetterLayout(letterKeyWidth, letterHeight, light)
-              : _buildPunctuationLayout(letterKeyWidth, letterHeight, light),
+    return SafeArea(
+      child: Container(
+        width: double.infinity,
+        color: light
+            ? const Color.fromARGB(255, 200, 201, 208)
+            : const Color.fromARGB(255, 83, 83, 83),
+        child: Center(
+          child: SizedBox(
+            width: width,
+            child: _type == EnglishLayoutType.letter
+                ? _buildLetterLayout(letterKeyWidth, letterHeight, light)
+                : _buildPunctuationLayout(letterKeyWidth, letterHeight, light),
+          ),
         ),
       ),
     );
@@ -230,7 +232,7 @@ class _EnglishLayoutState
           : null,
       child: Text(
         letter,
-        style: TextStyle(fontSize: fontSize ?? 26),
+        style: TextStyle(fontSize: fontSize ?? 20),
       ),
     );
   }
@@ -264,12 +266,12 @@ class _EnglishLayoutState
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         SizedBox(
-          width: letterHeight,
+          width: letterKeyWidth * 5 / 4 + 1.25,
           height: letterHeight,
           child: _buildLetterKey(
             _type == EnglishLayoutType.letter ? '123' : 'ABC',
             light,
-            fontSize: 20,
+            fontSize: 16,
             backgroundColor: _iconKeyBackgroundColor(false, light),
             onPressed: () {
               setState(() {
@@ -284,7 +286,7 @@ class _EnglishLayoutState
           ),
         ),
         SizedBox(
-          width: letterHeight,
+          width: letterKeyWidth * 5 / 4 + 1.25,
           height: letterHeight,
           child: _buildIconKey(
             Icons.language,
@@ -298,7 +300,7 @@ class _EnglishLayoutState
           child: _buildLetterKey(
             'English',
             light,
-            fontSize: 20,
+            fontSize: 16,
             onPressed: () => insert(' '),
           ),
         ),
