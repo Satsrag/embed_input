@@ -27,6 +27,9 @@ class _EnglishLayoutState
   final _punctuation2 = '[]{}#%^*+=_\\|~<>€£¥•.,?!\'';
 
   @override
+  String get layoutName => 'English';
+
+  @override
   Widget build(BuildContext context) {
     if (!visible) {
       return const SizedBox.shrink();

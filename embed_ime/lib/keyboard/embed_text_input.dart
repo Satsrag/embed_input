@@ -22,6 +22,8 @@ mixin EmbedTextInput {
 }
 
 mixin EmbedTextInputControl {
+  String get layoutName;
+
   void show();
 
   void hide();

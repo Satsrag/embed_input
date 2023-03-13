@@ -54,7 +54,7 @@ class EmbedKeyboard extends StatefulWidget {
 class EmbedKeyboardState extends State<EmbedKeyboard>
     with TextInputControl, EmbedTextInput {
   EmbedTextInputControl? _inputControl;
-  bool _hasHardKeyboard = false;
+  bool _hasHardKeyboard = Util.isDesktop;
   bool _layoutShowing = false;
   bool _handleShowHideLayout = !Util.isDesktop;
   ValueNotifier<bool>? _internalAssumeControlNotifier;
@@ -147,7 +147,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
 
   void _showLayoutShower() {
     if (_keyboardSwitcher != null) {
-      _refreshLayoutShower();
+      _refreshLayoutSwitcher();
       return;
     }
     _keyboardSwitcher = OverlayEntry(
@@ -156,7 +156,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     Overlay.of(context).insert(_keyboardSwitcher!);
   }
 
-  void _refreshLayoutShower() {
+  void _refreshLayoutSwitcher() {
     if (_keyboardSwitcher != null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _keyboardSwitcher?.markNeedsBuild();
@@ -165,22 +165,31 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   }
 
   Widget _buildKeyboardSwitcherContent(BuildContext context) {
-    const switcherSize = 30.0;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final onSurface = colorScheme.onSurface;
+    final textTheme = theme.textTheme;
+    final textStyle = textTheme.bodySmall?.copyWith(height: 1);
+    final layoutNameSize =
+        Util.textSize(_inputControl?.layoutName ?? '', textStyle!);
+    const switcherWidth = 30.0;
+    final switcherHeight = layoutNameSize.width + switcherWidth;
     final editableVector =
         _editableTransform.transform3(vector.Vector3(0, 0, 0));
     final double? switcherLeft;
     final double? switcherRight;
-    if (editableVector.x <= switcherSize + 20) {
+    if (editableVector.x <= switcherWidth + 20) {
       switcherLeft = null;
       switcherRight = Util.windowWidth - 20;
     } else {
       switcherLeft = 20;
       switcherRight = null;
     }
-    final double switcherTop = editableVector.y;
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final onSurface = colorScheme.onSurface;
+    double switcherTop = editableVector.y;
+    if (switcherTop + switcherHeight > Util.windowHeight) {
+      switcherTop = 50;
+    }
+
     return Positioned(
         left: switcherLeft,
         top: switcherTop,
@@ -191,16 +200,34 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
               border: Border.all(color: onSurface.withOpacity(0.1)),
               color: colorScheme.surface,
             ),
-            width: switcherSize,
-            height: switcherSize,
-            child: GestureDetector(
-              onTap: () {
-                _layoutShowing = true;
-                _inputControl?.show();
-                _handleShowHideLayout = true;
-                _hideLayoutShower();
-              },
-              child: const Icon(Icons.keyboard_outlined, size: 20),
+            width: switcherWidth,
+            height: switcherHeight,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    _layoutShowing = true;
+                    _inputControl?.show();
+                    _handleShowHideLayout = true;
+                    _hideLayoutShower();
+                  },
+                  child: const Icon(Icons.keyboard_outlined, size: 20),
+                ),
+                const Divider(height: 0),
+                GestureDetector(
+                  onTap: () {
+                    setState(switchLayout);
+                  },
+                  child: RotatedBox(
+                    quarterTurns: 1,
+                    child: Text(
+                      _inputControl?.layoutName ?? '',
+                      style: textStyle,
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
         ));
@@ -265,12 +292,8 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   Widget build(BuildContext context) {
     return TextFieldTapRegion(
-      child: _buildLayout(),
+      child: widget.layoutProviders[_index].layoutBuilder(this),
     );
-  }
-
-  Widget _buildLayout() {
-    return widget.layoutProviders[_index].layoutBuilder(this);
   }
 
   @override
@@ -473,6 +496,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
 
   @override
   void switchLayout() {
+    _refreshLayoutSwitcher();
     setState(() {
       ++_index;
       if (_index >= widget.layoutProviders.length) _index = 0;

@@ -10,13 +10,16 @@ import 'package:embed_ime/embed_ime.dart';
 import 'package:flutter/widgets.dart';
 
 class MenkLayout extends EmbedKeyboardLayout {
-  const MenkLayout(super.embedTextInput, {super.key});
+  const MenkLayout.create(super.embedKeyboardState) : super(key: null);
 
   @override
   State<MenkLayout> createState() => _MenkLayoutState();
 }
 
 class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
+  @override
+  String get layoutName => 'Menk';
+
   @override
   Widget build(BuildContext context) {
     return const SizedBox.shrink();

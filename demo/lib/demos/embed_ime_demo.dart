@@ -1,7 +1,7 @@
 import 'package:embed_ime/keyboard/embed_keyboard.dart';
 import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
+import 'package:menk_embed_ime/keyboard/menk_layout.dart';
 import 'package:mongol/mongol.dart';
 
 class EmbedImeDemo extends StatefulWidget {
@@ -44,12 +44,9 @@ class _EmbedImeDemoState extends State<EmbedImeDemo> {
             ],
           )),
           EmbedKeyboard(
-            layoutProviders: [
-              const LayoutProvider(layoutBuilder: EnglishLayout.create),
-              LayoutProvider(
-                layoutBuilder: EnglishLayout.create,
-                layoutTextConverter: MenkLayoutTextConverter(),
-              ),
+            layoutProviders: const [
+              LayoutProvider(layoutBuilder: MenkLayout.create),
+              LayoutProvider(layoutBuilder: EnglishLayout.create),
             ],
           ),
         ],
