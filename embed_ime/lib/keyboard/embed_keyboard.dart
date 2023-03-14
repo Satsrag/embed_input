@@ -118,6 +118,18 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   }
 
   @override
+  void attach(TextInputClient client, TextInputConfiguration configuration) {
+    super.attach(client, configuration);
+    debugPrint('embed_keyboard -> attach');
+  }
+
+  @override
+  void detach(TextInputClient client) {
+    super.detach(client);
+    debugPrint('embed_keyboard -> detach');
+  }
+
+  @override
   void show() {
     super.show();
     debugPrint('embed_keyboard -> keyboard show');
@@ -258,7 +270,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   }
 
   bool onKeyEvent(KeyEvent event) {
-    debugPrint("embed_keyboard -> onKeyEvent: $event");
     _hasHardKeyboard = true;
     if (_softLayoutShowing) {
       _softLayoutShowing = false;

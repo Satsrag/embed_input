@@ -96,7 +96,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
 
   /// [length] want to delete char count. If there is a selection, just delete
   /// selection and ignore length
-  void backspace({int length = 1}) {
+  bool backspace({int length = 1}) {
     final text = editingValue.text;
     final textSelection = editingValue.selection;
     final selectionLength = textSelection.end - textSelection.start;
@@ -113,12 +113,12 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
           ));
       // Request the attached client to update accordingly.
       TextInput.updateEditingValue(editingValue);
-      return;
+      return true;
     }
 
     // The cursor is at the beginning.
     if (textSelection.start == 0) {
-      return;
+      return true;
     }
 
     // Delete the previous character
@@ -136,5 +136,6 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
         ));
     // Request the attached client to update accordingly.
     TextInput.updateEditingValue(editingValue);
+    return true;
   }
 }

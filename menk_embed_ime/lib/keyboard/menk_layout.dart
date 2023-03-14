@@ -13,6 +13,7 @@ import 'package:embed_ime/keyboard/key_map.dart';
 import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:menk_embed_ime/keyboard/char_convertor.dart';
 import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
 import 'package:mongol/mongol.dart';
 
@@ -34,7 +35,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   var _qwerty = 'qwertyuiopasdfghjklzxcvbnm';
   final _punctuation1 = '1234567890()@¥•.,';
   final _punctuation2 = '{}#%^*+=/~•.,';
-  final _mongolianLetters = '(){}~\n';
+  final _verticalLetters = '(){}~\n';
 
   @override
   String get layoutName => 'Menk';
@@ -50,8 +51,28 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
     final case_ = keyMap[event.physicalKey];
     if ((event is KeyDownEvent) && case_ != null) {
       _stopEditingState = true;
-      insert(case_.character);
+      final menkPunctuation = punctuations[case_.character];
+      if (menkPunctuation != null) {
+        insert(menkPunctuation);
+      } else {
+        insert(case_.character);
+      }
       return true;
+    }
+    final interceptBackspace =
+        (event is KeyDownEvent || event is KeyRepeatEvent) &&
+            event.physicalKey == PhysicalKeyboardKey.backspace &&
+            _layoutTextConverter.layoutText.isNotEmpty;
+    if (interceptBackspace) {
+      backspace();
+      return true;
+    }
+    final interceptEscape = (event is KeyDownEvent) &&
+        event.physicalKey == PhysicalKeyboardKey.escape &&
+        _layoutTextConverter.layoutText.isNotEmpty;
+    if (interceptEscape) {
+      _layoutTextConverter.backspaceLayoutText(true);
+      _showOrRefreshCandidate();
     }
     if (event is KeyUpEvent && case_ != null) {
       _stopEditingState = false;
@@ -64,30 +85,55 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   @override
   void insert(String text) {
     final layoutTextConverter = _layoutTextConverter;
-    final selectSuggestions = text.length == 1 && '1234567890 '.contains(text);
-    if (selectSuggestions) {
-      final insertText = _selectWordFromSuggestions(text);
+    final insertText = _selectWordFromSuggestionsIfNeeded(text);
+    if (insertText != text) {
       super.insert(insertText);
       layoutTextConverter.confirmWord(insertText);
       _showOrRefreshCandidate();
       return;
     }
-    layoutTextConverter.appendTextForSuggestionWords(text);
-    _showOrRefreshCandidate();
+    final latin = RegExp(r'[a-zA-Z]').matchAsPrefix(text) != null;
+    if (latin) {
+      layoutTextConverter.appendLayoutText(text);
+      _showOrRefreshCandidate();
+    } else {
+      final insertText = _selectWordFromSuggestionsIfNeeded(' ');
+      if (' ' == insertText) {
+        super.insert('$text ');
+      } else {
+        super.insert('$insertText$text ');
+        layoutTextConverter.confirmWord(insertText);
+        _showOrRefreshCandidate();
+      }
+    }
   }
 
-  String _selectWordFromSuggestions(String index) {
+  String _selectWordFromSuggestionsIfNeeded(String index) {
     var numberIndex = 0;
     if (index == ' ') {
       numberIndex = 0;
     } else {
-      numberIndex = '1234567890 '.indexOf(index);
+      numberIndex = '1234567890'.indexOf(index);
+    }
+    if (numberIndex < 0) {
+      return index;
     }
     final layoutTextConverter = _layoutTextConverter;
     if (layoutTextConverter.suggestionWords.length > numberIndex) {
-      return layoutTextConverter.suggestionWords[numberIndex];
+      return '${layoutTextConverter.suggestionWords[numberIndex]} ';
     }
     return index;
+  }
+
+  @override
+  bool backspace({int length = 1}) {
+    if (_layoutTextConverter.layoutText.isNotEmpty) {
+      _layoutTextConverter.backspaceLayoutText(false);
+      _showOrRefreshCandidate();
+      return true;
+    } else {
+      return super.backspace(length: length);
+    }
   }
 
   void _showOrRefreshCandidate() {
@@ -174,6 +220,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
 
   void _hideCandidate() {
     debugPrint("menk_layout -> _hideCandidate");
+    _layoutTextConverter.backspaceLayoutText(true);
     _candidateBox?.remove();
     _candidateBox = null;
   }
@@ -393,7 +440,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
               insert(isUppercase ? lowercase : uppercase);
             }
           : null,
-      child: _mongolianLetters.contains(letter)
+      child: _verticalLetters.contains(letter)
           ? MongolText(
               letter,
               style: TextStyle(fontSize: fontSize ?? 20, height: 1),
@@ -468,7 +515,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
           child: _buildLetterKey(
             '',
             light,
-            onPressed: () => insert(''),
+            onPressed: () => insert(''),
           ),
         ),
         SizedBox(

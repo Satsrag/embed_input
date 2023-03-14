@@ -12,8 +12,15 @@ import 'char_convertor.dart';
 
 class MenkLayoutTextConverter with LayoutTextConverter {
   @override
-  void appendTextForSuggestionWords(String text) {
-    super.appendTextForSuggestionWords(text);
+  void appendLayoutText(String text) {
+    super.appendLayoutText(text);
+    suggestionWords.clear();
+    suggestionWords.addAll(suggestion(layoutText));
+  }
+
+  @override
+  void backspaceLayoutText(bool clear) {
+    super.backspaceLayoutText(clear);
     suggestionWords.clear();
     suggestionWords.addAll(suggestion(layoutText));
   }

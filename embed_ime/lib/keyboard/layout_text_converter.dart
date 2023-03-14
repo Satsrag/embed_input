@@ -11,8 +11,17 @@ mixin LayoutTextConverter {
   var layoutText = '';
   final List<String> suggestionWords = [];
 
-  void appendTextForSuggestionWords(String text) {
+  void appendLayoutText(String text) {
     layoutText += text;
+  }
+
+  void backspaceLayoutText(bool clear) {
+    if (layoutText.isEmpty) return;
+    if (clear) {
+      layoutText = '';
+    } else {
+      layoutText = layoutText.substring(0, layoutText.length - 1);
+    }
   }
 
   void confirmWord(String word) {
