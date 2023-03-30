@@ -63,6 +63,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
         (event is KeyDownEvent || event is KeyRepeatEvent) &&
             event.physicalKey == PhysicalKeyboardKey.backspace &&
             _layoutTextConverter.layoutText.isNotEmpty;
+    debugPrint("menk_layout -> event: $event interceptBackspace:$interceptBackspace");
     if (interceptBackspace) {
       backspace();
       return true;
@@ -127,11 +128,14 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
 
   @override
   bool backspace({int length = 1}) {
+    debugPrint('menk_layout -> backspace');
     if (_layoutTextConverter.layoutText.isNotEmpty) {
+      debugPrint('menk_layout -> _layoutTextConverter isNotEmpty');
       _layoutTextConverter.backspaceLayoutText(false);
       _showOrRefreshCandidate();
       return true;
     } else {
+      debugPrint('menk_layout -> _layoutTextConverter empty');
       return super.backspace(length: length);
     }
   }

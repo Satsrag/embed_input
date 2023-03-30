@@ -26,7 +26,8 @@ class _EmbedImeDemoState extends State<EmbedImeDemo> {
                   padding: EdgeInsets.all(8.0),
                   child: Center(
                     child: MongolTextField(
-                      decoration: InputDecoration(border: OutlineInputBorder()),
+                      decoration:
+                          InputDecoration(border: OutlineInputBorder()),
                     ),
                   ),
                 ),

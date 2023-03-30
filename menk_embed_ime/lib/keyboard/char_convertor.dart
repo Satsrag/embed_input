@@ -271,8 +271,7 @@ final Map<String, Converter> converters = {
         return [
           if (context.isPreviousMvs)
             Menksoft.FINA_E_MVS
-          else if (context.isPreviousRound ||
-              context.previousCode == Menksoft.MEDI_GA_FEM)
+          else if (context.isPreviousRound || context.isPreviousHG)
             Menksoft.FINA_E_BP
           else
             Menksoft.FINA_E,
