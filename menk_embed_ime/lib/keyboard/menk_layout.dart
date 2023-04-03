@@ -63,7 +63,6 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
         (event is KeyDownEvent || event is KeyRepeatEvent) &&
             event.physicalKey == PhysicalKeyboardKey.backspace &&
             _layoutTextConverter.layoutText.isNotEmpty;
-    debugPrint("menk_layout -> event: $event interceptBackspace:$interceptBackspace");
     if (interceptBackspace) {
       backspace();
       return true;
@@ -90,6 +89,24 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
     if (insertText != text) {
       super.insert(insertText);
       layoutTextConverter.confirmWord(insertText);
+      _showOrRefreshCandidate();
+      return;
+    }
+    final nextPageSuggestion = text == '=';
+    final previousPageSuggestion = text == '-';
+    if (nextPageSuggestion || previousPageSuggestion) {
+      final suggestionWords = layoutTextConverter.suggestionWords;
+      if (suggestionWords.isEmpty) {
+        super.insert(text);
+        return;
+      }
+      final page = _currentPage;
+      final nextPage = page + 1;
+      final previousPage = page - 1;
+      final maxPage = (suggestionWords.length / 10).ceil() - 1;
+      final nextPageIndex = nextPage > maxPage ? 0 : nextPage;
+      final previousPageIndex = previousPage < 0 ? maxPage : previousPage;
+      _currentPage = nextPageSuggestion ? nextPageIndex : previousPageIndex;
       _showOrRefreshCandidate();
       return;
     }
@@ -128,20 +145,16 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
 
   @override
   bool backspace({int length = 1}) {
-    debugPrint('menk_layout -> backspace');
     if (_layoutTextConverter.layoutText.isNotEmpty) {
-      debugPrint('menk_layout -> _layoutTextConverter isNotEmpty');
       _layoutTextConverter.backspaceLayoutText(false);
       _showOrRefreshCandidate();
       return true;
     } else {
-      debugPrint('menk_layout -> _layoutTextConverter empty');
       return super.backspace(length: length);
     }
   }
 
   void _showOrRefreshCandidate() {
-    debugPrint("menk_layout -> _showOrRefreshCandidate");
     if (_candidateBox != null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _candidateBox?.markNeedsBuild();
@@ -166,57 +179,64 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
     final candidateWidth = (maxLength - 10 * _currentPage) * 30.0;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final onSurface = colorScheme.onSurface;
     final textTheme = theme.textTheme;
     return Positioned(
       top: caretRightBottomOffset.dy,
       left: caretRightBottomOffset.dx,
-      child: Container(
-        constraints: const BoxConstraints(
-          maxHeight: candidateHeight,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(color: onSurface.withOpacity(0.1)),
-          color: colorScheme.surface,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-              child: Text(
-                layoutText,
-                style: textTheme.bodyLarge,
-              ),
+      child: TextFieldTapRegion(
+        child: Card(
+          child: Container(
+            constraints: const BoxConstraints(
+              maxHeight: candidateHeight,
             ),
-            SizedBox(
-              width: candidateWidth,
-              child: const Divider(),
-            ),
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (int index = 10 * _currentPage;
-                      index < maxLength;
-                      index++)
-                    SizedBox(
-                      width: 30,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: MongolText(
-                          '${(index + 1) % 10}. ${suggestionWords[index]}',
-                          style: textTheme.bodyLarge?.copyWith(
-                            color: index % 10 == 0 ? colorScheme.primary : null,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+                  child: Text(
+                    layoutText,
+                    style: textTheme.bodyLarge,
+                  ),
+                ),
+                SizedBox(
+                  width: candidateWidth,
+                  child: const Divider(),
+                ),
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (int index = 10 * _currentPage;
+                          index < maxLength;
+                          index++)
+                        InkWell(
+                          child: SizedBox(
+                            width: 30,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: MongolText(
+                                '${(index + 1) % 10}. ${suggestionWords[index]}',
+                                style: textTheme.bodyLarge?.copyWith(
+                                  color: index % 10 == 0
+                                      ? colorScheme.primary
+                                      : null,
+                                ),
+                              ),
+                            ),
                           ),
+                          onTap: () {
+                            insert('1234567890'[index % 10]);
+                          },
                         ),
-                      ),
-                    ),
-                ],
-              ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
