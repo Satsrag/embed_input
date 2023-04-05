@@ -6,6 +6,8 @@
  * found in the LICENSE file.
  */
 
+import 'dart:math';
+
 import 'package:embed_ime/keyboard/embed_text_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +24,7 @@ abstract class EmbedKeyboardLayout extends StatefulWidget {
 abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
     extends State<T> with EmbedTextInputControl {
   TextEditingValue editingValue = TextEditingValue.empty;
-  Offset caretRightBottomOffset = Offset.zero;
+  Point<double> caretRightBottomOffset = const Point(0, 0);
   bool visibleSoftLayout = false;
 
   @override
@@ -64,7 +66,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
   void setCaretRectAndTransform(Rect rect, Matrix4 transform) {
     super.setCaretRectAndTransform(rect, transform);
     final didTrans = transform.transform3(Vector3(rect.right, rect.bottom, 0));
-    caretRightBottomOffset = Offset(didTrans.x, didTrans.y);
+    caretRightBottomOffset = Point(didTrans.x, didTrans.y);
   }
 
   @override

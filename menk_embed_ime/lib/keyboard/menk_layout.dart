@@ -57,36 +57,40 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   @override
   void setCaretRectAndTransform(Rect rect, Matrix4 transform) {
     super.setCaretRectAndTransform(rect, transform);
-    _candidate?.caretRightBottomOffset = caretRightBottomOffset;
+    _candidate?.caretRightBottomPoint = caretRightBottomOffset;
+    _candidate?.caretLongSize = max(rect.width, rect.height);
   }
 
   @override
   bool onKeyEvent(KeyEvent event) {
-    final case_ = keyMap[event.physicalKey];
-    if ((event is KeyDownEvent) && case_ != null) {
+    final printableAsciiKey = printableAsciiKeys[event.physicalKey];
+
+    if (event.isDown &&
+        printableAsciiKey != null &&
+        !isPressOtherThanShiftAndPrintableAsciiKeys) {
       _stopEditingState = true;
-      final menkPunctuation = punctuations[case_.character];
+      final menkPunctuation = punctuations[printableAsciiKey!.character];
       if (menkPunctuation != null) {
         insert(menkPunctuation);
       } else {
-        insert(case_.character);
+        insert(printableAsciiKey.character);
       }
       return true;
     }
-    final interceptBackspace =
-        (event is KeyDownEvent || event is KeyRepeatEvent) &&
-            event.physicalKey == PhysicalKeyboardKey.backspace;
-    if (interceptBackspace) {
-      return _candidate?.backspace() ?? false;
+    if (event.isBackspace && (event.isDown || event.isRepeat)) {
+      final didHandle = _candidate?.backspace() ?? false;
+      if (didHandle) {
+        _stopEditingState = true;
+      }
+      return didHandle;
     }
-    final interceptEscape = (event is KeyDownEvent) &&
-        event.physicalKey == PhysicalKeyboardKey.escape &&
-        _candidate?.isVisible == true;
-    if (interceptEscape) {
+    final interceptEscape = event.isEscape && _candidate?.isVisible == true;
+    if (interceptEscape && event.isDown) {
+      _stopEditingState = true;
       _candidate?.dismiss();
       return true;
     }
-    if (event is KeyUpEvent && case_ != null) {
+    if (event.isUp && printableAsciiKey != null) {
       _stopEditingState = false;
       TextInput.updateEditingValue(editingValue);
       return true;

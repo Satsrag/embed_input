@@ -19,31 +19,35 @@ class _EmbedImeDemoState extends State<EmbedImeDemo> {
       body: Column(
         children: [
           Expanded(
-              child: Row(
-            children: const [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Center(
+            child: Row(
+              children: const [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: MongolTextField(
-                      decoration:
-                          InputDecoration(border: OutlineInputBorder()),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Center(
-                    child: TextField(
+                      expands: true,
+                      minLines: null,
+                      maxLines: null,
+                      textAlignHorizontal: TextAlignHorizontal.left,
                       decoration: InputDecoration(border: OutlineInputBorder()),
                     ),
                   ),
                 ),
-              ),
-            ],
-          )),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextField(
+                      minLines: null,
+                      maxLines: null,
+                      textAlignVertical: TextAlignVertical.top,
+                      expands: true,
+                      decoration: InputDecoration(border: OutlineInputBorder()),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           EmbedKeyboard(
             layoutProviders: const [
               LayoutProvider(layoutBuilder: MenkLayout.create),

@@ -34,7 +34,70 @@ bool get isUppercase {
           isShiftPressed);
 }
 
-final keyMap = {
+bool get isControlPressed {
+  return HardwareKeyboard.instance.logicalKeysPressed
+          .contains(LogicalKeyboardKey.controlLeft) ||
+      HardwareKeyboard.instance.logicalKeysPressed
+          .contains(LogicalKeyboardKey.controlRight);
+}
+
+bool get isAltPressed {
+  return HardwareKeyboard.instance.logicalKeysPressed
+          .contains(LogicalKeyboardKey.altLeft) ||
+      HardwareKeyboard.instance.logicalKeysPressed
+          .contains(LogicalKeyboardKey.altRight);
+}
+
+bool get isMetaPressed {
+  return HardwareKeyboard.instance.logicalKeysPressed
+          .contains(LogicalKeyboardKey.metaLeft) ||
+      HardwareKeyboard.instance.logicalKeysPressed
+          .contains(LogicalKeyboardKey.metaRight);
+}
+
+bool get isEnterPressed {
+  return HardwareKeyboard.instance.logicalKeysPressed
+      .contains(LogicalKeyboardKey.enter);
+}
+
+bool get isBackspacePressed {
+  return HardwareKeyboard.instance.logicalKeysPressed
+      .contains(LogicalKeyboardKey.backspace);
+}
+
+bool get isEscapePressed {
+  return HardwareKeyboard.instance.logicalKeysPressed
+      .contains(LogicalKeyboardKey.escape);
+}
+
+bool get isTabPressed {
+  return HardwareKeyboard.instance.logicalKeysPressed
+      .contains(LogicalKeyboardKey.tab);
+}
+
+bool get isPressOtherThanShiftAndPrintableAsciiKeys {
+  for (final element in HardwareKeyboard.instance.physicalKeysPressed) {
+    if (element != PhysicalKeyboardKey.shiftLeft &&
+        element != PhysicalKeyboardKey.shiftRight &&
+        !printableAsciiKeys.containsKey(element)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+extension KeyEventExtension on KeyEvent {
+  bool get isDown => this is KeyDownEvent;
+  bool get isRepeat => this is KeyRepeatEvent;
+  bool get isUp => this is KeyUpEvent;
+  bool get isBackspace => physicalKey == PhysicalKeyboardKey.backspace;
+  bool get isEscape => physicalKey == PhysicalKeyboardKey.escape;
+}
+
+/// The printable ascii keys.
+/// Letter, number, punctuation and space keys.
+/// except for the delete ascii code key.
+final printableAsciiKeys = {
   PhysicalKeyboardKey.keyA: const Case('A', 'a'),
   PhysicalKeyboardKey.keyB: const Case('B', 'b'),
   PhysicalKeyboardKey.keyC: const Case('C', 'c'),

@@ -6,8 +6,10 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
 import 'dart:math';
 
+import 'package:embed_ime/util/util.dart';
 import 'package:flutter/material.dart';
 
 import '../keyboard/layout_text_converter.dart';
@@ -33,7 +35,8 @@ class MongolCandidate {
   final LayoutTextConverter layoutTextConverter;
   final void Function(String insertText) directInsert;
 
-  Offset caretRightBottomOffset = Offset.zero;
+  Point<double> caretRightBottomPoint = const Point(0, 0);
+  double caretLongSize = 0;
   bool typingSoftKeyboard = false;
 
   OverlayEntry? _candidateBox;
@@ -147,9 +150,19 @@ class MongolCandidate {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+
+    // get app window size
+    final windowSize = Util.windowSize;
+    final left = caretRightBottomPoint.x + candidateWidth < windowSize.width
+        ? caretRightBottomPoint.x
+        : caretRightBottomPoint.x - candidateWidth - caretLongSize;
+    final top = caretRightBottomPoint.y + candidateHeight < windowSize.height
+        ? caretRightBottomPoint.y
+        : caretRightBottomPoint.y - candidateHeight - caretLongSize;
+
     return Positioned(
-      top: caretRightBottomOffset.dy,
-      left: caretRightBottomOffset.dx,
+      left: left,
+      top: top,
       child: TextFieldTapRegion(
         child: Card(
           child: Container(
