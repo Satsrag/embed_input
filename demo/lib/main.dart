@@ -2,6 +2,8 @@ import 'package:demo/demos/embed_ime_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:mongol/mongol.dart';
 
+import 'demos/test.dart';
+
 void main() {
   runApp(const DemoApp());
 }
@@ -41,6 +43,10 @@ class HomeScreen extends StatelessWidget {
         DemoTile(
           title: 'Embed Ime Demo',
           destination: EmbedImeDemo(),
+        ),
+        DemoTile(
+          title: 'Test Demo',
+          destination: Test(),
         ),
       ],
     );

@@ -6,6 +6,7 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class Case {
@@ -80,6 +81,7 @@ bool get isPressOtherThanShiftAndPrintableAsciiKeys {
     if (element != PhysicalKeyboardKey.shiftLeft &&
         element != PhysicalKeyboardKey.shiftRight &&
         !printableAsciiKeys.containsKey(element)) {
+      debugPrint('key_map -> pressed: ${element.debugName}');
       return true;
     }
   }

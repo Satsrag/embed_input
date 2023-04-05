@@ -63,11 +63,18 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
 
   @override
   bool onKeyEvent(KeyEvent event) {
+    debugPrint('menk_layout: interceptEscape: ${event.isEscape} event: $event');
     final printableAsciiKey = printableAsciiKeys[event.physicalKey];
-
-    if (event.isDown &&
+    final interceptForPrintableAscii = event.isDown &&
         printableAsciiKey != null &&
-        !isPressOtherThanShiftAndPrintableAsciiKeys) {
+        !isPressOtherThanShiftAndPrintableAsciiKeys;
+    // flutter bug: On the Macos, when the user presses the backspace key with
+    // the mete key, and then releases the backspace key, the up event of the
+    // backspace key will not call the onKeyEvent method.
+    // So we need to intercept the printableAsciiKey when this issure will happen.
+    final backspaceBug =
+        event.isDown && printableAsciiKey != null && isBackspacePressed;
+    if (interceptForPrintableAscii || backspaceBug) {
       _stopEditingState = true;
       final menkPunctuation = punctuations[printableAsciiKey!.character];
       if (menkPunctuation != null) {

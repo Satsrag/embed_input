@@ -18,13 +18,6 @@ import '../keyboard/layout_text_converter.dart';
 /// and dismisses the candidate words with calling [dismiss] method.
 ///
 /// It has two cotnent styles: [_buildHardContent] and [_buildSoftContent].
-///
-/// [_buildHardContent] is shown when the user is typing using hard keyboard.
-/// Candidate overlay follows the caret position both in vertical and horizontal.
-///
-/// [_buildSoftContent] is shown when the user is typing using soft keyboard.
-/// Candidate overlay is shown at the top of the soft keyboard in vertical and
-/// follows the caret position in horizontal.
 class MongolCandidate {
   MongolCandidate(
       {required this.context,
@@ -129,10 +122,15 @@ class MongolCandidate {
     Overlay.of(context).insert(_candidateBox!);
   }
 
+  /// [_buildSoftContent] is shown when the user is typing using soft keyboard.
+  /// Candidate overlay is shown at the top of the soft keyboard in vertical and
+  /// follows the caret position in horizontal.
   Widget _buildSoftContent(BuildContext context) {
     return const SizedBox.shrink();
   }
 
+  /// [_buildHardContent] is shown when the user is typing using hard keyboard.
+  /// Candidate overlay follows the caret position both in vertical and horizontal.
   Widget _buildHardContent(BuildContext context) {
     final suggestionWords = layoutTextConverter.suggestionWords;
     final layoutText = layoutTextConverter.layoutText;
