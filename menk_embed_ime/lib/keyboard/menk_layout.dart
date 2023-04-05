@@ -13,6 +13,7 @@ import 'package:embed_ime/keyboard/key_map.dart';
 import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:embed_ime/candidate/mongol_candidate.dart';
 import 'package:menk_embed_ime/keyboard/char_convertor.dart';
 import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
 import 'package:mongol/mongol.dart';
@@ -25,11 +26,8 @@ class MenkLayout extends EmbedKeyboardLayout {
 }
 
 class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
-  final _layoutTextConverter = MenkLayoutTextConverter();
+  MongolCandidate? _candidate;
   bool _stopEditingState = false;
-  int _currentPage = 0;
-  OverlayEntry? _candidateBox;
-
   var _type = EnglishLayoutType.letter;
   var _capslock = false;
   var _qwerty = 'qwertyuiopasdfghjklzxcvbnm';
@@ -38,12 +36,28 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   final _verticalLetters = '(){}~\n';
 
   @override
+  void initState() {
+    super.initState();
+    _candidate = MongolCandidate(
+      context: context,
+      layoutTextConverter: MenkLayoutTextConverter(),
+      directInsert: (insertText) => super.insert(insertText),
+    );
+  }
+
+  @override
   String get layoutName => 'Menk';
 
   @override
   void detach() {
     super.detach();
-    _hideCandidate();
+    _candidate?.dismiss();
+  }
+
+  @override
+  void setCaretRectAndTransform(Rect rect, Matrix4 transform) {
+    super.setCaretRectAndTransform(rect, transform);
+    _candidate?.caretRightBottomOffset = caretRightBottomOffset;
   }
 
   @override
@@ -61,18 +75,16 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
     }
     final interceptBackspace =
         (event is KeyDownEvent || event is KeyRepeatEvent) &&
-            event.physicalKey == PhysicalKeyboardKey.backspace &&
-            _layoutTextConverter.layoutText.isNotEmpty;
+            event.physicalKey == PhysicalKeyboardKey.backspace;
     if (interceptBackspace) {
-      backspace();
-      return true;
+      return _candidate?.backspace() ?? false;
     }
     final interceptEscape = (event is KeyDownEvent) &&
         event.physicalKey == PhysicalKeyboardKey.escape &&
-        _layoutTextConverter.layoutText.isNotEmpty;
+        _candidate?.isVisible == true;
     if (interceptEscape) {
-      _layoutTextConverter.backspaceLayoutText(true);
-      _showOrRefreshCandidate();
+      _candidate?.dismiss();
+      return true;
     }
     if (event is KeyUpEvent && case_ != null) {
       _stopEditingState = false;
@@ -84,169 +96,20 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
 
   @override
   void insert(String text) {
-    final layoutTextConverter = _layoutTextConverter;
-    final insertText = _selectWordFromSuggestionsIfNeeded(text);
-    if (insertText != text) {
-      super.insert(insertText);
-      layoutTextConverter.confirmWord(insertText);
-      _showOrRefreshCandidate();
-      return;
+    final willInsertText = _candidate?.convertInsert(text);
+    if (willInsertText != null) {
+      super.insert(willInsertText);
     }
-    final nextPageSuggestion = text == '=';
-    final previousPageSuggestion = text == '-';
-    if (nextPageSuggestion || previousPageSuggestion) {
-      final suggestionWords = layoutTextConverter.suggestionWords;
-      if (suggestionWords.isEmpty) {
-        super.insert(text);
-        return;
-      }
-      final page = _currentPage;
-      final nextPage = page + 1;
-      final previousPage = page - 1;
-      final maxPage = (suggestionWords.length / 10).ceil() - 1;
-      final nextPageIndex = nextPage > maxPage ? 0 : nextPage;
-      final previousPageIndex = previousPage < 0 ? maxPage : previousPage;
-      _currentPage = nextPageSuggestion ? nextPageIndex : previousPageIndex;
-      _showOrRefreshCandidate();
-      return;
-    }
-    final latin = RegExp(r'[a-zA-Z]').matchAsPrefix(text) != null;
-    if (latin) {
-      layoutTextConverter.appendLayoutText(text);
-      _showOrRefreshCandidate();
-    } else {
-      final insertText = _selectWordFromSuggestionsIfNeeded(' ');
-      if (' ' == insertText) {
-        super.insert('$text ');
-      } else {
-        super.insert('$insertText$text ');
-        layoutTextConverter.confirmWord(insertText);
-        _showOrRefreshCandidate();
-      }
-    }
-  }
-
-  String _selectWordFromSuggestionsIfNeeded(String index) {
-    var numberIndex = 0;
-    if (index == ' ') {
-      numberIndex = 0;
-    } else {
-      numberIndex = '1234567890'.indexOf(index);
-    }
-    if (numberIndex < 0) {
-      return index;
-    }
-    final layoutTextConverter = _layoutTextConverter;
-    if (layoutTextConverter.suggestionWords.length > numberIndex) {
-      return '${layoutTextConverter.suggestionWords[numberIndex]} ';
-    }
-    return index;
   }
 
   @override
   bool backspace({int length = 1}) {
-    if (_layoutTextConverter.layoutText.isNotEmpty) {
-      _layoutTextConverter.backspaceLayoutText(false);
-      _showOrRefreshCandidate();
-      return true;
-    } else {
+    final didHandle = _candidate?.backspace() ?? false;
+    if (!didHandle) {
       return super.backspace(length: length);
+    } else {
+      return didHandle;
     }
-  }
-
-  void _showOrRefreshCandidate() {
-    if (_candidateBox != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _candidateBox?.markNeedsBuild();
-      });
-      return;
-    }
-    _candidateBox = OverlayEntry(
-      builder: (context) => _buildCandidateContent(context),
-    );
-    Overlay.of(context).insert(_candidateBox!);
-  }
-
-  Widget _buildCandidateContent(BuildContext context) {
-    final layoutTextConverter = _layoutTextConverter;
-    final suggestionWords = layoutTextConverter.suggestionWords;
-    if (suggestionWords.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    final layoutText = layoutTextConverter.layoutText;
-    const candidateHeight = 200.0;
-    final maxLength = min(10 * _currentPage + 10, suggestionWords.length);
-    final candidateWidth = (maxLength - 10 * _currentPage) * 30.0;
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
-    return Positioned(
-      top: caretRightBottomOffset.dy,
-      left: caretRightBottomOffset.dx,
-      child: TextFieldTapRegion(
-        child: Card(
-          child: Container(
-            constraints: const BoxConstraints(
-              maxHeight: candidateHeight,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-                  child: Text(
-                    layoutText,
-                    style: textTheme.bodyLarge,
-                  ),
-                ),
-                SizedBox(
-                  width: candidateWidth,
-                  child: const Divider(),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (int index = 10 * _currentPage;
-                          index < maxLength;
-                          index++)
-                        InkWell(
-                          child: SizedBox(
-                            width: 30,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: MongolText(
-                                '${(index + 1) % 10}. ${suggestionWords[index]}',
-                                style: textTheme.bodyLarge?.copyWith(
-                                  color: index % 10 == 0
-                                      ? colorScheme.primary
-                                      : null,
-                                ),
-                              ),
-                            ),
-                          ),
-                          onTap: () {
-                            insert('1234567890'[index % 10]);
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _hideCandidate() {
-    debugPrint("menk_layout -> _hideCandidate");
-    _layoutTextConverter.backspaceLayoutText(true);
-    _candidateBox?.remove();
-    _candidateBox = null;
   }
 
   @override
@@ -260,7 +123,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   @override
   void dispose() {
     super.dispose();
-    _hideCandidate();
+    _candidate?.dismiss();
   }
 
   @override
