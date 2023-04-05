@@ -58,6 +58,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   int _index = 0;
   TextEditingValue _editingState = const TextEditingValue();
   Matrix4 _editableTransform = Matrix4.identity();
+  Size _editableSize = Size.zero;
   Rect _caretRect = Rect.zero;
 
   OverlayEntry? _keyboardSwitcher;
@@ -184,26 +185,22 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
         Util.textSize(_inputControl?.layoutName ?? '', textStyle!);
     const switcherWidth = 30.0;
     final switcherHeight = layoutNameSize.width + switcherWidth;
-    final editableVector =
-        _editableTransform.transform3(vector.Vector3(0, 0, 0));
-    final double? switcherLeft;
-    final double? switcherRight;
-    if (editableVector.x <= switcherWidth + 20) {
-      switcherLeft = null;
-      switcherRight = Util.windowWidth - 20;
-    } else {
-      switcherLeft = 20;
-      switcherRight = null;
-    }
-    double switcherTop = editableVector.y;
-    if (switcherTop + switcherHeight > Util.windowHeight) {
-      switcherTop = 50;
+    final editableLT = _editableTransform.transform3(vector.Vector3(0, 0, 0));
+    final editableRB = _editableTransform.transform3(
+      vector.Vector3(_editableSize.width, _editableSize.height, 0),
+    );
+    final switcherLeft = editableRB.x + 10 + switcherWidth > Util.windowWidth
+        ? editableLT.x - 10 - switcherWidth
+        : editableRB.x + 10;
+
+    double switcherTop = editableRB.y - switcherHeight - 10;
+    if (switcherTop < 10) {
+      switcherTop = 10;
     }
 
     return Positioned(
         left: switcherLeft,
         top: switcherTop,
-        right: switcherRight,
         child: TextFieldTapRegion(
           child: Container(
             decoration: BoxDecoration(
@@ -266,6 +263,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   void setEditableSizeAndTransform(Size editableBoxSize, Matrix4 transform) {
     super.setEditableSizeAndTransform(editableBoxSize, transform);
     _editableTransform = transform;
+    _editableSize = editableBoxSize;
     _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
   }
 
