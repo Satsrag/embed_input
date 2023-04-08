@@ -93,6 +93,7 @@ extension KeyEventExtension on KeyEvent {
   bool get isRepeat => this is KeyRepeatEvent;
   bool get isUp => this is KeyUpEvent;
   bool get isBackspace => physicalKey == PhysicalKeyboardKey.backspace;
+  bool get isEnter => physicalKey == PhysicalKeyboardKey.enter;
   bool get isEscape => physicalKey == PhysicalKeyboardKey.escape;
 }
 

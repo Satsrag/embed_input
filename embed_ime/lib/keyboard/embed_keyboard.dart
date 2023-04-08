@@ -10,10 +10,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+
 import '../layout/embed_keyboard_layout.dart';
+import '../layout/english_layout.dart';
 import '../util/util.dart';
 import 'embed_text_input.dart';
-import '../layout/english_layout.dart';
 import 'layout_text_converter.dart';
 
 typedef ConfirmedTextCallback = Function(String confirmedText);
@@ -56,6 +57,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   bool _handleShowLayout = !Util.isDesktop;
   ValueNotifier<bool>? _internalAssumeControlNotifier;
   int _index = 0;
+  // todo update from layout, setEditableState not called
   TextEditingValue _editingState = const TextEditingValue();
   Matrix4 _editableTransform = Matrix4.identity();
   Size _editableSize = Size.zero;
@@ -248,6 +250,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void setEditingState(TextEditingValue value) {
     super.setEditingState(value);
+    debugPrint("embed_keyboard -> setEditingState($value)");
     _editingState = value;
     _inputControl?.setEditingState(_editingState);
   }
@@ -297,5 +300,11 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       ++_index;
       if (_index >= widget.layoutProviders.length) _index = 0;
     });
+  }
+
+  @override
+  void updateEditingValue(TextEditingValue value) {
+    _editingState = value;
+    TextInput.updateEditingValue(value);
   }
 }

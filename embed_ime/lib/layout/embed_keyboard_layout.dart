@@ -11,7 +11,6 @@ import 'dart:math';
 import 'package:embed_ime/keyboard/embed_text_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart';
 
@@ -59,6 +58,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
 
   @override
   void setEditingState(TextEditingValue value) {
+    debugPrint('base_layout -> $this setEditingState: $value');
     editingValue = value;
   }
 
@@ -93,7 +93,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
       print("embed_keyboard -> insert: $editingValue");
     }
     // Request the attached client to update accordingly.
-    TextInput.updateEditingValue(editingValue);
+    widget.embedTextInput.updateEditingValue(editingValue);
   }
 
   /// [length] want to delete char count. If there is a selection, just delete
@@ -114,7 +114,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
             extentOffset: textSelection.start,
           ));
       // Request the attached client to update accordingly.
-      TextInput.updateEditingValue(editingValue);
+      widget.embedTextInput.updateEditingValue(editingValue);
       return true;
     }
 
@@ -137,7 +137,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
           extentOffset: newStart,
         ));
     // Request the attached client to update accordingly.
-    TextInput.updateEditingValue(editingValue);
+    widget.embedTextInput.updateEditingValue(editingValue);
     return true;
   }
 }

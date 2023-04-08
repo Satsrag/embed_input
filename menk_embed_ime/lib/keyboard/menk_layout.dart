@@ -8,12 +8,11 @@
  */
 import 'dart:math';
 
+import 'package:embed_ime/candidate/mongol_candidate.dart';
 import 'package:embed_ime/embed_ime.dart';
 import 'package:embed_ime/keyboard/key_map.dart';
 import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:embed_ime/candidate/mongol_candidate.dart';
 import 'package:menk_embed_ime/keyboard/char_convertor.dart';
 import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
 import 'package:mongol/mongol.dart';
@@ -63,7 +62,6 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
 
   @override
   bool onKeyEvent(KeyEvent event) {
-    debugPrint('menk_layout: interceptEscape: ${event.isEscape} event: $event');
     final printableAsciiKey = printableAsciiKeys[event.physicalKey];
     final interceptForPrintableAscii = event.isDown &&
         printableAsciiKey != null &&
@@ -76,7 +74,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
         event.isDown && printableAsciiKey != null && isBackspacePressed;
     if (interceptForPrintableAscii || backspaceBug) {
       _stopEditingState = true;
-      final menkPunctuation = punctuations[printableAsciiKey!.character];
+      final menkPunctuation = punctuations[printableAsciiKey.character];
       if (menkPunctuation != null) {
         insert(menkPunctuation);
       } else {
@@ -87,21 +85,28 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
     if (event.isBackspace && (event.isDown || event.isRepeat)) {
       final didHandle = _candidate?.backspace() ?? false;
       if (didHandle) {
-        _stopEditingState = true;
+        // _stopEditingState = true;
       }
       return didHandle;
     }
     final interceptEscape = event.isEscape && _candidate?.isVisible == true;
     if (interceptEscape && event.isDown) {
-      _stopEditingState = true;
+      // _stopEditingState = true;
       _candidate?.dismiss();
       return true;
     }
-    if (event.isUp && printableAsciiKey != null) {
-      _stopEditingState = false;
-      TextInput.updateEditingValue(editingValue);
+    if (event.isDown && event.isEnter) {
+      // _stopEditingState = true;
+      _candidate?.dismiss();
+      insert('\n');
       return true;
     }
+    if (event.isUp && _stopEditingState) {
+      _stopEditingState = false;
+      widget.embedTextInput.updateEditingValue(editingValue);
+      return true;
+    }
+    debugPrint('menk_layout: return false');
     return false;
   }
 

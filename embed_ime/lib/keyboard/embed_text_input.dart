@@ -13,6 +13,13 @@ mixin EmbedTextInput {
   void setTextInputControl(EmbedTextInputControl inputControl);
 
   void switchLayout();
+
+  /// The [EmbedTextInputControl] that is currently attached to this call this
+  /// method to update the editing state, instead of calling
+  /// [TextInput.updateEditingValue].
+  /// Because the [EmbedTextInput] will not receive the update if we call the
+  /// [TextInput.updateEditingValue] to update editing state.
+  void updateEditingValue(TextEditingValue value);
 }
 
 mixin EmbedTextInputControl {
@@ -27,6 +34,7 @@ mixin EmbedTextInputControl {
   void hideSoftLayout();
 
   void setEditingState(TextEditingValue value);
+
   /// Informs the text input control about caret area changes.
   ///
   /// This method is called when the attached input client's caret area

@@ -39,7 +39,7 @@ class MongolCandidate {
   String? convertInsert(String text) {
     final insertText = _selectWordFromSuggestionsIfNeeded(text);
     if (insertText != text) {
-      layoutTextConverter.confirmWord(insertText);
+      layoutTextConverter.confirmWord('$insertText ');
       _showOrRefresh();
       return insertText;
     }
@@ -68,7 +68,7 @@ class MongolCandidate {
     } else {
       final insertText = _selectWordFromSuggestionsIfNeeded(' ');
       if (' ' == insertText) {
-        return '$text ';
+        return text;
       } else {
         layoutTextConverter.confirmWord(insertText);
         _showOrRefresh();
