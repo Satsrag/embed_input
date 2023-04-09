@@ -19,17 +19,33 @@ import '../keyboard/layout_text_converter.dart';
 ///
 /// It has two cotnent styles: [_buildHardContent] and [_buildSoftContent].
 class MongolCandidate {
-  MongolCandidate(
-      {required this.context,
-      required this.layoutTextConverter,
-      required this.directInsert});
+  MongolCandidate({
+    required this.context,
+    required this.layoutTextConverter,
+    required this.directInsert,
+    required this.softLayoutTop,
+  });
 
   final BuildContext context;
   final LayoutTextConverter layoutTextConverter;
+
+  /// The callback to insert the text directly. It is called when the user is
+  /// tap the candidate word. so the [insertText] is confirmed word and needs to
+  /// insert directly without any conversion.
   final void Function(String insertText) directInsert;
 
+  /// The top point of the soft keyboard in the global coordinate system.
+  final double Function() softLayoutTop;
+
+  /// The right bottom point of the caret.
   Point<double> caretRightBottomPoint = const Point(0, 0);
+
+  /// caret may be vertical or horizontal, this is the long size of the caret.
   double caretLongSize = 0;
+
+  /// Tell the candidate if the user is typing using soft keyboard or hard keyboard.
+  /// true: soft keyboard, show the [_buildSoftContent], false: hard keyboard,
+  /// show the [_buildHardContent].
   bool typingSoftKeyboard = false;
 
   OverlayEntry? _candidateBox;
@@ -126,7 +142,91 @@ class MongolCandidate {
   /// Candidate overlay is shown at the top of the soft keyboard in vertical and
   /// follows the caret position in horizontal.
   Widget _buildSoftContent(BuildContext context) {
-    return const SizedBox.shrink();
+    final windowSize = Util.windowSize;
+    final candidateWidth =
+        30 * min(5, layoutTextConverter.suggestionWords.length);
+    final bottom = windowSize.height - softLayoutTop();
+    final left = caretRightBottomPoint.x + candidateWidth < windowSize.width
+        ? caretRightBottomPoint.x
+        : caretRightBottomPoint.x - candidateWidth - caretLongSize;
+    final suggestions = layoutTextConverter.suggestionWords;
+    // get max length text from suggestions
+    final maxLengthText = suggestions.fold('', (previousValue, element) {
+      return element.length > previousValue.length ? element : previousValue;
+    });
+    final labelText = layoutTextConverter.layoutText;
+    return Positioned(
+      left: left,
+      bottom: bottom,
+      child: Theme(
+        data: Theme.of(this.context),
+        child: TextFieldTapRegion(
+          child: Card(
+            child: Builder(builder: (context) {
+              final textTheme = Theme.of(context).textTheme;
+              final textStyle = textTheme.bodyMedium ?? const TextStyle();
+              final suggestionTextSize =
+                  Util.textSize(maxLengthText, textStyle);
+              final labelTextSize = Util.textSize(labelText, textStyle);
+              final height = max(suggestionTextSize.width, 50.0) +
+                  (labelTextSize.height + 32.0);
+              final width = max(
+                  30.0 * min(5, suggestions.length), labelTextSize.width + 16);
+              return SizedBox(
+                width: width,
+                height: height,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          layoutTextConverter.layoutText,
+                          style: textTheme.bodyLarge,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 0),
+                    Expanded(
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: layoutTextConverter.suggestionWords
+                            .map(
+                              (e) => InkWell(
+                                child: SizedBox(
+                                  width: 30,
+                                  child: Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: RotatedBox(
+                                        quarterTurns: 1,
+                                        child: Text(e, style: textStyle),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                onTap: () {
+                                  layoutTextConverter.confirmWord(e);
+                                  directInsert('$e ');
+                                  _showOrRefresh();
+                                },
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
   }
 
   /// [_buildHardContent] is shown when the user is typing using hard keyboard.
@@ -145,11 +245,10 @@ class MongolCandidate {
     final candidateWidth = isLastPage ? lastPageWordCount * 30.0 : 30.0 * 10;
     final currentPageMaxLength =
         isLastPage ? suggestionWords.length : _currentPage * 10 + 10;
-    final theme = Theme.of(context);
+    final theme = Theme.of(this.context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
 
-    // get app window size
     final windowSize = Util.windowSize;
     final left = caretRightBottomPoint.x + candidateWidth < windowSize.width
         ? caretRightBottomPoint.x
@@ -158,68 +257,71 @@ class MongolCandidate {
         ? caretRightBottomPoint.y
         : caretRightBottomPoint.y - candidateHeight - caretLongSize;
 
-    return Positioned(
-      left: left,
-      top: top,
-      child: TextFieldTapRegion(
-        child: Card(
-          child: Container(
-            constraints: const BoxConstraints(
-              maxHeight: candidateHeight,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-                  child: Text(
-                    layoutText,
-                    style: textTheme.bodyLarge,
+    return Theme(
+      data: theme,
+      child: Positioned(
+        left: left,
+        top: top,
+        child: TextFieldTapRegion(
+          child: Card(
+            child: Container(
+              constraints: const BoxConstraints(
+                maxHeight: candidateHeight,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+                    child: Text(
+                      layoutText,
+                      style: textTheme.bodyLarge,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: candidateWidth,
-                  child: const Divider(),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (int index = 10 * _currentPage;
-                          index < currentPageMaxLength;
-                          index++)
-                        InkWell(
-                          child: SizedBox(
-                            width: 30,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: RotatedBox(
-                                quarterTurns: 1,
-                                child: Text(
-                                  '${(index + 1) % 10}. ${suggestionWords[index]}',
-                                  style: textTheme.bodyLarge?.copyWith(
-                                    color: index % 10 == 0
-                                        ? colorScheme.primary
-                                        : null,
+                  SizedBox(
+                    width: candidateWidth,
+                    child: const Divider(),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (int index = 10 * _currentPage;
+                            index < currentPageMaxLength;
+                            index++)
+                          InkWell(
+                            child: SizedBox(
+                              width: 30,
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: RotatedBox(
+                                  quarterTurns: 1,
+                                  child: Text(
+                                    '${(index + 1) % 10}. ${suggestionWords[index]}',
+                                    style: textTheme.bodyLarge?.copyWith(
+                                      color: index % 10 == 0
+                                          ? colorScheme.primary
+                                          : null,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
+                            onTap: () {
+                              final indexText = '1234567890'[index % 10];
+                              final willInsertText = convertInsert(indexText);
+                              if (willInsertText != null) {
+                                directInsert(willInsertText);
+                              }
+                            },
                           ),
-                          onTap: () {
-                            final indexText = '1234567890'[index % 10];
-                            final willInsertText = convertInsert(indexText);
-                            if (willInsertText != null) {
-                              directInsert(willInsertText);
-                            }
-                          },
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

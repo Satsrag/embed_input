@@ -2,8 +2,6 @@ import 'package:demo/demos/embed_ime_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:mongol/mongol.dart';
 
-import 'demos/test.dart';
-
 void main() {
   runApp(const DemoApp());
 }
@@ -17,11 +15,8 @@ class DemoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       builder: (context, child) => MongolTextEditingShortcuts(child: child),
       title: 'Embed IME Demo',
-      theme: ThemeData(
-        fontFamily: 'OnonSans',
-      ),
+      theme: ThemeData(),
       darkTheme: ThemeData(
-        fontFamily: 'OnonSans',
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
@@ -41,12 +36,12 @@ class HomeScreen extends StatelessWidget {
     return ListView(
       children: const <Widget>[
         DemoTile(
-          title: 'Embed Ime Demo',
-          destination: EmbedImeDemo(),
+          title: 'Zcode Ime Demo',
+          destination: MenkImeDemo(),
         ),
         DemoTile(
-          title: 'Test Demo',
-          destination: Test(),
+          title: 'Menk Ime Demo',
+          destination: MenkImeDemo(),
         ),
       ],
     );

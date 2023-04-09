@@ -1,6 +1,5 @@
 /*
  * Copyright 2014 The Flutter Authors.
- * Copyright 2020 Suragch.
  * Copyright 2023 Satsrag.
  * All rights reserved.
  * Use of this source code is governed by a BSD-style license that can be
@@ -15,7 +14,6 @@ import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:menk_embed_ime/keyboard/char_convertor.dart';
 import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
-import 'package:mongol/mongol.dart';
 
 class MenkLayout extends EmbedKeyboardLayout {
   const MenkLayout.create(super.embedKeyboardState) : super(key: null);
@@ -41,6 +39,16 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
       context: context,
       layoutTextConverter: MenkLayoutTextConverter(),
       directInsert: (insertText) => super.insert(insertText),
+      softLayoutTop: () {
+        final renderObject = context.findRenderObject();
+        debugPrint('softLayoutTop: $renderObject');
+        final box = renderObject as RenderBox;
+        if (box.hasSize) {
+          return box.localToGlobal(Offset.zero).dy;
+        } else {
+          return 100.0;
+        }
+      },
     );
   }
 
@@ -51,6 +59,18 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   void detach() {
     super.detach();
     _candidate?.dismiss();
+  }
+
+  @override
+  void showSoftLayout() {
+    super.showSoftLayout();
+    _candidate?.typingSoftKeyboard = true;
+  }
+
+  @override
+  void hideSoftLayout() {
+    super.hideSoftLayout();
+    _candidate?.typingSoftKeyboard = false;
   }
 
   @override
@@ -66,6 +86,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
     final interceptForPrintableAscii = event.isDown &&
         printableAsciiKey != null &&
         !isPressOtherThanShiftAndPrintableAsciiKeys;
+    // Todo: It not a good way to solve this problem.
     // flutter bug: On the Macos, when the user presses the backspace key with
     // the mete key, and then releases the backspace key, the up event of the
     // backspace key will not call the onKeyEvent method.
@@ -84,21 +105,11 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
     }
     if (event.isBackspace && (event.isDown || event.isRepeat)) {
       final didHandle = _candidate?.backspace() ?? false;
-      if (didHandle) {
-        // _stopEditingState = true;
-      }
       return didHandle;
     }
     final interceptEscape = event.isEscape && _candidate?.isVisible == true;
     if (interceptEscape && event.isDown) {
-      // _stopEditingState = true;
       _candidate?.dismiss();
-      return true;
-    }
-    if (event.isDown && event.isEnter) {
-      // _stopEditingState = true;
-      _candidate?.dismiss();
-      insert('\n');
       return true;
     }
     if (event.isUp && _stopEditingState) {
@@ -344,9 +355,12 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
             }
           : null,
       child: _verticalLetters.contains(letter)
-          ? MongolText(
-              letter,
-              style: TextStyle(fontSize: fontSize ?? 20, height: 1),
+          ? RotatedBox(
+              quarterTurns: 1,
+              child: Text(
+                letter,
+                style: TextStyle(fontSize: fontSize ?? 20, height: 1),
+              ),
             )
           : Text(
               letter,
