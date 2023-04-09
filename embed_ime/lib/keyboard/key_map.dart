@@ -142,7 +142,7 @@ final printableAsciiKeys = {
   PhysicalKeyboardKey.bracketLeft: const Case('{', '['),
   PhysicalKeyboardKey.bracketRight: const Case('}', ']'),
   PhysicalKeyboardKey.backslash: const Case('|', '\\'),
-  PhysicalKeyboardKey.semicolon: const Case(';', ':'),
+  PhysicalKeyboardKey.semicolon: const Case(':', ';'),
   PhysicalKeyboardKey.quote: const Case('"', "'"),
   PhysicalKeyboardKey.backquote: const Case('~', '`'),
   PhysicalKeyboardKey.comma: const Case('<', ','),

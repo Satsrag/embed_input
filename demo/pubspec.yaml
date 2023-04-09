@@ -14,6 +14,8 @@ dependencies:
     path: ../embed_ime
   menk_embed_ime:
     path: ../menk_embed_ime
+  zcode_embed_ime:
+    path: ../zcode_embed_ime
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +27,6 @@ flutter:
     - family: MenkQagan
       fonts:
         - asset: fonts/MQG8F02.ttf
+    - family: ZcodeQagan
+      fonts:
+        - asset: fonts/z52tsagaantig.ttf

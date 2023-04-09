@@ -1,6 +1,8 @@
-import 'package:demo/demos/embed_ime_demo.dart';
+import 'package:demo/demos/menk_ime_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:mongol/mongol.dart';
+
+import 'demos/zcode_ime_demo.dart';
 
 void main() {
   runApp(const DemoApp());
@@ -37,7 +39,7 @@ class HomeScreen extends StatelessWidget {
       children: const <Widget>[
         DemoTile(
           title: 'Zcode Ime Demo',
-          destination: MenkImeDemo(),
+          destination: ZcodeImeDemo(),
         ),
         DemoTile(
           title: 'Menk Ime Demo',
