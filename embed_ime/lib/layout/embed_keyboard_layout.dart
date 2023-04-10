@@ -9,15 +9,22 @@
 import 'dart:math';
 
 import 'package:embed_ime/keyboard/embed_text_input.dart';
+import 'package:embed_ime/keyboard/layout_text_converter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 abstract class EmbedKeyboardLayout extends StatefulWidget {
-  const EmbedKeyboardLayout(this.embedTextInput, {super.key});
+  const EmbedKeyboardLayout(
+    this.embedTextInput, {
+    this.converter,
+    super.key,
+  });
 
   final EmbedTextInput embedTextInput;
+
+  final LayoutTextConverter? converter;
 }
 
 abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>

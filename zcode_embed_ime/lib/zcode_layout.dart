@@ -16,6 +16,12 @@ import 'package:flutter/material.dart';
 import 'zcode_input_text_convertor.dart';
 
 class ZcodeLayout extends EmbedKeyboardLayout {
+  const ZcodeLayout(
+    super.embedTextInput, {
+    super.converter,
+    super.key,
+  });
+
   const ZcodeLayout.create(super.embedKeyboardState) : super(key: null);
 
   @override
@@ -59,7 +65,7 @@ class _ZcodeLayoutState extends BaseEmbedTextInputControlState<ZcodeLayout> {
     super.initState();
     _candidate = MongolCandidate(
       context: context,
-      layoutTextConverter: ZcodeLayoutTextConverter(),
+      layoutTextConverter: widget.converter ?? ZcodeLayoutTextConverter(),
       directInsert: (insertText) => super.insert(insertText),
       softLayoutTop: () {
         final renderObject = context.findRenderObject();

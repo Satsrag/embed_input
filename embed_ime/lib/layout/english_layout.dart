@@ -12,7 +12,10 @@ import 'package:flutter/material.dart';
 import 'embed_keyboard_layout.dart';
 
 class EnglishLayout extends EmbedKeyboardLayout {
-  const EnglishLayout.create(super.embedKeyboardState) : super(key: null);
+  const EnglishLayout.create(super.embedKeyboardState)
+      : super(
+          key: null,
+        );
 
   @override
   State<StatefulWidget> createState() => _EnglishLayoutState();

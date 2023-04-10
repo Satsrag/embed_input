@@ -15,31 +15,20 @@ import '../layout/embed_keyboard_layout.dart';
 import '../layout/english_layout.dart';
 import '../util/util.dart';
 import 'embed_text_input.dart';
-import 'layout_text_converter.dart';
 
 typedef ConfirmedTextCallback = Function(String confirmedText);
 
 typedef LayoutBuilder = EmbedKeyboardLayout Function(
-  EmbedTextInput embedTextInput,
-);
-
-class LayoutProvider {
-  final LayoutBuilder layoutBuilder;
-  final LayoutTextConverter? layoutTextConverter;
-
-  const LayoutProvider({required this.layoutBuilder, this.layoutTextConverter});
-}
+    EmbedTextInput embedTextInput);
 
 class EmbedKeyboard extends StatefulWidget {
   EmbedKeyboard({
     super.key,
-    this.layoutProviders = const [
-      LayoutProvider(layoutBuilder: EnglishLayout.create),
-    ],
+    this.layoutBuilders = const [EnglishLayout.create],
     this.assumeControlNotifier,
-  }) : assert(layoutProviders.isNotEmpty);
+  }) : assert(layoutBuilders.isNotEmpty);
 
-  final List<LayoutProvider> layoutProviders;
+  final List<LayoutBuilder> layoutBuilders;
   final ValueNotifier<bool>? assumeControlNotifier;
 
   @override
@@ -57,7 +46,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   bool _handleShowLayout = !Util.isDesktop;
   ValueNotifier<bool>? _internalAssumeControlNotifier;
   int _index = 0;
-  // todo update from layout, setEditableState not called
   TextEditingValue _editingState = const TextEditingValue();
   Matrix4 _editableTransform = Matrix4.identity();
   Size _editableSize = Size.zero;
@@ -74,7 +62,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   void initState() {
     super.initState();
     debugPrint('embed_keyboard -> initState');
-    const LayoutProvider(layoutBuilder: EnglishLayout.create);
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
     HardwareKeyboard.instance.addHandler(onKeyEvent);
     _assumeControlNotifier.addListener(_assumeControlChange);
@@ -285,7 +272,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   Widget build(BuildContext context) {
     return TextFieldTapRegion(
-      child: widget.layoutProviders[_index].layoutBuilder(this),
+      child: widget.layoutBuilders[_index].call(this),
     );
   }
 
@@ -298,7 +285,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _refreshLayoutSwitcher();
     setState(() {
       ++_index;
-      if (_index >= widget.layoutProviders.length) _index = 0;
+      if (_index >= widget.layoutBuilders.length) _index = 0;
     });
   }
 

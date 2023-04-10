@@ -16,7 +16,13 @@ import 'package:menk_embed_ime/keyboard/char_convertor.dart';
 import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
 
 class MenkLayout extends EmbedKeyboardLayout {
-  const MenkLayout.create(super.embedKeyboardState) : super(key: null);
+  const MenkLayout(
+    super.embedTextInput, {
+    super.converter,
+    super.key,
+  });
+
+  const MenkLayout.create(super.embedTextInput) : super(key: null);
 
   @override
   State<MenkLayout> createState() => _MenkLayoutState();
@@ -37,7 +43,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
     super.initState();
     _candidate = MongolCandidate(
       context: context,
-      layoutTextConverter: MenkLayoutTextConverter(),
+      layoutTextConverter: widget.converter ?? MenkLayoutTextConverter(),
       directInsert: (insertText) => super.insert(insertText),
       softLayoutTop: () {
         final renderObject = context.findRenderObject();
