@@ -1,10 +1,10 @@
 import 'package:embed_ime/keyboard/embed_keyboard.dart';
 import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
 import 'package:mongol/mongol.dart';
-import 'package:zcode_embed_ime/zcode_input_text_convertor.dart';
 import 'package:zcode_embed_ime/zcode_layout.dart';
+
+import '../layout_convertor/db_zcode_layout_convertor.dart';
 
 class ZcodeImeDemo extends StatefulWidget {
   const ZcodeImeDemo({super.key});
@@ -61,7 +61,7 @@ class _ZcodeImeDemoState extends State<ZcodeImeDemo> {
             ),
             EmbedKeyboard(
               layoutBuilders: [
-                (i) => ZcodeLayout(i, converter: ZcodeLayoutTextConverter()),
+                (i) => ZcodeLayout(i, converter: DBZcodeLayoutConvertor()),
                 EnglishLayout.create
               ],
             ),

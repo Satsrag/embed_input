@@ -12,6 +12,8 @@ dependencies:
   mongol: ^4.0.0
   sqlite3: ^1.11.0
   sqlite3_flutter_libs: ^0.5.13
+  path_provider: ^2.0.14
+  path: ^1.8.2
   embed_ime:
     path: ../embed_ime
   menk_embed_ime:
@@ -24,6 +26,8 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
 flutter:
+  assets:
+    - db/z52words03.db
   uses-material-design: true
   fonts:
     - family: MenkQagan

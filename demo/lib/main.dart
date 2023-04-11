@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:mongol/mongol.dart';
 
 import 'demos/zcode_ime_demo.dart';
+import '../db/db_web.dart' if (dart.library.io) '../db/db_other.dart';
 
 void main() {
   runApp(const DemoApp());
+  db.init();
 }
 
 class DemoApp extends StatelessWidget {
