@@ -1,29 +1,32 @@
-import 'dart:io';
-
 import 'package:demo/db/db_helper.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqlite3/wasm.dart';
 
-/// web can't use sqlite3, so we just return empty list
 class DBWeb extends DBHelper {
   CommonDatabase? _db;
+  static const dbLength = 22908928;
 
   @override
   void init() async {
     final fs = await IndexedDbFileSystem.open(dbName: 'indexedDB');
+    // do not ignore slash, use absolute path
     const wordDbName = "/z52words03.db";
     final exists = fs.exists(wordDbName);
-    if (!exists) {
+    final int size;
+    if (exists) {
+      size = fs.sizeOfFile(wordDbName);
+    } else {
+      size = 0;
+    }
+    if (!exists || size != dbLength) {
       final data = await rootBundle.load("db$wordDbName");
       final bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-      debugPrint("not exists -> ${bytes.length}");
-      fs.createFile(wordDbName);
+      if (!exists) {
+        fs.createFile(wordDbName);
+      }
       fs.write(wordDbName, bytes, 0);
       await fs.flush();
-    } else {
-      debugPrint("exists");
     }
 
     final sqlite = await WasmSqlite3.loadFromUrl(Uri.parse('sqlite3.wasm'),
