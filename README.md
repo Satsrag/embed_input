@@ -14,6 +14,10 @@ Now, this library support Zcode, Menkcode, English layout.
 
 * Fix bugs (has more bugs right now)
 
+    * Pressed enter insert latin when candidate is showing
+
+    * switch layout with keyboard
+
 * README.md of usage
 
 * Add document
