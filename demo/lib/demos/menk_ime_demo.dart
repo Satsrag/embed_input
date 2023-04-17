@@ -14,8 +14,13 @@ class MenkImeDemo extends StatefulWidget {
 class _MenkImeDemoState extends State<MenkImeDemo> {
   @override
   Widget build(BuildContext context) {
+    final Brightness brightnessValue =
+        MediaQuery.of(context).platformBrightness;
+    bool isDark = brightnessValue == Brightness.dark;
+    final brightness = isDark ? Brightness.dark : Brightness.light;
+    final theme = ThemeData(fontFamily: 'MenkQagan', brightness: brightness);
     return Theme(
-      data: ThemeData(fontFamily: 'MenkQagan'),
+      data: theme,
       child: Scaffold(
         appBar: AppBar(title: const Text("Embed Ime Demo")),
         body: Column(

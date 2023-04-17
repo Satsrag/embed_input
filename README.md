@@ -8,6 +8,8 @@ However, the users don't know which standard is used by the app and don't know h
 So, we need to choose one standard, implement the input method to it and embed it into the app. This is what this library is for.
 Now, this library support Zcode, Menkcode, English layout.
 
+![](desktop_screenshot.gif)
+
 ## todo
 
 * Add Database

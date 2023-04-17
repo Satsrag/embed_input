@@ -140,12 +140,15 @@ class _ZcodeLayoutState extends BaseEmbedTextInputControlState<ZcodeLayout> {
       _candidate?.dismiss();
       return true;
     }
+    if (event.isDown && event.isEnter) {
+      insert('\n');
+      return true;
+    }
     if (event.isUp && _stopEditingState) {
       _stopEditingState = false;
       widget.embedTextInput.updateEditingValue(editingValue);
       return true;
     }
-    debugPrint('menk_layout: return false');
     return false;
   }
 

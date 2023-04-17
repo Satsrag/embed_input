@@ -53,6 +53,16 @@ class MongolCandidate {
   bool get isVisible => _candidateBox != null;
 
   String? convertInsert(String text) {
+    if (text == '\n') {
+      final layoutText = layoutTextConverter.layoutText;
+      if (layoutText.isNotEmpty) {
+        layoutTextConverter.confirmWord(layoutText);
+        _showOrRefresh();
+        return layoutText;
+      } else {
+        return text;
+      }
+    }
     final insertText = _selectWordFromSuggestionsIfNeeded(text);
     if (insertText != text) {
       layoutTextConverter.confirmWord('$insertText ');

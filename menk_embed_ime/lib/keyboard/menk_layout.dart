@@ -118,12 +118,17 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
       _candidate?.dismiss();
       return true;
     }
+    debugPrint('menk_layout: event: $event');
+    if (event.isDown && event.isEnter) {
+      debugPrint('menk_layout: enter pressed');
+      insert('\n');
+      return true;
+    }
     if (event.isUp && _stopEditingState) {
       _stopEditingState = false;
       widget.embedTextInput.updateEditingValue(editingValue);
       return true;
     }
-    debugPrint('menk_layout: return false');
     return false;
   }
 
