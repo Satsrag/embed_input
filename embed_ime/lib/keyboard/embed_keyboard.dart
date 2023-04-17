@@ -7,6 +7,7 @@
  * found in the LICENSE file.
  */
 
+import 'package:embed_ime/keyboard/key_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
@@ -191,39 +192,40 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
         left: switcherLeft,
         top: switcherTop,
         child: TextFieldTapRegion(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: onSurface.withOpacity(0.1)),
-              color: colorScheme.surface,
-            ),
-            width: switcherWidth,
-            height: switcherHeight,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    _softLayoutShowing = true;
-                    _inputControl?.showSoftLayout();
-                    _handleShowLayout = true;
-                    _hideLayoutShower();
-                  },
-                  child: const Icon(Icons.keyboard_outlined, size: 20),
-                ),
-                const Divider(height: 0),
-                GestureDetector(
-                  onTap: () {
-                    setState(switchLayout);
-                  },
-                  child: RotatedBox(
-                    quarterTurns: 1,
-                    child: Text(
-                      _inputControl?.layoutName ?? '',
-                      style: textStyle,
+          child: Theme(
+            data: Theme.of(this.context),
+            child: Card(
+              child: SizedBox(
+                width: switcherWidth,
+                height: switcherHeight,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        _softLayoutShowing = true;
+                        _inputControl?.showSoftLayout();
+                        _handleShowLayout = true;
+                        _hideLayoutShower();
+                      },
+                      child: const Icon(Icons.keyboard_outlined, size: 20),
                     ),
-                  ),
-                )
-              ],
+                    const Divider(height: 0),
+                    InkWell(
+                      onTap: () {
+                        setState(switchLayout);
+                      },
+                      child: RotatedBox(
+                        quarterTurns: 1,
+                        child: Text(
+                          _inputControl?.layoutName ?? '',
+                          style: textStyle,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ));
@@ -265,6 +267,12 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     }
     _handleShowLayout = false;
     _showLayoutShower();
+
+    if (event.isDoubleClickShift) {
+      switchLayout();
+      return true;
+    }
+
     final handled = _inputControl?.onKeyEvent(event) ?? false;
     return handled;
   }

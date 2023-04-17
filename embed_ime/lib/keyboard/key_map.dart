@@ -95,6 +95,24 @@ extension KeyEventExtension on KeyEvent {
   bool get isBackspace => physicalKey == PhysicalKeyboardKey.backspace;
   bool get isEnter => physicalKey == PhysicalKeyboardKey.enter;
   bool get isEscape => physicalKey == PhysicalKeyboardKey.escape;
+  bool get isShift =>
+      physicalKey == PhysicalKeyboardKey.shiftLeft ||
+      physicalKey == PhysicalKeyboardKey.shiftRight;
+
+  static PhysicalKeyboardKey? lastPressedShiftKey;
+  bool get isDoubleClickShift {
+    if (isDown) {
+      if (isShift) {
+        if (lastPressedShiftKey == physicalKey) {
+          lastPressedShiftKey = null;
+          return true;
+        } else {
+          lastPressedShiftKey = physicalKey;
+        }
+      }
+    }
+    return false;
+  }
 }
 
 /// The printable ascii keys.
