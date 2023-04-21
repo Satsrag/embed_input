@@ -5,49 +5,66 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
 import 'dart:math';
 
-import 'package:embed_ime/candidate/mongol_candidate.dart';
 import 'package:embed_ime/embed_ime.dart';
-import 'package:embed_ime/keyboard/key_map.dart';
-import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:menk_embed_ime/keyboard/char_convertor.dart';
-import 'package:menk_embed_ime/keyboard/menk_input_text_convertor.dart';
 
-class MenkLayout extends EmbedKeyboardLayout {
-  const MenkLayout(
-    super.embedTextInput, {
-    super.converter,
-    super.key,
-  });
+import 'english_layout.dart';
 
-  const MenkLayout.create(super.embedTextInput) : super(key: null);
+/// It is used to build a Mongol layout. It is not flexible enough. It has UI and
+/// logic like the [EnglishLayout] and you can not change its UI and logic. To
+/// build a more flexible Mongol layout, you can use the [BaseEmbedTextInputControlState].
+abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
+    extends BaseEmbedTextInputControlState<Layout> {
+  /// It is used to convert the layout text (English/Latin text) to the Mongol text.
+  abstract final LayoutConverter layoutConverter;
 
-  @override
-  State<MenkLayout> createState() => _MenkLayoutState();
-}
+  /// Used for the first page of the soft keyboard punctuation keys. Length must
+  /// be 25. The first 10 characters are used for the first row. The next 10
+  /// characters are used for the second row. The last 5 characters are used for
+  /// the third row.
+  abstract final String softPunctuation;
 
-class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
+  /// Used for the second page of the soft keyboard punctuation keys. On the
+  /// punctuation page, press the shift key to switch to the second page. Length
+  /// must be 25. The first 10 characters are used for the first row. The next 10
+  /// characters are used for the second row. The last 5 characters are used for
+  /// the third row.
+  abstract final String softPunctuationShift;
+
+  /// On the soft keyboard, some Mongol keys display vertical letters. So we need
+  /// to set these letters in this variable.
+  abstract final String verticalLetters;
+
+  /// On the soft keyboard, the key that switches the Mongol and punctuation page
+  /// uses the Mongol a and e letters.
+  abstract final String mongolEA;
+
+  /// At the fourth row of the soft keyboard, uses the Mongol comma and full-stop.
+  abstract final String mongolCommaFullstop;
+
+  /// On the hard keyboard, input the Mongol punctuation using the English/Latin
+  /// punctuation keys. So this variable is the English/Latin punctuations map to
+  /// the Mongol punctuations.
+  abstract final Map<String, String> hardPunctuations;
+
   MongolCandidate? _candidate;
   bool _stopEditingState = false;
   var _type = EnglishLayoutType.letter;
   var _capslock = false;
   var _qwerty = 'qwertyuiopasdfghjklzxcvbnm';
-  final _punctuation1 = '1234567890()@¥•.,';
-  final _punctuation2 = '{}#%^*+=/~•.,';
-  final _verticalLetters = '(){}~\n';
 
   @override
   void initState() {
     super.initState();
     _candidate = MongolCandidate(
       context: context,
-      layoutTextConverter: widget.converter ?? MenkLayoutTextConverter(),
+      layoutTextConverter: layoutConverter,
       directInsert: (insertText) => super.insert(insertText),
       softLayoutTop: () {
         final renderObject = context.findRenderObject();
-        debugPrint('softLayoutTop: $renderObject');
         final box = renderObject as RenderBox;
         if (box.hasSize) {
           return box.localToGlobal(Offset.zero).dy;
@@ -57,9 +74,6 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
       },
     );
   }
-
-  @override
-  String get layoutName => 'Menk';
 
   @override
   void detach() {
@@ -101,7 +115,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
         event.isDown && printableAsciiKey != null && isBackspacePressed;
     if (interceptForPrintableAscii || backspaceBug) {
       _stopEditingState = true;
-      final menkPunctuation = punctuations[printableAsciiKey.character];
+      final menkPunctuation = hardPunctuations[printableAsciiKey.character];
       if (menkPunctuation != null) {
         insert(menkPunctuation);
       } else {
@@ -118,9 +132,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
       _candidate?.dismiss();
       return true;
     }
-    debugPrint('menk_layout: event: $event');
     if (event.isDown && event.isEnter) {
-      debugPrint('menk_layout: enter pressed');
       insert('\n');
       return true;
     }
@@ -133,8 +145,8 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
   }
 
   @override
-  void insert(String text) {
-    final willInsertText = _candidate?.convertInsert(text);
+  void insert(String insert) {
+    final willInsertText = _candidate?.convertInsert(insert);
     if (willInsertText != null) {
       super.insert(willInsertText);
     }
@@ -263,8 +275,9 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
 
   Widget _buildPunctuationLayout(
       double letterKeyWidth, double letterHeight, bool light) {
-    final punctuation =
-        _type == EnglishLayoutType.punctuation1 ? _punctuation1 : _punctuation2;
+    final punctuation = _type == EnglishLayoutType.punctuation1
+        ? softPunctuation
+        : softPunctuationShift;
     return Column(children: [
       const SizedBox(height: 5),
       Row(
@@ -314,13 +327,11 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
           ),
           for (int i = 20; i < 25; i++)
             SizedBox(
-              /// reference [punctuation.jpg]
               width: letterKeyWidth * 4 / 3 + 5 / 3,
               height: letterHeight,
               child: _buildLetterKey(punctuation[i], light),
             ),
           SizedBox(
-            /// reference [punctuation.jpg]
             width: (letterKeyWidth + 2) * 5 / 3,
             height: letterHeight,
             child: _buildIconKey(Icons.backspace_outlined, light, () {
@@ -365,7 +376,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
               insert(isUppercase ? lowercase : uppercase);
             }
           : null,
-      child: _verticalLetters.contains(letter)
+      child: verticalLetters.contains(letter)
           ? RotatedBox(
               quarterTurns: 1,
               child: Text(
@@ -412,7 +423,7 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
           width: letterKeyWidth * 5 / 4 + 1.25,
           height: letterHeight,
           child: _buildLetterKey(
-            _type == EnglishLayoutType.letter ? '123' : '\n',
+            _type == EnglishLayoutType.letter ? '123' : mongolEA,
             light,
             fontSize: 16,
             backgroundColor: _iconKeyBackgroundColor(false, light),
@@ -441,16 +452,16 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
           width: letterKeyWidth,
           height: letterHeight,
           child: _buildLetterKey(
-            '',
+            mongolCommaFullstop[0],
             light,
-            onPressed: () => insert(''),
+            onPressed: () => insert('${mongolCommaFullstop[0]} '),
           ),
         ),
         SizedBox(
           width: 3 * letterKeyWidth + 10,
           height: letterHeight,
           child: _buildLetterKey(
-            'Menk',
+            layoutName,
             light,
             fontSize: 16,
             onPressed: () => insert(' '),
@@ -460,9 +471,9 @@ class _MenkLayoutState extends BaseEmbedTextInputControlState<MenkLayout> {
           width: letterKeyWidth,
           height: letterHeight,
           child: _buildLetterKey(
-            '',
+            mongolCommaFullstop[1],
             light,
-            onPressed: () => insert(''),
+            onPressed: () => insert('${mongolCommaFullstop[1]} '),
           ),
         ),
         SizedBox(

@@ -1,6 +1,5 @@
 /*
  * Copyright 2014 The Flutter Authors.
- * Copyright 2020 Suragch.
  * Copyright 2023 Satsrag.
  * All rights reserved.
  * Use of this source code is governed by a BSD-style license that can be
@@ -9,9 +8,9 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'embed_keyboard_layout.dart';
+import 'embed_layout.dart';
 
-class EnglishLayout extends EmbedKeyboardLayout {
+class EnglishLayout extends EmbedLayout {
   const EnglishLayout.create(super.embedKeyboardState)
       : super(
           key: null,

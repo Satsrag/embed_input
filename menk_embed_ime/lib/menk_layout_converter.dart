@@ -5,25 +5,30 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-import 'package:embed_ime/keyboard/layout_text_converter.dart';
-import 'package:zcode_embed_ime/zcode_logic.dart';
 
-class ZcodeLayoutTextConverter with LayoutTextConverter {
-  final zcode = ZCode();
+import 'package:embed_ime/embed_ime.dart';
 
+import 'char_convertor.dart';
+
+class MenkLayoutConverter with LayoutConverter {
   @override
   void appendLayoutText(String text) {
     super.appendLayoutText(text);
     suggestionWords.clear();
-    if (layoutText.isEmpty) return;
-    suggestionWords.addAll(zcode.excuteEx(layoutText));
+    suggestionWords.addAll(suggestion(layoutText));
   }
 
   @override
   void backspaceLayoutText(bool clear) {
     super.backspaceLayoutText(clear);
     suggestionWords.clear();
-    if (layoutText.isEmpty) return;
-    suggestionWords.addAll(zcode.excuteEx(layoutText));
+    suggestionWords.addAll(suggestion(layoutText));
+  }
+
+  @override
+  void confirmWord(String word) {
+    final nextWords = nextSuggestion(layoutText, word);
+    super.confirmWord(word);
+    suggestionWords.addAll(nextWords);
   }
 }

@@ -1,6 +1,5 @@
 /*
  * Copyright 2014 The Flutter Authors.
- * Copyright 2020 Suragch.
  * Copyright 2023 Satsrag.
  * All rights reserved.
  * Use of this source code is governed by a BSD-style license that can be
@@ -12,15 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
-import '../layout/embed_keyboard_layout.dart';
+import '../layout/embed_layout.dart';
 import '../layout/english_layout.dart';
 import '../util/util.dart';
 import 'embed_text_input.dart';
 
 typedef ConfirmedTextCallback = Function(String confirmedText);
 
-typedef LayoutBuilder = EmbedKeyboardLayout Function(
-    EmbedTextInput embedTextInput);
+typedef LayoutBuilder = EmbedLayout Function(EmbedTextInput embedTextInput);
 
 class EmbedKeyboard extends StatefulWidget {
   EmbedKeyboard({

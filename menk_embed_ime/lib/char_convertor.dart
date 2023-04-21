@@ -1,3 +1,12 @@
+/*
+ * Copyright 2014 The Flutter Authors.
+ * Copyright 2020 Suragch.
+ * Copyright 2023 Satsrag.
+ * All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
 import 'dart:collection';
 import 'package:mongol_code/mongol_code.dart';
 
@@ -17,23 +26,6 @@ final Map<String, String> memoryWords = {
   'ier': '',
   'ien': '',
   'iyen': '',
-};
-
-final Map<String, String> punctuations = {
-  ',': '',
-  '.': '',
-  '!': '',
-  '^': '',
-  '*': '',
-  '(': '',
-  ')': '',
-  '<': '',
-  '>': '',
-  '[': '',
-  ']': '',
-  ':': '',
-  '"': '  ',
-  '?': '',
 };
 
 List<String> suggestion(String latin) {

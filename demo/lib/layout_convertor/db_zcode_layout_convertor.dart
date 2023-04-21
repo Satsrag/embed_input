@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:zcode_embed_ime/zcode_input_text_convertor.dart';
+import 'package:zcode_embed_ime/zcode_layout_converter.dart';
 import '../db/db_web.dart' if (dart.library.io) '../db/db_other.dart';
 
 class DBZcodeLayoutConvertor extends ZcodeLayoutTextConverter {

@@ -1,7 +1,7 @@
 import 'package:embed_ime/keyboard/embed_keyboard.dart';
 import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:menk_embed_ime/keyboard/menk_layout.dart';
+import 'package:menk_embed_ime/menk_layout.dart';
 import 'package:mongol/mongol.dart';
 
 class MenkImeDemo extends StatefulWidget {

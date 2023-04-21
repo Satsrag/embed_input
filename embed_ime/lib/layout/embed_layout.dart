@@ -8,15 +8,15 @@
 
 import 'dart:math';
 
-import 'package:embed_ime/keyboard/embed_text_input.dart';
-import 'package:embed_ime/keyboard/layout_text_converter.dart';
+import '../keyboard/embed_text_input.dart';
+import '../layout/layout_converter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-abstract class EmbedKeyboardLayout extends StatefulWidget {
-  const EmbedKeyboardLayout(
+abstract class EmbedLayout extends StatefulWidget {
+  const EmbedLayout(
     this.embedTextInput, {
     this.converter,
     super.key,
@@ -24,10 +24,10 @@ abstract class EmbedKeyboardLayout extends StatefulWidget {
 
   final EmbedTextInput embedTextInput;
 
-  final LayoutTextConverter? converter;
+  final LayoutConverter? converter;
 }
 
-abstract class BaseEmbedTextInputControlState<T extends EmbedKeyboardLayout>
+abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
     extends State<T> with EmbedTextInputControl {
   TextEditingValue editingValue = TextEditingValue.empty;
   Point<double> caretRightBottomOffset = const Point(0, 0);
