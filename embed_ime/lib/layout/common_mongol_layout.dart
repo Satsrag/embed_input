@@ -11,8 +11,6 @@ import 'dart:math';
 import 'package:embed_ime/embed_ime.dart';
 import 'package:flutter/material.dart';
 
-import 'english_layout.dart';
-
 /// It is used to build a Mongol layout. It is not flexible enough. It has UI and
 /// logic like the [EnglishLayout] and you can not change its UI and logic. To
 /// build a more flexible Mongol layout, you can use the [BaseEmbedTextInputControlState].

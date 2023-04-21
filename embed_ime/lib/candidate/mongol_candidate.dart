@@ -10,13 +10,22 @@ import 'dart:math';
 
 import 'package:embed_ime/util/util.dart';
 import 'package:flutter/material.dart';
-
+import '../layout/embed_layout.dart';
+import '../layout/common_mongol_layout.dart';
 import '../layout/layout_converter.dart';
 
-/// A class that shows the candidate words with calling [_showOrRefresh] method
-/// and dismisses the candidate words with calling [dismiss] method.
+/// The `MongolCandidate` is an overlay that shows the candidate words. It is
+/// used by the implementation of the [BaseEmbedTextInputControlState] to show
+/// the candidate words. See [CommonMongolLayoutState] for more details.
 ///
-/// It has two cotnent styles: [_buildHardContent] and [_buildSoftContent].
+/// When the user taps a key of the soft/hard keyboard, call the [convertInsert]
+/// or [backspace] to refresh the candidate words or confirm the word to insert.
+/// Such as: pressing the English Letter key will call [convertInsert] to refresh
+/// the candidate words, pressing the backspace key will call [backspace] to
+/// delete the last character, and pressing the number key will call [convertInsert]
+/// select one word from the candidate words.
+///
+/// It has two content styles: [_buildHardContent] and [_buildSoftContent].
 class MongolCandidate {
   MongolCandidate({
     required this.context,
@@ -28,9 +37,9 @@ class MongolCandidate {
   final BuildContext context;
   final LayoutConverter layoutTextConverter;
 
-  /// The callback to insert the text directly. It is called when the user is
-  /// tap the candidate word. so the [insertText] is confirmed word and needs to
-  /// insert directly without any conversion.
+  /// The callback is to insert the text directly. It is called when the user
+  /// taps the candidate word. so the [insertText] is a confirmed word and needs
+  /// to insert directly without any conversion.
   final void Function(String insertText) directInsert;
 
   /// The top point of the soft keyboard in the global coordinate system.
@@ -39,12 +48,12 @@ class MongolCandidate {
   /// The right bottom point of the caret.
   Point<double> caretRightBottomPoint = const Point(0, 0);
 
-  /// caret may be vertical or horizontal, this is the long size of the caret.
+  /// caret may be vertical or horizontal, this is the long side of the caret.
   double caretLongSize = 0;
 
-  /// Tell the candidate if the user is typing using soft keyboard or hard keyboard.
-  /// true: soft keyboard, show the [_buildSoftContent], false: hard keyboard,
-  /// show the [_buildHardContent].
+  /// Tell the `MongolCandidate` whether the user is typing the soft keyboard or
+  /// hard keyboard. true: soft keyboard, show the [_buildSoftContent],
+  /// false: hard keyboard, show the [_buildHardContent].
   bool typingSoftKeyboard = false;
 
   OverlayEntry? _candidateBox;
