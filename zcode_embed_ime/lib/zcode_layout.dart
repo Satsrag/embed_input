@@ -39,11 +39,11 @@ class ZcodeLayoutState extends CommonMongolLayoutState<ZcodeLayout> {
   @override
   String get layoutName => 'Zcode';
   @override
-  String get softPunctuation => '1234567890ᡢᡐᡑᡕᡖ᠁@¥ᡡ•.,ᡓᡒ᠄';
+  String get softPunctuation => '1234567890-ᡐᡑᡕᡖ᠁@¥ᡡ•.,ᡓᡒ᠄';
   @override
   String get softPunctuationShift => 'ᡝᡞ{}ᡋ%^*+=ᡣ/~ᡛᡜᡗᡘᡙᡚ•.,ᡓᡒ᠄';
   @override
-  String get verticalLetters => 'ᡢᡐᡑᡕᡖ᠁ᡓᡒ᠄ᡝᡞ{}ᡣ~ᡛᡜᡗᡘᡙᡚ᠂᠃ᡥᡨ\nᡥᡧ';
+  String get verticalLetters => 'ᡐᡑᡕᡖ᠁ᡓᡒ᠄ᡝᡞ{}ᡣ~ᡛᡜᡗᡘᡙᡚ᠂᠃ᡥᡨ\nᡥᡧ';
   @override
   String mongolEA = 'ᡥᡨ\nᡥᡧ';
   @override

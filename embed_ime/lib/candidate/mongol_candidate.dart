@@ -102,7 +102,10 @@ class MongolCandidate {
     } else {
       final insertText = _selectWordFromSuggestionsIfNeeded(' ');
       if (' ' == insertText) {
-        return text;
+        if (' ' == text) {
+          return text;
+        }
+        return '$text ';
       } else {
         layoutTextConverter.confirmWord(insertText);
         _showOrRefresh();

@@ -40,13 +40,13 @@ class MenkLayoutState extends CommonMongolLayoutState<MenkLayout> {
   String mongolEA = '\n';
 
   @override
-  String softPunctuation = '1234567890()@¥•.,';
+  String softPunctuation = '1234567890-()@¥•.,';
 
   @override
   String softPunctuationShift = '{}#%^*+=/~•.,';
 
   @override
-  String verticalLetters = '(){}~\n';
+  String verticalLetters = '(){}~\n';
 
   @override
   Map<String, String> hardPunctuations = {

@@ -113,9 +113,9 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
         event.isDown && printableAsciiKey != null && isBackspacePressed;
     if (interceptForPrintableAscii || backspaceBug) {
       _stopEditingState = true;
-      final menkPunctuation = hardPunctuations[printableAsciiKey.character];
-      if (menkPunctuation != null) {
-        insert(menkPunctuation);
+      final punctuation = hardPunctuations[printableAsciiKey.character];
+      if (punctuation != null) {
+        insert(punctuation);
       } else {
         insert(printableAsciiKey.character);
       }
@@ -449,11 +449,7 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
         SizedBox(
           width: letterKeyWidth,
           height: letterHeight,
-          child: _buildLetterKey(
-            mongolCommaFullstop[0],
-            light,
-            onPressed: () => insert('${mongolCommaFullstop[0]} '),
-          ),
+          child: _buildLetterKey(mongolCommaFullstop[0], light),
         ),
         SizedBox(
           width: 3 * letterKeyWidth + 10,
@@ -468,11 +464,7 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
         SizedBox(
           width: letterKeyWidth,
           height: letterHeight,
-          child: _buildLetterKey(
-            mongolCommaFullstop[1],
-            light,
-            onPressed: () => insert('${mongolCommaFullstop[1]} '),
-          ),
+          child: _buildLetterKey(mongolCommaFullstop[1], light),
         ),
         SizedBox(
           width: 2.5 * letterKeyWidth + 7.5,
