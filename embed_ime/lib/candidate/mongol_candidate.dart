@@ -133,8 +133,12 @@ class MongolCandidate {
     if (numberIndex < 0) {
       return index;
     }
-    if (layoutTextConverter.suggestionWords.length > numberIndex) {
-      return '${layoutTextConverter.suggestionWords[numberIndex]} ';
+    numberIndex = _currentPage * 10 + numberIndex;
+    final suggestionWords = layoutTextConverter.suggestionWords;
+    if (suggestionWords.length > numberIndex) {
+      final confirmWord = suggestionWords[numberIndex];
+      _currentPage = 0;
+      return '$confirmWord ';
     }
     return index;
   }
