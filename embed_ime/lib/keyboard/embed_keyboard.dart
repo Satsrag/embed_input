@@ -165,8 +165,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
 
   Widget _buildKeyboardSwitcherContent(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final onSurface = colorScheme.onSurface;
     final textTheme = theme.textTheme;
     final textStyle = textTheme.bodySmall?.copyWith(height: 1);
     final layoutNameSize =

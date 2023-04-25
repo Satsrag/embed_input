@@ -1,39 +1,187 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+Zcode 52 standard Mongolian embed IME.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+---
+
+* Embed into the Flutter app, support all platform.
+
+* On mobile, use a soft keyboard by default.
+
+* On mobile, the soft keyboard auto show or hide when one MongolTextField or TextField gets or loses focus.
+
+* On the Desktop, use a hard keyboard by default.
+
+* support database
+
+* support [`MongolTextField`](https://pub.dev/packages/mongol) and `TextField`.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+---
 
-## Usage
+#### 1. Add needed library
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  mongol: ^4.0.0
+  zcode_embed_ime: ^0.0.1
 ```
 
-## Additional information
+Although the [mongol](https://pub.dev/packages/mongol) library is optional, I recommend adding it. It contains `MongolTextField` that can input vertical Mongol text. I use `MongolTextField` to write this guide.
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Run `Flutter pub get`.
+
+#### 2. Add Zcode 52 Mongolian Font
+
+* Get a [Zcode font](https://install.zcodetech.com/)
+
+* Add the font to your project
+
+   > Basically you just need to create an fonts folder for it and then declare the font in pubspec.yaml like this:
+
+   ```yaml
+    flutter:
+    fonts:
+        - family: ZcodeQagan
+        fonts:
+            - asset: fonts/z52tsagaantig.ttf
+   ```
+
+* Set the default Mongolian font for your app
+   
+   In your `main.dart` file, set the `fontFamily` for the app theme.
+
+   ```dart
+   MaterialApp(
+      theme: ThemeData(fontFamily: 'ZcodeQagan'),
+      // ...
+   );
+   ```
+
+#### 3. Use zcode_embed_ime
+
+* Import library
+
+   ```dart
+   import 'package:zcode_embed_ime/zcode_embed_ime.dart';
+   ```
+
+* Add `EmbedKeyboard`
+
+   ```dart
+   @override
+   Widget build() {
+     return Scaffold(
+       body: Column(children: [
+         const Expanded(child: MongolTextField()),
+         EmbedKeyboard(
+           layoutBuilders: const [
+             ZcodeLayout.create,
+             EnglishLayout.create,
+           ],
+         ),
+       ]),
+     );
+   }
+   ```
+
+## Database Supporting
+
+---
+
+The thesaurus database did not combine into this library.
+
+In the [demo](https://github.com/Satsrag/embed_input/tree/main/demo), used the [sqlite3](https://pub.dev/packages/sqlite3) to load the thesaurus database. Other developers may be using another library of `SQLite`. Such as [sqflite](https://pub.dev/packages/sqflite), and so on. 
+
+These libraries, especially `sqlite3` and `sqflite`, maybe conflict with each other when used in the same project. So we need to import it ourselves.
+
+### 1. Get the [zcode thesaurus](https://github.com/Satsrag/embed_input/blob/main/demo/db/z52words03.db)
+
+### 2. Add thesaurus to project
+
+Basically you just need to create an db folder for it and then declare the font in pubspec.yaml like this:
+
+```yaml
+flutter:
+  assets:
+    - db/z52words03.db
+```
+
+Run `flutter pub get`
+
+### 3. Add Sqlite libray and query suggestion words
+
+After adding the Sqlite Library, you will write the SQL to query suggestion words:
+
+```sql
+select word from [table] where latin like ['latin%'] order by wlen limit 15'
+```
+
+Arguments:
+   
+   * table: input latin's first letter, `latin.substring(0, 1)`
+
+   * 'latin%': input latin add %
+
+### 4. Expands the `ZcodeLayoutTextConverter`
+
+Then extends the `ZcodeLayoutTextConverter` and overrides the `appendLayoutText` and `backspaceLayoutText` methods. 
+
+```dart
+class DBZcodeLayoutConvertor extends ZcodeLayoutTextConverter {
+  @override
+  void appendLayoutText(String text) {
+    super.appendLayoutText(text);
+    _updateSuggestion();
+  }
+
+  @override
+  void backspaceLayoutText(bool clear) {
+    super.backspaceLayoutText(clear);
+    _updateSuggestion();
+  }
+
+  void _updateSuggestion() {
+    if (layoutText.isEmpty) return;
+    LinkedHashSet<String> suggestions = LinkedHashSet.from(suggestionWords);
+    var latin = layoutText.replaceAll('c', 'C');
+    latin = layoutText.replaceAll('q', 'c');
+    suggestions.addAll(db.dbSuggestion(latin));
+    suggestionWords.clear();
+    suggestionWords.addAll(suggestions);
+  }
+}
+```
+
+`db.dbSuggestion(latin)` is query suggestion words using `sqlite3`. For more detail please see the [demo](https://github.com/Satsrag/embed_input/tree/main/demo).
+If you using another sqlite library, the general steps are similar to this.
+
+### 5. Add `DBZcodeLayoutConvertor` to the `EmbedKeyboard`
+
+```dart
+Widget build() {
+   return Scaffold(
+      body: Column(children: [
+         const Expanded(child: MongolTextField()),
+         EmbedKeyboard(
+            layoutBuilders: [
+               (i) => ZcodeLayout(i, converter: DBZcodeLayoutConvertor()),
+               EnglishLayout.create
+            ],
+         ),
+      ]),
+   );
+}
+```
+
+## Statement
+
+---
+
+The Zcode thesaurus, inputting logic, and font are copied from [Zmongol's](https://github.com/zmongol) [zmongol2021](https://github.com/zmongol/zmongol2021) library.
+The copyright belongs to Zmongol.
+
+The Inputting logic has a tiny problem. Some words cannot be typed without the thesaurus database. I will try to fix this. If someone finds cannot input some words or has any other problem with this library, please feel free to open an issue or PR.

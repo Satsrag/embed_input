@@ -1,8 +1,6 @@
-import 'package:embed_ime/keyboard/embed_keyboard.dart';
-import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:mongol/mongol.dart';
-import 'package:zcode_embed_ime/zcode_layout.dart';
+import 'package:zcode_embed_ime/zcode_embed_ime.dart';
 
 import '../layout_convertor/db_zcode_layout_convertor.dart';
 

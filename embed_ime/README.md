@@ -1,39 +1,23 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# embed_ime
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+This library is the basic component of the Mongolian embed IME.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Support all platforms: Android, Ios, Windows, Macos, Linux and web.
 
-## Features
+Now, this library has two implementations [zcode_embed_ime](https://github.com/Satsrag/embed_input/tree/main/zcode_embed_ime) and [menk_embed_ime](https://github.com/Satsrag/embed_input/tree/main/menk_embed_ime)
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+We can use this library to implement own any standard Mongolian embed IME. Just provide inputting logic and keyboard layout UI by implementing the `LayoutConverter` and `CommonMongolLayoutState` or `BaseEmbedTextInputControlState`.
 
-## Getting started
+## Background
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+The Mongolian Script has multiple standards: Zcode, MenkCode, UNICODE MONGOLIAN 10.0, UNICODE MONGOLIAN 12.1 SNAPSHOT, GB/T 25914-2010, and so on.
 
-## Usage
+And this is also impossible that one app to support all these standards. 
+The common way for the developers of the Mongolian app is to choose one standard to support.
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+This is impossible that one user to install all IME on his/her device. 
+And this is also impossible that one app to support all these standards. 
 
-```dart
-const like = 'sample';
-```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+So, we need to choose one standard, implement the input method to it and embed it into the app. This is what this library is for. 
