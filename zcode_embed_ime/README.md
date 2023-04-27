@@ -4,8 +4,6 @@ Zcode 52 standard Mongolian embed IME.
 
 ## Features
 
----
-
 * Embed into the Flutter app, support all platform.
 
 * On mobile, use a soft keyboard by default.
@@ -20,21 +18,21 @@ Zcode 52 standard Mongolian embed IME.
 
 ## Getting started
 
----
+> Although the [mongol](https://pub.dev/packages/mongol) library is optional, I recommend adding it. It contains `MongolTextField`, `MongolText`, and other vertical Mongol components. For convenience, in this guide, I did not import the `mongol` libray.
+If you want to use the `mongol` library, import the  the `mongol` library following the [official guide](https://pub.dev/packages/mongol) and replace `TextField` used in this guide with `MongolTextField`.
 
 #### 1. Add needed library
 
 ```yaml
 dependencies:
-  mongol: ^4.0.0
   zcode_embed_ime: ^0.0.1
 ```
 
-Although the [mongol](https://pub.dev/packages/mongol) library is optional, I recommend adding it. It contains `MongolTextField` that can input vertical Mongol text. I use `MongolTextField` to write this guide.
-
 Run `Flutter pub get`.
 
-#### 2. Add Zcode 52 Mongolian Font
+#### 2. Add Zcode 52 Mongol Font
+
+> If you using the `mongol` library, skip this step. However, please ensure that you are using a `Zcode 52 font` in your project.
 
 * Get a [Zcode font](https://install.zcodetech.com/)
 
@@ -50,7 +48,7 @@ Run `Flutter pub get`.
             - asset: fonts/z52tsagaantig.ttf
    ```
 
-* Set the default Mongolian font for your app
+* Set the default Mongol font for your app
    
    In your `main.dart` file, set the `fontFamily` for the app theme.
 
@@ -60,6 +58,8 @@ Run `Flutter pub get`.
       // ...
    );
    ```
+
+   Now you won't have to manually set the font for every text widget. If you want to use a different font for some widgets, though, you can still set the fontFamily as you normally would inside TextStyle.
 
 #### 3. Use zcode_embed_ime
 
@@ -76,7 +76,7 @@ Run `Flutter pub get`.
    Widget build() {
      return Scaffold(
        body: Column(children: [
-         const Expanded(child: MongolTextField()),
+         const Expanded(child: TextField()),
          EmbedKeyboard(
            layoutBuilders: const [
              ZcodeLayout.create,
@@ -87,16 +87,19 @@ Run `Flutter pub get`.
      );
    }
    ```
+After completing this step, the library is imported at the lowest cost. You run you project and see what's going on. 
+
+However, after this step, there is no supporting the thesaurus database. Some words cannot be typed without supporting the thesaurus database. In the next version, I will fix this issue so that it can type all the words without relying on the thesaurus database. Thesaurus database should only be auxiliary.
 
 ## Database Supporting
-
----
 
 The thesaurus database did not combine into this library.
 
 In the [demo](https://github.com/Satsrag/embed_input/tree/main/demo), used the [sqlite3](https://pub.dev/packages/sqlite3) to load the thesaurus database. Other developers may be using another library of `SQLite`. Such as [sqflite](https://pub.dev/packages/sqflite), and so on. 
 
 These libraries, especially `sqlite3` and `sqflite`, maybe conflict with each other when used in the same project. So we need to import it ourselves.
+
+This guide omits the importing SQLite library. You can reference the [demo](https://github.com/Satsrag/embed_input/tree/main/demo) or [official guide](https://pub.dev/packages/sqlite3) if you want to use the `sqlite3` library. Please go to the official guide if you using another library like `sqflite`.
 
 ### 1. Get the [zcode thesaurus](https://github.com/Satsrag/embed_input/blob/main/demo/db/z52words03.db)
 
@@ -124,9 +127,9 @@ Arguments:
    
    * table: input latin's first letter, `latin.substring(0, 1)`
 
-   * 'latin%': input latin add %
+   * 'latin%': inputed latin
 
-### 4. Expands the `ZcodeLayoutTextConverter`
+### 4. Expends the `ZcodeLayoutTextConverter`
 
 Then extends the `ZcodeLayoutTextConverter` and overrides the `appendLayoutText` and `backspaceLayoutText` methods. 
 
@@ -156,8 +159,7 @@ class DBZcodeLayoutConvertor extends ZcodeLayoutTextConverter {
 }
 ```
 
-`db.dbSuggestion(latin)` is query suggestion words using `sqlite3`. For more detail please see the [demo](https://github.com/Satsrag/embed_input/tree/main/demo).
-If you using another sqlite library, the general steps are similar to this.
+`db.dbSuggestion(latin)` is query suggestion words using a `SQLite` libray. 
 
 ### 5. Add `DBZcodeLayoutConvertor` to the `EmbedKeyboard`
 
@@ -165,7 +167,7 @@ If you using another sqlite library, the general steps are similar to this.
 Widget build() {
    return Scaffold(
       body: Column(children: [
-         const Expanded(child: MongolTextField()),
+         const Expanded(child: TextField()),
          EmbedKeyboard(
             layoutBuilders: [
                (i) => ZcodeLayout(i, converter: DBZcodeLayoutConvertor()),
@@ -179,9 +181,7 @@ Widget build() {
 
 ## Statement
 
----
-
 The Zcode thesaurus, inputting logic, and font are copied from [Zmongol's](https://github.com/zmongol) [zmongol2021](https://github.com/zmongol/zmongol2021) library.
 The copyright belongs to Zmongol.
 
-The Inputting logic has a tiny problem. Some words cannot be typed without the thesaurus database. I will try to fix this. If someone finds cannot input some words or has any other problem with this library, please feel free to open an issue or PR.
+The Inputting logic has a tiny problem. Some words cannot be typed without using the thesaurus database. I will try to fix this. If someone finds cannot input some words or has any other problem with this library, please feel free to open an issue or PR.

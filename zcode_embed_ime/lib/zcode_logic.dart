@@ -78,10 +78,10 @@ var kArr = ["ᢤ", "", "", "ᢤ", "ᢥ", "", "ᢤ", "ᢥ", "", "ᢣ", "", ""];
 var qArr = ["ᢚ", "", "", "ᢚ", "", "", "ᢚ", "", "", "ᢚᡦ", "", ""];
 var zArr = ["ᢧ", "", "", "ᢧ", "", "", "ᢧ", "", "", "ᢧᡦ", "", ""];
 var vArr = ["ᡥᡭ", "ᡥᡭ", "", "ᡥᡭ", "", "", "ᡭ", "ᡪᡭ", "", "ᡳ", "ᡭ", ""];
-var AArr = ["ᡥᡧ", "", "", "ᡪᡪ", "", "", "ᡪᡪ", "", "", "ᡧ", "", ""];
-var EArr = ["ᢟ", "", "", "ᢟ", "", "", "ᢟ", "", "", "ᢟᡦ", "", ""];
-var IArr = ["ᡫ", "", "", "ᡥᡬ", "", "", "ᡬ", "ᡬᡬ", "ᡪᡬ", "ᡫ", "ᡬᡦ", ""];
-var OArr = [
+var upperAArr = ["ᡥᡧ", "", "", "ᡪᡪ", "", "", "ᡪᡪ", "", "", "ᡧ", "", ""];
+var upperEArr = ["ᢟ", "", "", "ᢟ", "", "", "ᢟ", "", "", "ᢟᡦ", "", ""];
+var upperIArr = ["ᡫ", "", "", "ᡥᡬ", "", "", "ᡬ", "ᡬᡬ", "ᡪᡬ", "ᡫ", "ᡬᡦ", ""];
+var upperOArr = [
   "ᡥᡭ",
   "ᡥᡭ",
   "",
@@ -95,7 +95,7 @@ var OArr = [
   "ᡭ",
   ""
 ]; //2021.3.13
-var UArr = [
+var upperUArr = [
   "ᡥᡭᡦ",
   "",
   "",
@@ -109,41 +109,67 @@ var UArr = [
   "",
   ""
 ]; //2021.3.9
-var NArr = ["ᡯ", "", "", "ᡯ", "", "", "ᡱ", "ᡪ", "", "ᡧ", "ᡰ", ""]; //2021.3.9
-var BArr = ["ᡳ", "", "", "ᡳ", "ᡴ", "", "ᡳ", "ᡴ", "", "ᡲ", "", ""];
-var PArr = ["ᡶ", "", "", "ᡶ", "ᡷ", "", "ᡶ", "ᡷ", "", "ᡵ", "", ""];
-var HArr = ["ᡸ", "", "", "ᡸ", "ᢊ", "ᢋ", "ᡪᡪ", "ᢊ", "ᢋ", "ᢇ", "ᢇ", ""];
-var GArr = ["ᢈ", "", "ᡪᡪ", "ᢈ", "ᢊ", "ᢋ", "ᡱᡱ", "ᢊ", "ᢋ", "ᢇ", "ᢉ", "ᡬᡨ"];
-var MArr = ["ᢌ", "", "", "ᢌ", "", "", "ᢎ", "", "", "ᢍ", "", ""];
-var LArr = ["ᢏᢨ", "", "", "ᢏᢨ", "", "", "ᢑᢨ", "", "", "ᢑᢨᡦ", "", ""];
-var SArr = ["ᢔ", "", "", "ᢔ", "", "", "ᢔ", "", "", "ᢓ", "", ""];
-var XArr = ["ᢗ", "", "", "ᢗ", "", "", "ᢗ", "", "", "ᢖ", "", ""];
-var TArr = ["ᢙ", "", "", "ᢙ", "", "", "ᢙ", "ᢘ", "", "ᢙᡦ", "", ""]; //2021.3.9
-var DArr = ["ᢘ", "", "", "ᢙ", "", "", "ᢘ", "", "", "ᢘᡦ", "", ""];
-var CArr = ["ᢦ", "", "", "ᢦ", "", "", "ᢦ", "", "", "ᢦᡦ", "", ""];
-var JArr = ["ᡬ", "", "", "ᡬ", "", "", "ᢛ", "", "", "ᢛᡦ", "", ""];
-var YArr = ["ᢜ", "", "", "ᢜ", "", "", "ᢜ", "", "", "ᡫ", "", ""];
-var RArr = ["ᢞ", "", "", "ᢞ", "", "", "ᢞ", "", "", "ᢝ", "", ""];
-var WArr = ["ᢟ", "", "", "ᢟ", "", "", "ᢟ", "", "", "ᢟᡦ", "", ""];
-var FArr = ["ᢡ", "", "", "ᢡ", "ᢢ", "", "ᢡ", "ᢢ", "", "ᢠ", "", ""];
-var KArr = ["ᢤ", "", "", "ᢤ", "ᢥ", "", "ᢤ", "ᢥ", "", "ᢣ", "", ""];
-var QArr = ["ᢦ", "", "", "ᢦ", "", "", "", "", "", "ᢦᡦ", "", ""];
-var ZArr = ["ᢨ", "", "", "ᢨ", "", "", "ᢨ", "", "", "ᢨᡦ", "", ""];
-var VArr = ["ᡭ", "ᡭ", "", "ᡭ", "", "", "ᡭ", "ᡪᡭ", "", "ᡳ", "ᡭ", ""];
+var upperNArr = [
+  "ᡯ",
+  "",
+  "",
+  "ᡯ",
+  "",
+  "",
+  "ᡱ",
+  "ᡪ",
+  "",
+  "ᡧ",
+  "ᡰ",
+  ""
+]; //2021.3.9
+var upperBArr = ["ᡳ", "", "", "ᡳ", "ᡴ", "", "ᡳ", "ᡴ", "", "ᡲ", "", ""];
+var upperPArr = ["ᡶ", "", "", "ᡶ", "ᡷ", "", "ᡶ", "ᡷ", "", "ᡵ", "", ""];
+var upperHArr = ["ᡸ", "", "", "ᡸ", "ᢊ", "ᢋ", "ᡪᡪ", "ᢊ", "ᢋ", "ᢇ", "ᢇ", ""];
+var upperGArr = ["ᢈ", "", "ᡪᡪ", "ᢈ", "ᢊ", "ᢋ", "ᡱᡱ", "ᢊ", "ᢋ", "ᢇ", "ᢉ", "ᡬᡨ"];
+var upperMArr = ["ᢌ", "", "", "ᢌ", "", "", "ᢎ", "", "", "ᢍ", "", ""];
+var upperLArr = ["ᢏᢨ", "", "", "ᢏᢨ", "", "", "ᢑᢨ", "", "", "ᢑᢨᡦ", "", ""];
+var upperSArr = ["ᢔ", "", "", "ᢔ", "", "", "ᢔ", "", "", "ᢓ", "", ""];
+var upperXArr = ["ᢗ", "", "", "ᢗ", "", "", "ᢗ", "", "", "ᢖ", "", ""];
+var upperTArr = [
+  "ᢙ",
+  "",
+  "",
+  "ᢙ",
+  "",
+  "",
+  "ᢙ",
+  "ᢘ",
+  "",
+  "ᢙᡦ",
+  "",
+  ""
+]; //2021.3.9
+var upperDArr = ["ᢘ", "", "", "ᢙ", "", "", "ᢘ", "", "", "ᢘᡦ", "", ""];
+var upperCArr = ["ᢦ", "", "", "ᢦ", "", "", "ᢦ", "", "", "ᢦᡦ", "", ""];
+var upperJArr = ["ᡬ", "", "", "ᡬ", "", "", "ᢛ", "", "", "ᢛᡦ", "", ""];
+var upperYArr = ["ᢜ", "", "", "ᢜ", "", "", "ᢜ", "", "", "ᡫ", "", ""];
+var upperRArr = ["ᢞ", "", "", "ᢞ", "", "", "ᢞ", "", "", "ᢝ", "", ""];
+var upperWArr = ["ᢟ", "", "", "ᢟ", "", "", "ᢟ", "", "", "ᢟᡦ", "", ""];
+var upperFArr = ["ᢡ", "", "", "ᢡ", "ᢢ", "", "ᢡ", "ᢢ", "", "ᢠ", "", ""];
+var upperKArr = ["ᢤ", "", "", "ᢤ", "ᢥ", "", "ᢤ", "ᢥ", "", "ᢣ", "", ""];
+var upperQArr = ["ᢦ", "", "", "ᢦ", "", "", "", "", "", "ᢦᡦ", "", ""];
+var upperZArr = ["ᢨ", "", "", "ᢨ", "", "", "ᢨ", "", "", "ᢨᡦ", "", ""];
+var upperVArr = ["ᡭ", "ᡭ", "", "ᡭ", "", "", "ᡭ", "ᡪᡭ", "", "ᡳ", "ᡭ", ""];
 
 class ZCode {
   var qArray = [];
   var vArray = [];
-  var teinIlgal = new Map();
-  var databases = new Map();
-  var wordMap = new Map();
+  var teinIlgal = {};
+  var databases = {};
+  var wordMap = {};
 
-  var m_tein1 = [];
-  var m_tein2 = [];
-  var m_tein3 = [];
-  var m_tein4 = [];
-  var m_tein5 = [];
-  var m_tein6 = [];
+  var mtein1 = [];
+  var mtein2 = [];
+  var mtein3 = [];
+  var mtein4 = [];
+  var mtein5 = [];
+  var mtein6 = [];
 
   ZCode() {
     qArray.add("ᡳᡪᢝ");
@@ -245,23 +271,23 @@ class ZCode {
     wordMap["z"] = zArr;
     wordMap["v"] = vArr;
 
-    wordMap["A"] = AArr;
+    wordMap["A"] = upperAArr;
     wordMap["E"] = eArr;
     wordMap["I"] = iArr;
-    wordMap["O"] = OArr; //2021.3.13
-    wordMap["U"] = UArr;
+    wordMap["O"] = upperOArr; //2021.3.13
+    wordMap["U"] = upperUArr;
     wordMap["N"] = nArr;
     wordMap["B"] = bArr;
     wordMap["P"] = pArr;
     wordMap["H"] = hArr;
     wordMap["G"] = gArr;
     wordMap["M"] = mArr;
-    wordMap["L"] = LArr;
+    wordMap["L"] = upperLArr;
     wordMap["S"] = sArr;
     wordMap["X"] = xArr;
-    wordMap["T"] = TArr;
-    wordMap["D"] = DArr;
-    wordMap["C"] = CArr;
+    wordMap["T"] = upperTArr;
+    wordMap["D"] = upperDArr;
+    wordMap["C"] = upperCArr;
     wordMap["J"] = jArr;
     wordMap["Y"] = yArr;
     wordMap["R"] = rArr;
@@ -269,66 +295,62 @@ class ZCode {
     wordMap["F"] = fArr;
     wordMap["K"] = kArr;
     wordMap["Q"] = qArr;
-    wordMap["Z"] = ZArr;
+    wordMap["Z"] = upperZArr;
     wordMap["V"] = vArr;
 
-    m_tein1.add(dagbr['yin']);
-    m_tein1.add(dagbr['yi']);
-    m_tein1.add(dagbr['bar']);
-    m_tein1.add(dagbr['ban']);
-    m_tein1.add(dagbr['do']);
-    m_tein1.add(dagbr['dor']);
-    m_tein1.add(dagbr['aca']);
-    m_tein1.add(dagbr['tai']);
-    m_tein1.add(dagbr['dagan']);
-    m_tein1.add(dagbr['loga']);
+    mtein1.add(dagbr['yin']);
+    mtein1.add(dagbr['yi']);
+    mtein1.add(dagbr['bar']);
+    mtein1.add(dagbr['ban']);
+    mtein1.add(dagbr['do']);
+    mtein1.add(dagbr['dor']);
+    mtein1.add(dagbr['aca']);
+    mtein1.add(dagbr['tai']);
+    mtein1.add(dagbr['dagan']);
+    mtein1.add(dagbr['loga']);
 
-    m_tein2.add(dagbr['yin']);
-    m_tein2.add(dagbr['yi']);
-    m_tein2.add(dagbr['bar']);
-    m_tein2.add(dagbr['iyan']);
-    m_tein2.add(dagbr['do']);
-    m_tein2.add(dagbr['dor']);
-    m_tein2.add(dagbr['aca']);
-    m_tein2.add(dagbr['tai']);
-    m_tein2.add(dagbr['dagan']);
-    m_tein2.add(dagbr['luge']);
+    mtein2.add(dagbr['yin']);
+    mtein2.add(dagbr['yi']);
+    mtein2.add(dagbr['bar']);
+    mtein2.add(dagbr['iyan']);
+    mtein2.add(dagbr['do']);
+    mtein2.add(dagbr['dor']);
+    mtein2.add(dagbr['aca']);
+    mtein2.add(dagbr['tai']);
+    mtein2.add(dagbr['dagan']);
+    mtein2.add(dagbr['luge']);
 
-    m_tein3.add(dagbr['on']);
-    m_tein3.add(dagbr['i']);
-    m_tein3.add(dagbr['iyar']);
-    m_tein3.add(dagbr['aca']);
-    m_tein3.add(dagbr['tai']);
+    mtein3.add(dagbr['on']);
+    mtein3.add(dagbr['i']);
+    mtein3.add(dagbr['iyar']);
+    mtein3.add(dagbr['aca']);
+    mtein3.add(dagbr['tai']);
 
-    m_tein4.add(dagbr['o']);
-    m_tein4.add(dagbr['do']);
-    m_tein4.add(dagbr['dor']);
-    m_tein4.add(dagbr['aca']);
-    m_tein4.add(dagbr['tai']);
+    mtein4.add(dagbr['o']);
+    mtein4.add(dagbr['do']);
+    mtein4.add(dagbr['dor']);
+    mtein4.add(dagbr['aca']);
+    mtein4.add(dagbr['tai']);
 
-    m_tein5.add(dagbr['on']);
-    m_tein5.add(dagbr['i']);
-    m_tein5.add(dagbr['iyar']);
-    m_tein5.add(dagbr['do']);
-    m_tein5.add(dagbr['dor']);
-    m_tein5.add(dagbr['aca']);
-    m_tein5.add(dagbr['tai']);
+    mtein5.add(dagbr['on']);
+    mtein5.add(dagbr['i']);
+    mtein5.add(dagbr['iyar']);
+    mtein5.add(dagbr['do']);
+    mtein5.add(dagbr['dor']);
+    mtein5.add(dagbr['aca']);
+    mtein5.add(dagbr['tai']);
 
-    m_tein6.add(dagbr['o']);
-    m_tein6.add(dagbr['i']);
-    m_tein6.add(dagbr['iyar']);
-    m_tein6.add(dagbr['to']);
-    m_tein6.add(dagbr['tor']);
-    m_tein6.add(dagbr['aca']);
-    m_tein6.add(dagbr['tai']);
+    mtein6.add(dagbr['o']);
+    mtein6.add(dagbr['i']);
+    mtein6.add(dagbr['iyar']);
+    mtein6.add(dagbr['to']);
+    mtein6.add(dagbr['tor']);
+    mtein6.add(dagbr['aca']);
+    mtein6.add(dagbr['tai']);
   }
 
-  void PrintHello() {
-    print("Hello ZCode");
-  }
-
-  Map FirstAndLast(String latin) {
-    var ret = new Map();
+  Map firstAndLast(String latin) {
+    var ret = {};
     String firstStr = latin.substring(0, 1);
     String secondStr = latin.substring(1, 2);
     String lastStr = latin.substring(latin.length - 1, latin.length);
@@ -366,7 +388,7 @@ class ZCode {
       //solving last letter;
       if (wordMap.containsKey(lastStr)) {
         String pTemp = wordMap[lastStr][9];
-        if (pTemp.length > 0) {
+        if (pTemp.isNotEmpty) {
           //resultLast = pTemp;
           resultLast.add(pTemp);
         }
@@ -378,7 +400,7 @@ class ZCode {
         if (y == "a") {
           //resultLast = wordMap[y][10];
 
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][10]);
@@ -389,7 +411,7 @@ class ZCode {
         String y = lastStr;
         if (y == "e") {
           //resultLast = wordMap[y][9];
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][9]);
@@ -405,7 +427,7 @@ class ZCode {
         String y = lastStr;
         if (y == "i") {
           //resultLast = wordMap[y][10];
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][10]);
@@ -416,7 +438,7 @@ class ZCode {
         String y = lastStr;
         if (y == "o" || y == "v") {
           //resultLast = wordMap[y][10];
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][10]);
@@ -432,7 +454,7 @@ class ZCode {
         String y = lastStr;
         if (y == "u") {
           //resultLast = wordMap[y][10];
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][10]);
@@ -443,22 +465,20 @@ class ZCode {
         String y = lastStr;
         if (y == "g") {
           if (x == "i") {
-            String temp;
             for (int j = 1; j < latin.length - 2; j++) {
               String z =
                   latin.substring(latin.length - 2 - j, latin.length - 1 - j);
               if (z == "a" || z == "o" || z == "v") {
                 //resultLast = wordMap[y][9];
-                temp = wordMap[y][9];
               }
             }
-            if (resultLast.length > 0) {
+            if (resultLast.isNotEmpty) {
               resultLast.clear();
             }
             resultLast.add(wordMap[y][9]);
           } else {
             //resultLast = wordMap[y][11];
-            if (resultLast.length > 0) {
+            if (resultLast.isNotEmpty) {
               resultLast.clear();
             }
             resultLast.add(wordMap[y][11]);
@@ -471,7 +491,7 @@ class ZCode {
         String y = lastStr;
         if (y == "g") {
           //resultLast = wordMap[y][11];
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][11]);
@@ -482,7 +502,7 @@ class ZCode {
         String y = lastStr;
         if (y == "a" || y == "e") {
           //resultLast = wordMap[y][11];
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][11]);
@@ -493,7 +513,7 @@ class ZCode {
         String y = lastStr;
         if (y == "e") {
           //resultLast = wordMap[y][10];
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][10]);
@@ -504,7 +524,7 @@ class ZCode {
         String y = lastStr;
         if (y == "a") {
           //resultLast = wordMap[y][11];
-          if (resultLast.length > 0) {
+          if (resultLast.isNotEmpty) {
             resultLast.clear();
           }
           resultLast.add(wordMap[y][11]);
@@ -516,7 +536,7 @@ class ZCode {
         if (y == "a") {
           if (2 == latin.length) {
             //resultLast = wordMap[y][9];
-            if (resultLast.length > 0) {
+            if (resultLast.isNotEmpty) {
               resultLast.clear();
             }
             resultLast.add(wordMap[y][9]);
@@ -531,7 +551,7 @@ class ZCode {
     return ret;
   }
 
-  String Middle(String str) {
+  String middle(String str) {
     String resultMid = "";
     String m = "";
     for (int i = 1; i < str.length - 1; i++) {
@@ -679,7 +699,7 @@ class ZCode {
     return resultMid;
   }
 
-  int GetTeinClass(String latin) {
+  int getTeinClass(String latin) {
     int iRet = 0;
 
     String word = latin;
@@ -742,27 +762,27 @@ class ZCode {
     return iRet;
   }
 
-  List ExeutePhrase(String preWordLatin) {
+  List exeutePhrase(String preWordLatin) {
     var ret = [];
-    int iTeinClass = GetTeinClass(preWordLatin);
+    int iTeinClass = getTeinClass(preWordLatin);
     switch (iTeinClass) {
       case 1:
-        ret = m_tein1;
+        ret = mtein1;
         break;
       case 2:
-        ret = m_tein2;
+        ret = mtein2;
         break;
       case 3:
-        ret = m_tein3;
+        ret = mtein3;
         break;
       case 4:
-        ret = m_tein4;
+        ret = mtein4;
         break;
       case 5:
-        ret = m_tein5;
+        ret = mtein5;
         break;
       case 6:
-        ret = m_tein6;
+        ret = mtein6;
         break;
       default:
         break;
@@ -771,7 +791,7 @@ class ZCode {
     return ret;
   }
 
-  List<String> GetEndsClass(String word) {
+  List<String> getEndsClass(String word) {
     List<String> newWords = [];
     //0:Unknown   1:ne 2:me 3:le 4:ye 5:re 6:wa  7:o-3,u-3
     int iRet = 0;
@@ -828,7 +848,7 @@ class ZCode {
     return newWords;
   }
 
-  List Excute(String latin) {
+  List excute(String latin) {
     var result = [];
     int wordLength = latin.length;
     String resultFirst = "";
@@ -837,17 +857,17 @@ class ZCode {
     if (wordLength == 1 && wordMap.containsKey(latin)) {
       resultFirst = wordMap[latin][0];
     } else if (wordLength == 2) {
-      var firstlast = FirstAndLast(latin);
+      var firstlast = firstAndLast(latin);
       resultFirst = firstlast['first'];
       resultLast = firstlast['last'];
     } else {
-      var firstlast = FirstAndLast(latin);
+      var firstlast = firstAndLast(latin);
       resultFirst = firstlast['first'];
       resultLast = firstlast['last'];
-      resultMid = Middle(latin);
+      resultMid = middle(latin);
     }
 
-    if (resultLast.length > 0) {
+    if (resultLast.isNotEmpty) {
       for (int i = 0; i < resultLast.length; i++) {
         result.add(resultFirst + resultMid + resultLast[i]);
       }
@@ -861,13 +881,13 @@ class ZCode {
   //2021.3.9
   List<String> excuteEx(String latin) {
     List<String> result = [];
-    var resWords = Excute(latin);
+    var resWords = excute(latin);
     for (int i = 0; i < resWords.length; i++) {
       if (resWords[i].length > 0) {
         result.add(resWords[i]);
 
         //ne me le ye re wa
-        var newWord = GetEndsClass(resWords[i]);
+        var newWord = getEndsClass(resWords[i]);
         if (newWord.isNotEmpty) {
           result.addAll(newWord);
         }

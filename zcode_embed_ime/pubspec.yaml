@@ -1,7 +1,7 @@
 name: zcode_embed_ime
-description: A new Flutter package project.
+description: Zcode 52 standard Mongol embed IME. Soft/Hard layout and Suggestion words.
 version: 0.0.1
-homepage:
+homepage: https://github.com/Satsrag/embed_input
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
@@ -10,8 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  embed_ime:
-    path: ../embed_ime
+  embed_ime: ^0.0.1
 
 dev_dependencies:
   flutter_test:
