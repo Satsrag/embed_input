@@ -11,15 +11,15 @@ class DemoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Zcode Embed IME Demo',
-      theme: ThemeData(fontFamily: 'ZcodeQagan'),
+      title: 'Menk Embed IME Demo',
+      theme: ThemeData(fontFamily: 'MenkQagan'),
       home: Scaffold(
-        appBar: AppBar(title: const Text('Zcode Embed IME Demo')),
+        appBar: AppBar(title: const Text('Menk Embed IME Demo')),
         body: Column(children: [
           const Expanded(child: TextField()),
           EmbedKeyboard(
             layoutBuilders: const [
-              ZcodeLayout.create,
+              MenkLayout.create,
               EnglishLayout.create,
             ],
           ),

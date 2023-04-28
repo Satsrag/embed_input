@@ -1,4 +1,4 @@
-Zcode 52 standard Mongolian embed IME.
+Zcode 52 standard Mongolian Embed IME.
 
 ![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)
 

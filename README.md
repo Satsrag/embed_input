@@ -1,30 +1,23 @@
-# Embed Input method
-
-The Mongolian Script has multiple standards: Zcode, MenkCode, UNICODE MONGOLIAN 10.0, UNICODE MONGOLIAN 12.1 SNAPSHOT, GB/T 25914-2010, and so on.
-Each standard has its own fonts and IME. This is impossible that one user to install all IME on his/her device. 
-
-And this is also impossible that one app to support all these standards. 
-The common way for the developers of the Mongolian app is to choose one standard to support.
-However, the users don't know which standard is used by the app and don't know how to install the IME. They don't care about it.
-So, we need to choose one standard, implement the input method to it and embed it into the app. This is what this library is for.
-Now, this library support Zcode, Menkcode, English layout.
+# Mongolian Embed Input method (Mongolian IME)
 
 ![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)
 
+This project is the  Mongolian Input Method that embeds into the Flutter app.
+
+This project has three libraries published to `pub.dev` respectively.
+
+* [zcode_embed_ime](https://pub.dev/packages/zcode_embed_ime): typing the Zcode 52 standard Mongolian script.
+
+* [menk_embed_ime](https://pub.dev/packages/menk_embed_ime): typing Menksoft's old standard Mongolian script.
+
+* [embed_ime](https://pub.dev/packages/embed_ime): base necessary components used for the above two libraries. Using this library, we can implement other standard Mongolian scripts. Such as UNICODE MONGOLIAN 10.0, UNICODE MONGOLIAN 12.1 SNAPSHOT, GB/T 25914-2010, and so on.
+
+User guide or more detail about these library see: [zcode_embed_ime](https://github.com/Satsrag/embed_input/tree/main/zcode_embed_ime), [menk_embed_ime](https://github.com/Satsrag/embed_input/tree/main/menk_embed_ime) and [embed_ime](https://github.com/Satsrag/embed_input/tree/main/embed_ime).
+
 ## todo
 
-* Add Database
-
-* Fix bugs (has more bugs right now)
-
-    * Pressed enter insert latin when candidate is showing
-
-* README.md of usage
+* Fix bugs
 
 * Add document
-  
-* Possibility to add mongolian unicode layout
-
-* Release 0.0.1
 
 * Support input action
