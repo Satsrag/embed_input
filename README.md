@@ -2,6 +2,8 @@
 
 ![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)
 
+Web Demo [click here](https://satsrag.github.io)
+
 This project is the  Mongolian Input Method that embeds into the Flutter app.
 
 This project has three libraries published to `pub.dev` respectively.

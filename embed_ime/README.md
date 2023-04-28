@@ -2,6 +2,8 @@
 
 ![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)
 
+Web Demo [click here](https://satsrag.github.io)
+
 This library is the basic component of the Mongolian embed IME.
 
 Support all platforms: Android, Ios, Windows, Macos, Linux and web.

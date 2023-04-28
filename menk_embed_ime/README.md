@@ -2,6 +2,8 @@ Menksoft's old standard Mongolian Embed IME.
 
 ![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)
 
+Web Demo [click here](https://satsrag.github.io)
+
 ## Features
 
 * Embed into the Flutter app, support all platform.
