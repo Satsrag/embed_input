@@ -89,7 +89,7 @@ Run `Flutter pub get`.
      );
    }
    ```
-After completing this step, the library is imported at the lowest cost. You run you project and see what's going on. 
+After completing this step, the library is imported at the lowest cost. You run your project and see what's going on. 
 
 However, after this step, there is no supporting the thesaurus database. Some words cannot be typed without supporting the thesaurus database. In the next version, I will fix this issue so that it can type all the words without relying on the thesaurus database. Thesaurus database should only be auxiliary.
 

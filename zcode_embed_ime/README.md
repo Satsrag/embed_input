@@ -89,7 +89,7 @@ Run `Flutter pub get`.
      );
    }
    ```
-After completing this step, the library is imported at the lowest cost. You run you project and see what's going on. 
+After completing this step, the library is imported at the lowest cost. You run your project and see what's going on. 
 
 However, after this step, there is no supporting the thesaurus database. Some words cannot be typed without supporting the thesaurus database. In the next version, I will fix this issue so that it can type all the words without relying on the thesaurus database. Thesaurus database should only be auxiliary.
 
@@ -107,7 +107,7 @@ This guide omits the importing SQLite library. You can reference the [demo](http
 
 ### 2. Add thesaurus to project
 
-Basically you just need to create an db folder for it and then declare the font in pubspec.yaml like this:
+Basically you just need to create an db folder for it and then declare the `db` file in pubspec.yaml like this:
 
 ```yaml
 flutter:
@@ -122,7 +122,7 @@ Run `flutter pub get`
 After adding the Sqlite Library, you will write the SQL to query suggestion words:
 
 ```sql
-select word from [table] where latin like ['latin%'] order by wlen limit 15'
+select word from [table] where latin like ['latin%'] order by wlen limit 15
 ```
 
 Arguments:

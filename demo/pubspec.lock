@@ -50,11 +50,12 @@ packages:
     source: hosted
     version: "1.0.5"
   embed_ime:
-    dependency: "direct main"
+    dependency: transitive
     description:
-      path: "../embed_ime"
-      relative: true
-    source: path
+      name: embed_ime
+      sha256: "9dec237282711920ae04ba8139d42d3f0479f7d3c3dc27bd8201be51f4786267"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.1"
   fake_async:
     dependency: transitive
@@ -133,9 +134,10 @@ packages:
   menk_embed_ime:
     dependency: "direct main"
     description:
-      path: "../menk_embed_ime"
-      relative: true
-    source: path
+      name: menk_embed_ime
+      sha256: c22104fcbdea5c852e58d2e1834484904f6bbf2be0ba88791ea5add6fea3d34c
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.1"
   meta:
     dependency: transitive
@@ -337,9 +339,10 @@ packages:
   zcode_embed_ime:
     dependency: "direct main"
     description:
-      path: "../zcode_embed_ime"
-      relative: true
-    source: path
+      name: zcode_embed_ime
+      sha256: "97ffbae8391a163220b0ab617e86e782d681a7e524ab7aa2f40f168a49f9708e"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.1"
 sdks:
   dart: ">=2.19.6 <3.0.0"
