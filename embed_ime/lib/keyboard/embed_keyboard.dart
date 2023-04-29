@@ -129,7 +129,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       _inputControl?.showSoftLayout();
     }
     if (_hasHardKeyboard && !_softLayoutShowing) {
-      _showLayoutShower();
+      _showLayoutSwither();
     }
   }
 
@@ -144,7 +144,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _hideLayoutShower();
   }
 
-  void _showLayoutShower() {
+  void _showLayoutSwither() {
     if (_keyboardSwitcher != null) {
       _refreshLayoutSwitcher();
       return;
@@ -262,7 +262,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       _inputControl?.hideSoftLayout();
     }
     _handleShowLayout = false;
-    _showLayoutShower();
+    _showLayoutSwither();
 
     if (event.isDoubleClickShift) {
       switchLayout();

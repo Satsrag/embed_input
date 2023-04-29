@@ -99,15 +99,17 @@ extension KeyEventExtension on KeyEvent {
       physicalKey == PhysicalKeyboardKey.shiftLeft ||
       physicalKey == PhysicalKeyboardKey.shiftRight;
 
-  static PhysicalKeyboardKey? lastPressedShiftKey;
+  static int _lastPressedShiftTime = 0;
   bool get isDoubleClickShift {
     if (isDown) {
-      if (isShift) {
-        if (lastPressedShiftKey == physicalKey) {
-          lastPressedShiftKey = null;
+      final keySize = HardwareKeyboard.instance.physicalKeysPressed.length;
+      if (isShift && keySize == 1) {
+        final now = DateTime.now().millisecondsSinceEpoch;
+        final diff = now - _lastPressedShiftTime;
+        if (diff < 500) {
           return true;
         } else {
-          lastPressedShiftKey = physicalKey;
+          _lastPressedShiftTime = now;
         }
       }
     }
