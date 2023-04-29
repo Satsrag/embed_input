@@ -71,6 +71,7 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
         }
       },
     );
+    _candidate?.caretRightBottomPoint = caretRightBottomOffset;
   }
 
   @override
