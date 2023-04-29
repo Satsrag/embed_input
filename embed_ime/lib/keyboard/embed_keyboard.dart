@@ -61,8 +61,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   void initState() {
     super.initState();
     debugPrint('embed_keyboard -> initState');
-    HardwareKeyboard.instance.removeHandler(onKeyEvent);
-    HardwareKeyboard.instance.addHandler(onKeyEvent);
     _assumeControlNotifier.addListener(_assumeControlChange);
     _assumeControlNotifier.value = true;
   }
@@ -73,7 +71,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _assumeControlNotifier.value = false;
     _assumeControlNotifier.removeListener(_assumeControlChange);
     _internalAssumeControlNotifier?.dispose();
-    HardwareKeyboard.instance.removeHandler(onKeyEvent);
     _hideLayoutShower();
   }
 
@@ -109,12 +106,15 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void attach(TextInputClient client, TextInputConfiguration configuration) {
     super.attach(client, configuration);
+    HardwareKeyboard.instance.removeHandler(onKeyEvent);
+    HardwareKeyboard.instance.addHandler(onKeyEvent);
     debugPrint('embed_keyboard -> attach');
   }
 
   @override
   void detach(TextInputClient client) {
     super.detach(client);
+    HardwareKeyboard.instance.removeHandler(onKeyEvent);
     debugPrint('embed_keyboard -> detach');
   }
 
