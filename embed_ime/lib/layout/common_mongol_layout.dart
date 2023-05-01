@@ -124,6 +124,9 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
     }
     if (event.isBackspace && (event.isDown || event.isRepeat)) {
       final didHandle = _candidate?.backspace() ?? false;
+      if (didHandle) {
+        _stopEditingState = true;
+      }
       return didHandle;
     }
     final interceptEscape = event.isEscape && _candidate?.isVisible == true;
