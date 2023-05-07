@@ -58,10 +58,7 @@ class _ZcodeImeDemoState extends State<ZcodeImeDemo> {
               ),
             ),
             EmbedKeyboard(
-              layoutBuilders: [
-                (i) => ZcodeLayout(i, converter: DBZcodeLayoutConvertor()),
-                EnglishLayout.create
-              ],
+              layoutBuilders: [ZcodeLayout.create, EnglishLayout.create],
             ),
           ],
         ),

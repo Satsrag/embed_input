@@ -1,5 +1,5 @@
 name: embed_ime
-description: The basic component of the Mongolian embed IME.
+description: The basic component of the Mongolian embed IME. Soft/Hard layout and Suggestion words.
 version: 0.0.2
 homepage: https://github.com/Satsrag/embed_input
 

@@ -108,7 +108,8 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     super.attach(client, configuration);
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
     HardwareKeyboard.instance.addHandler(onKeyEvent);
-    debugPrint('embed_keyboard -> attach');
+    debugPrint(
+        'embed_keyboard -> attach: client: $client, config: ${configuration.toJson()}');
   }
 
   @override

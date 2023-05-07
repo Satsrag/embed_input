@@ -241,6 +241,7 @@ class ZCode {
     databases["dungsigor"] = "ᢙᡭᡬᡪᢊᢔᡬᡱᡱᡭᢝ";
     databases["agola"] = "ᡥᡪᡱᡱᡭᢑᡧ";
     databases["sig"] = "ᢔᡬᢇ";
+    databases["sih"] = "ᢔᡬᢇ";
     databases["tig"] = "ᢘᡬᢇ";
     databases["tere"] = "ᢘᡪᢞᡧ";
 
@@ -460,29 +461,15 @@ class ZCode {
           resultLast.add(wordMap[y][10]);
         }
       }
-      // solving g after i,e,u, U
+      // solving h g after i,e,u, U
       if (x == "i" || x == "e" || x == "u" || x == "U") {
         String y = lastStr;
-        if (y == "g") {
-          if (x == "i") {
-            for (int j = 1; j < latin.length - 2; j++) {
-              String z =
-                  latin.substring(latin.length - 2 - j, latin.length - 1 - j);
-              if (z == "a" || z == "o" || z == "v") {
-                //resultLast = wordMap[y][9];
-              }
-            }
-            if (resultLast.isNotEmpty) {
-              resultLast.clear();
-            }
-            resultLast.add(wordMap[y][9]);
-          } else {
-            //resultLast = wordMap[y][11];
-            if (resultLast.isNotEmpty) {
-              resultLast.clear();
-            }
-            resultLast.add(wordMap[y][11]);
+        if (y == "g" || y == "h") {
+          //resultLast = wordMap[y][11];
+          if (resultLast.isNotEmpty) {
+            resultLast.clear();
           }
+          resultLast.add(wordMap[y][11]);
         }
       }
 
@@ -797,14 +784,16 @@ class ZCode {
     int iRet = 0;
 
     if (word == oArr[0]) {
+      // ᡥᡭ
       //o
-      newWords.add(eArr[3] + uArr[9]);
-      newWords.add(oArr[9]);
-      newWords.add(oArr[6]);
+      newWords.add(eArr[3] + uArr[9]); // ᡥᡳ
+      newWords.add(oArr[9]); // ᡳ
+      newWords.add(oArr[6]); // ᡭ
     } else if (word == eArr[3] + uArr[11]) {
+      // ᡥᡭᡦ
       //u
-      newWords.add(eArr[3] + uArr[9]);
-      newWords.add(uArr[3]);
+      newWords.add(eArr[3] + uArr[9]); // ᡥᡳ
+      newWords.add(uArr[3]); // ᡥᡭᡬ
     } else if (word.length > 2) {
       //wchar_t cLast = word.c_str()[word.length - 1];
       //	wchar_t cPreLast = word.c_str()[word.length - 2];
@@ -892,6 +881,12 @@ class ZCode {
           result.addAll(newWord);
         }
       }
+    }
+    final database = databases[latin];
+    if (database != null) {
+      final trim = database.trim();
+      result.remove(trim);
+      result.insert(0, trim);
     }
     final teinYigal = dagbr[latin];
     if (teinYigal != null) {

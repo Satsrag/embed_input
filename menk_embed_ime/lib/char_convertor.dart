@@ -214,7 +214,7 @@ class Context {
         'O' == nextLetter;
   }
 
-  bool get canUserMvs {
+  bool get canUseMvs {
     return (latin.endsWith('a') || latin.endsWith('e')) &&
         index == latin.length - 2;
   }
@@ -371,7 +371,7 @@ final Map<String, Converter> converters = {
         return [Menksoft.INIT_NA_TOOTH];
       case Location.MEDIAL:
         return [
-          if (context.canUserMvs)
+          if (context.canUseMvs)
             Menksoft.MEDI_NA_FVS2
           else if (context.isConsonant(context.nextLetter) ||
               context.nextLetter == 'A' ||
@@ -480,7 +480,7 @@ final Map<String, Converter> converters = {
             Menksoft.MEDI_GA
           else if (context.isConsonant(context.nextLetter))
             Menksoft.MEDI_GA_FVS3_TOOTH
-          else if (context.isNextMale && context.canUserMvs)
+          else if (context.isNextMale && context.canUseMvs)
             Menksoft.MEDI_GA_FVS2
           else if (context.isNextMale)
             Menksoft.MEDI_GA_FVS1_TOOTH
@@ -513,7 +513,7 @@ final Map<String, Converter> converters = {
             Menksoft.MEDI_MA_BP
           else
             Menksoft.MEDI_MA_TOOTH,
-          if (context.canUserMvs) Menksoft.FINA_MA,
+          if (context.canUseMvs) Menksoft.FINA_MA,
         ];
       case Location.FINAL:
         return [Menksoft.FINA_MA];
@@ -527,7 +527,7 @@ final Map<String, Converter> converters = {
         return [Menksoft.INIT_LA_TOOTH];
       case Location.MEDIAL:
         return [
-          if (context.canUserMvs) Menksoft.FINA_LA,
+          if (context.canUseMvs) Menksoft.FINA_LA,
           if (context.isPreviousRound ||
               context.previousLetter == 'N' ||
               context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
@@ -627,7 +627,7 @@ final Map<String, Converter> converters = {
         return [Menksoft.INIT_YA];
       case Location.MEDIAL:
         return [
-          if (context.canUserMvs) Menksoft.MEDI_YA_FVS2,
+          if (context.canUseMvs) Menksoft.MEDI_YA_FVS2,
           Menksoft.MEDI_YA_FVS1,
         ];
       case Location.FINAL:
@@ -643,7 +643,7 @@ final Map<String, Converter> converters = {
       case Location.MEDIAL:
         return [
           Menksoft.MEDI_RA_TOOTH,
-          if (context.canUserMvs) Menksoft.FINA_RA,
+          if (context.canUseMvs) Menksoft.FINA_RA,
         ];
       case Location.FINAL:
         return [Menksoft.FINA_RA];
@@ -658,7 +658,7 @@ final Map<String, Converter> converters = {
       case Location.MEDIAL:
         return [
           Menksoft.MEDI_WA,
-          if (context.canUserMvs) Menksoft.FINA_WA_FVS1,
+          if (context.canUseMvs) Menksoft.FINA_WA_FVS1,
         ];
       case Location.FINAL:
         return [Menksoft.FINA_WA];
