@@ -52,6 +52,42 @@ final dagbr = {
   "ni": "ᡯᡫ "
 };
 
+String preLatinForText(String text) {
+  if (text.startsWith('ᡥᡧ') || text.startsWith('ᡥᡪ')) return 'a';
+  if (text.startsWith('ᡫ') || text.startsWith('ᡥᡬ')) return 'i';
+  if (text.startsWith('ᡬ')) return 'i';
+  if (text.startsWith('ᡥᡭᡦ') || text.startsWith('ᡥᡭᡬ')) return 'u';
+  if (text.startsWith('ᡥᡭ') || text.startsWith('ᡭ')) return 'ʊ';
+  if (text == 'ᡳ') return 'ʊ';
+  if (text.startsWith('ᡥᡨ') || text.startsWith('ᡥ')) return 'e';
+  if (text.startsWith('ᡯ')) return 'n';
+  if (text.startsWith('ᡳ') || text.startsWith('ᡴ')) return 'b';
+  if (text.startsWith('ᡲ')) return 'b';
+  if (text.startsWith('ᡶ') || text.startsWith('ᡷ')) return 'p';
+  if (text.startsWith('ᡵ')) return 'p';
+  // combine h g
+  if (text.startsWith('ᡸ') || text.startsWith('ᢈ')) return 'h';
+  if (text.startsWith('ᢊ') || text.startsWith('ᢋ')) return 'h';
+  if (text.startsWith('ᢌ')) return 'm';
+  if (text.startsWith('ᢏ')) return 'l';
+  if (text.startsWith('ᢔ')) return 's';
+  if (text.startsWith('ᢗ')) return 'x';
+  // todo combine t d
+  if (text.startsWith('ᢘ') || text.startsWith('ᢙ')) return 't';
+  if (text.startsWith('ᢚ')) return 'q';
+  if (text.startsWith('ᢛ')) return 'j';
+  if (text.startsWith('ᢜ')) return 'y';
+  if (text.startsWith('ᢝ') || text.startsWith('ᢪ')) return 'r';
+  if (text.startsWith('ᢟ')) return 'w';
+  if (text.startsWith('ᢡ') || text.startsWith('ᢢ')) return 'f';
+  if (text.startsWith('ᢠ')) return 'f';
+  if (text.startsWith("ᢤ") || text.startsWith("ᢥ")) return 'k';
+  if (text.startsWith('ᢣ')) return 'k';
+  if (text.startsWith('ᢦ')) return 'c';
+  if (text.startsWith('ᢦ') || text.startsWith('ᢨ')) return 'z';
+  return '';
+}
+
 var aArr = ["ᡥᡧ", "", "", "ᡥᡪ", "ᡪᡪ", "", "ᡪ", "ᡪᡪ", "", "ᡧ", "ᡪᡨ", "ᡨ"];
 var eArr = ["ᡥᡨ", "", "", "ᡥ", "ᡪᡪ", "", "ᡪ", "ᡪᡪ", "", "ᡪᡨ", "ᡧ", "ᡨ"];
 var iArr = ["ᡫ", "", "", "ᡥᡬ", "", "", "ᡬ", "ᡬᡬ", "ᡪᡬ", "ᡫ", "ᡬᡦ", ""];

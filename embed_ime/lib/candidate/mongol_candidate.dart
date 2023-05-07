@@ -115,7 +115,8 @@ class MongolCandidate {
   }
 
   bool backspace() {
-    if (layoutTextConverter.layoutText.isNotEmpty) {
+    if (layoutTextConverter.layoutText.isNotEmpty ||
+        layoutTextConverter.suggestionWords.isNotEmpty) {
       layoutTextConverter.backspaceLayoutText(false);
       _showOrRefresh();
       return true;

@@ -3,5 +3,5 @@ abstract class DBHelper {
 
   List<String> dbSuggestion(String latin);
 
-  List<String> nextSuggestion(String text);
+  List<String> nextSuggestion(String table, String text);
 }

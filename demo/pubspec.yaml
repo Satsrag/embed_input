@@ -25,7 +25,8 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 flutter:
   assets:
-    - db/z52words03.db
+    - db/menk_ime.db
+    - db/zcode_ime.db
   uses-material-design: true
   fonts:
     - family: MenkQagan

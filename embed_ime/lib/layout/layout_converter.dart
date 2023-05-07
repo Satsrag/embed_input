@@ -26,6 +26,9 @@ mixin LayoutConverter {
   }
 
   void backspaceLayoutText(bool clear) {
+    if (suggestionWords.isNotEmpty) {
+      suggestionWords.clear();
+    }
     if (layoutText.isEmpty) return;
     if (clear) {
       layoutText = '';
