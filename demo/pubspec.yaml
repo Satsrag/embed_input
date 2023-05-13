@@ -9,9 +9,11 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  mongol: ^4.0.0
-  sqlite3: ^1.11.0
-  sqlite3_flutter_libs: ^0.5.13
+  mongol: # ^4.0.0
+    git:
+      url: git@github.com:Satsrag/mongol.git
+  sqlite3: ^1.11.1
+  sqlite3_flutter_libs: ^0.5.15
   path_provider: ^2.0.14
   path: ^1.8.2
   menk_embed_ime: #^0.0.1
