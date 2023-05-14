@@ -67,7 +67,7 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
         if (box.hasSize) {
           return box.localToGlobal(Offset.zero).dy;
         } else {
-          return 100.0;
+          return 300.0;
         }
       },
     );
@@ -83,7 +83,9 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
   @override
   void showSoftLayout() {
     super.showSoftLayout();
-    _candidate?.typingSoftKeyboard = true;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _candidate?.typingSoftKeyboard = true;
+    });
   }
 
   @override
