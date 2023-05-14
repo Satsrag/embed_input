@@ -16,10 +16,4 @@ This project has three libraries published to `pub.dev` respectively.
 
 User guide or more detail about these library see: [zcode_embed_ime](https://github.com/Satsrag/embed_input/tree/main/zcode_embed_ime), [menk_embed_ime](https://github.com/Satsrag/embed_input/tree/main/menk_embed_ime) and [embed_ime](https://github.com/Satsrag/embed_input/tree/main/embed_ime).
 
-## todo
-
-* Fix bugs
-
-* Add document
-
-* Support input action
+If someone finds cannot input some words or has any other problem with this library, please feel free to open an issue or PR.

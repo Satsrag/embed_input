@@ -37,3 +37,11 @@ const like = 'sample';
 TODO: Tell users more about the package: where to find more information, how to
 contribute to the package, how to file issues, what response they can expect
 from the package authors, and more.
+
+
+
+If your app using `sqlite3`, this is the right way to using `zcode_embed_ime_db`.
+
+However if you using another libray of `SQLite` instead of `sqlite3`, such as [sqflite](https://pub.dev/packages/sqflite), it maybe conflict with `sqlite3`. 
+
+Anyway, you try to using package `zcode_embed_ime_db` first. If 

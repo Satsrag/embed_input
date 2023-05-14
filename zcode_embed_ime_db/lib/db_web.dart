@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqlite3/wasm.dart';
+import 'dart:html';
 
 CommonDatabase? zcodeDB;
 const dbLength = 22212608;

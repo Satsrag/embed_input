@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'zcode_layout_converter.dart';
 
+/// This class is used to define the Zcode layout.
 class ZcodeLayout extends EmbedLayout {
   const ZcodeLayout(
     super.embedTextInput, {

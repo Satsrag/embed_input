@@ -93,100 +93,13 @@ After completing this step, the library is imported at the lowest cost. You run 
 
 However, after this step, there is no supporting the thesaurus database. Some words cannot be typed without supporting the thesaurus database. In the next version, I will fix this issue so that it can type all the words without relying on the thesaurus database. Thesaurus database should only be auxiliary.
 
-## Database Supporting
+### Supporting thesaurus database
 
-The thesaurus database did not combine into this library.
-
-In the [demo](https://github.com/Satsrag/embed_input/tree/main/demo), used the [sqlite3](https://pub.dev/packages/sqlite3) to load the thesaurus database. Other developers may be using another library of `SQLite`. Such as [sqflite](https://pub.dev/packages/sqflite), and so on. 
-
-These libraries, especially `sqlite3` and `sqflite`, maybe conflict with each other when used in the same project. So we need to import it ourselves.
-
-This guide uses the `sqlite3` library. You can reference the [demo](https://github.com/Satsrag/embed_input/tree/main/demo) or [official guide](https://pub.dev/packages/sqlite3) if you do not understand well. Please go to the official guide if you using another library like `sqflite`.
-
-### 1. Get the [zcode thesaurus](https://github.com/Satsrag/embed_input/blob/main/demo/db/zcode_ime.db)
-
-### 2. Install `sqlite3` libraries and `thesaurus db`
-
-Basically you just need to create an db folder for the `thesaurus db`
-
-Add these lines like this to your app's pubspec.yaml and run `flutter pub get`
-
-```yaml
-dependencies:
-  sqlite3: ^1.11.1
-  sqlite3_flutter_libs: ^0.5.15
-flutter:
-  assets:
-    - db/zcode_ime.db
-```
-
-### 3. Add Sqlite libray and query suggestion words
-
-After adding the Sqlite Library, you will write the SQL to query suggestion words:
-
-```sql
-select word from [table] where latin like ['latin%'] order by wlen limit 15
-```
-
-Arguments:
-   
-   * table: input latin's first letter, `latin.substring(0, 1)`
-
-   * 'latin%': inputed latin
-
-### 4. Expends the `ZcodeLayoutTextConverter`
-
-Then extends the `ZcodeLayoutTextConverter` and overrides the `appendLayoutText` and `backspaceLayoutText` methods. 
-
-```dart
-class DBZcodeLayoutConvertor extends ZcodeLayoutTextConverter {
-  @override
-  void appendLayoutText(String text) {
-    super.appendLayoutText(text);
-    _updateSuggestion();
-  }
-
-  @override
-  void backspaceLayoutText(bool clear) {
-    super.backspaceLayoutText(clear);
-    _updateSuggestion();
-  }
-
-  void _updateSuggestion() {
-    if (layoutText.isEmpty) return;
-    LinkedHashSet<String> suggestions = LinkedHashSet.from(suggestionWords);
-    var latin = layoutText.replaceAll('c', 'C');
-    latin = layoutText.replaceAll('q', 'c');
-    suggestions.addAll(db.dbSuggestion(latin));
-    suggestionWords.clear();
-    suggestionWords.addAll(suggestions);
-  }
-}
-```
-
-`db.dbSuggestion(latin)` is query suggestion words using a `SQLite` libray. 
-
-### 5. Add `DBZcodeLayoutConvertor` to the `EmbedKeyboard`
-
-```dart
-Widget build() {
-   return Scaffold(
-      body: Column(children: [
-         const Expanded(child: TextField()),
-         EmbedKeyboard(
-            layoutBuilders: [
-               (i) => ZcodeLayout(i, converter: DBZcodeLayoutConvertor()),
-               EnglishLayout.create
-            ],
-         ),
-      ]),
-   );
-}
-```
+Please use [zcode_embed_ime_db](https://pub.dev/packages/zcode_embed_ime_db) instead of this library, if you want to support the thesaurus database. [zcode_embed_ime_db](https://pub.dev/packages/zcode_embed_ime_db) using [sqlite3](https://pub.dev/packages/sqlite3) libray and [zcode_ime.db](https://github.com/Satsrag/embed_input/tree/main/zcode_embed_ime_db/db) to show candidate words. 
 
 ## Statement
 
-The Zcode thesaurus, inputting logic, and font are copied from [Zmongol's](https://github.com/zmongol) [zmongol2021](https://github.com/zmongol/zmongol2021) library.
+The Zcode inputting logic is copied from [Zmongol's](https://github.com/zmongol) [zmongol2021](https://github.com/zmongol/zmongol2021) library.
 The copyright belongs to Zmongol.
 
-The Inputting logic has a tiny problem. Some words cannot be typed without using the thesaurus database. I will try to fix this. If someone finds cannot input some words or has any other problem with this library, please feel free to open an issue or PR.
+If someone finds cannot input some words or has any other problem with this library, please feel free to open an issue or PR.

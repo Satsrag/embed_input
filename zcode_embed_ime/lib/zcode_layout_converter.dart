@@ -8,6 +8,9 @@
 import 'package:embed_ime/embed_ime.dart';
 import 'zcode_logic.dart';
 
+/// This class is used to convert Latin to the Zcode Mongol Words.
+/// [layoutText] is the Latin text that is inputted by hard/soft layout.
+/// [suggestionWords] is the converted Zcode Mongol Words.
 class ZcodeLayoutTextConverter with LayoutConverter {
   final zcode = ZCode();
 
