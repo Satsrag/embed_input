@@ -7,12 +7,7 @@ import 'demos/zcode_ime_demo.dart';
 
 void main() {
   runApp(const DemoApp());
-  initZcodeDB(
-      // dbUrl:
-      //     "https://zcode_ime.db/remote/path",
-      // sqlite3Url:
-      //     "https://sqlite3.wasm/remote/path",
-      );
+  initZcodeDB();
 }
 
 class DemoApp extends StatelessWidget {
