@@ -4,15 +4,15 @@ version: 0.0.1
 homepage: https://github.com/Satsrag/embed_input
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=2.18.6 <4.0.0'
+  flutter: ">=3.7.0"
 
 dependencies:
   flutter:
     sdk: flutter
   mongol_code: ^0.3.0
-  embed_ime: #^0.0.1
-    path: ../embed_ime
+  embed_ime: ^0.0.1
+    # path: ../embed_ime
 
 dev_dependencies:
   flutter_test:

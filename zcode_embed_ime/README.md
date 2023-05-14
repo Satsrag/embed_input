@@ -27,7 +27,7 @@ If you want to use the `mongol` library, import the  the `mongol` library follow
 
 ```yaml
 dependencies:
-  zcode_embed_ime: ^0.0.1
+  zcode_embed_ime: ^0.0.2
 ```
 
 Run `Flutter pub get`.
@@ -101,21 +101,24 @@ In the [demo](https://github.com/Satsrag/embed_input/tree/main/demo), used the [
 
 These libraries, especially `sqlite3` and `sqflite`, maybe conflict with each other when used in the same project. So we need to import it ourselves.
 
-This guide omits the importing SQLite library. You can reference the [demo](https://github.com/Satsrag/embed_input/tree/main/demo) or [official guide](https://pub.dev/packages/sqlite3) if you want to use the `sqlite3` library. Please go to the official guide if you using another library like `sqflite`.
+This guide uses the `sqlite3` library. You can reference the [demo](https://github.com/Satsrag/embed_input/tree/main/demo) or [official guide](https://pub.dev/packages/sqlite3) if you do not understand well. Please go to the official guide if you using another library like `sqflite`.
 
-### 1. Get the [zcode thesaurus](https://github.com/Satsrag/embed_input/blob/main/demo/db/z52words03.db)
+### 1. Get the [zcode thesaurus](https://github.com/Satsrag/embed_input/blob/main/demo/db/zcode_ime.db)
 
-### 2. Add thesaurus to project
+### 2. Install `sqlite3` libraries and `thesaurus db`
 
-Basically you just need to create an db folder for it and then declare the `db` file in pubspec.yaml like this:
+Basically you just need to create an db folder for the `thesaurus db`
+
+Add these lines like this to your app's pubspec.yaml and run `flutter pub get`
 
 ```yaml
+dependencies:
+  sqlite3: ^1.11.1
+  sqlite3_flutter_libs: ^0.5.15
 flutter:
   assets:
-    - db/z52words03.db
+    - db/zcode_ime.db
 ```
-
-Run `flutter pub get`
 
 ### 3. Add Sqlite libray and query suggestion words
 

@@ -12,23 +12,17 @@ dependencies:
   mongol: # ^4.0.0
     git:
       url: git@github.com:Satsrag/mongol.git
-  sqlite3: ^1.11.1
-  sqlite3_flutter_libs: ^0.5.15
-  path_provider: ^2.0.14
-  path: ^1.8.2
   menk_embed_ime: #^0.0.1
     path: ../menk_embed_ime
-  zcode_embed_ime: #^0.0.1
-    path: ../zcode_embed_ime
+  zcode_embed_ime_db: #^0.0.1
+    path: ../zcode_embed_ime_db
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
 flutter:
-  assets:
-    - db/menk_ime.db
-    - db/zcode_ime.db
   uses-material-design: true
   fonts:
     - family: MenkQagan

@@ -1,0 +1,28 @@
+name: zcode_embed_ime_db
+description: A new Flutter package project.
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: '>=2.18.6 <4.0.0'
+  flutter: ">=3.7.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  zcode_embed_ime: # ^0.0.2
+    path: ../zcode_embed_ime
+  path_provider: ^2.0.14
+  path: ^1.8.2
+  sqlite3: ^1.11.1
+  sqlite3_flutter_libs: ^0.5.15
+  http: ^0.13.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+flutter:
+  assets:
+    - db/zcode_ime.db
+

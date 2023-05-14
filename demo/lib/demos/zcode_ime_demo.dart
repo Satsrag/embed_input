@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mongol/mongol.dart';
-import 'package:zcode_embed_ime/zcode_embed_ime.dart';
-
-import '../layout_convertor/db_zcode_layout_convertor.dart';
+import 'package:zcode_embed_ime_db/zcode_embed_ime_db.dart';
 
 class ZcodeImeDemo extends StatefulWidget {
   const ZcodeImeDemo({super.key});
@@ -25,9 +23,9 @@ class _ZcodeImeDemoState extends State<ZcodeImeDemo> {
         appBar: AppBar(title: const Text("Zcode Ime Demo")),
         body: Column(
           children: [
-            Expanded(
+            const Expanded(
               child: Row(
-                children: const [
+                children: [
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
@@ -59,7 +57,7 @@ class _ZcodeImeDemoState extends State<ZcodeImeDemo> {
             ),
             EmbedKeyboard(
               layoutBuilders: [
-                (i) => ZcodeLayout(i, converter: DBZcodeLayoutConvertor()),
+                (i) => ZcodeLayout(i, converter: DBZcodeLayoutConverter()),
                 EnglishLayout.create
               ],
             ),

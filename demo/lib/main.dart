@@ -1,13 +1,18 @@
 import 'package:demo/demos/menk_ime_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:mongol/mongol.dart';
+import 'package:zcode_embed_ime_db/zcode_embed_ime_db.dart';
 
 import 'demos/zcode_ime_demo.dart';
-import '../db/db_web.dart' if (dart.library.io) '../db/db_other.dart';
 
 void main() {
   runApp(const DemoApp());
-  db.init();
+  initZcodeDB(
+    dbUrl:
+        "https://huulger-static.oss-cn-beijing.aliyuncs.com/sqlite/zcode_ime.db",
+    sqlite3Url:
+        "https://huulger-static.oss-cn-beijing.aliyuncs.com/wasm/sqlite3.wasm",
+  );
 }
 
 class DemoApp extends StatelessWidget {

@@ -52,10 +52,11 @@ packages:
   embed_ime:
     dependency: transitive
     description:
-      path: "../embed_ime"
-      relative: true
-    source: path
-    version: "0.0.2"
+      name: embed_ime
+      sha256: d4ad640f21a40b551810e43bca8a70b75938489b174790bcaf59ae2feba338fc
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -98,6 +99,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.13.6"
+  http_parser:
+    dependency: transitive
+    description:
+      name: http_parser
+      sha256: "2aa08ce0341cc9b354a498388e30986515406668dbcc4f7c950c3e715496693b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.2"
   js:
     dependency: transitive
     description:
@@ -163,7 +180,7 @@ packages:
     source: hosted
     version: "0.3.0"
   path:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path
       sha256: "8829d8a55c13fc0e37127c29fedf290c102f4e40ae94ada574091fe0ff96c917"
@@ -171,7 +188,7 @@ packages:
     source: hosted
     version: "1.8.3"
   path_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider
       sha256: "3087813781ab814e4157b172f1a11c46be20179fcc9bea043e0fba36bc0acaa2"
@@ -256,7 +273,7 @@ packages:
     source: hosted
     version: "1.9.1"
   sqlite3:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: sqlite3
       sha256: "2cef47b59d310e56f8275b13734ee80a9cf4a48a43172020cb55a620121fbf66"
@@ -264,7 +281,7 @@ packages:
     source: hosted
     version: "1.11.1"
   sqlite3_flutter_libs:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: sqlite3_flutter_libs
       sha256: "1e20a88d5c7ae8400e009f38ddbe8b001800a6dffa37832481a86a219bc904c7"
@@ -311,6 +328,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  typed_data:
+    dependency: transitive
+    description:
+      name: typed_data
+      sha256: facc8d6582f16042dd49f2463ff1bd6e2c9ef9f3d5da3d9b087e244a7b564b3c
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.2"
   vector_math:
     dependency: transitive
     description:
@@ -336,9 +361,16 @@ packages:
     source: hosted
     version: "1.0.0"
   zcode_embed_ime:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "../zcode_embed_ime"
+      relative: true
+    source: path
+    version: "0.0.2"
+  zcode_embed_ime_db:
+    dependency: "direct main"
+    description:
+      path: "../zcode_embed_ime_db"
       relative: true
     source: path
     version: "0.0.1"
