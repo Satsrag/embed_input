@@ -25,4 +25,5 @@ dev_dependencies:
 flutter:
   assets:
     - db/zcode_ime.db
+    - sqlite3.wasm
 

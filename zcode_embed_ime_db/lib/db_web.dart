@@ -35,8 +35,18 @@ void internalZcodeDBInit({String? dbUrl, String? sqlite3Url}) async {
     fs.write(wordDbName, data, 0);
     await fs.flush();
   }
-  final sqlite = await WasmSqlite3.loadFromUrl(
-      Uri.parse(sqlite3Url ?? 'sqlite3.wasm'),
-      environment: SqliteEnvironment(fileSystem: fs));
+  final WasmSqlite3 sqlite;
+  final env = SqliteEnvironment(fileSystem: fs);
+  if (sqlite3Url == null) {
+    const key = "packages/zcode_embed_ime_db/sqlite3.wasm";
+    final byteData = await rootBundle.load(key);
+    final offset = byteData.offsetInBytes;
+    final length = byteData.lengthInBytes;
+    final data = byteData.buffer.asUint8List(offset, length);
+    sqlite = await WasmSqlite3.load(data, env);
+  } else {
+    final uri = Uri.parse(sqlite3Url);
+    sqlite = await WasmSqlite3.loadFromUrl(uri, environment: env);
+  }
   zcodeDB = sqlite.open(wordDbName);
 }

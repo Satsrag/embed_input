@@ -8,11 +8,11 @@ import 'demos/zcode_ime_demo.dart';
 void main() {
   runApp(const DemoApp());
   initZcodeDB(
-    dbUrl:
-        "https://huulger-static.oss-cn-beijing.aliyuncs.com/sqlite/zcode_ime.db",
-    sqlite3Url:
-        "https://huulger-static.oss-cn-beijing.aliyuncs.com/wasm/sqlite3.wasm",
-  );
+      // dbUrl:
+      //     "https://zcode_ime.db/remote/path",
+      // sqlite3Url:
+      //     "https://sqlite3.wasm/remote/path",
+      );
 }
 
 class DemoApp extends StatelessWidget {
