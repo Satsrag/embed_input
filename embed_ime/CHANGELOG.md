@@ -11,3 +11,9 @@
 * fix: lose focus can input text
 
 * fix: switch key using double shift conflict with other combine key
+
+## 0.0.3
+
+* fix: the candidate can not show the next suggestions sometimes.
+
+* fix: the candidate position is wrong when switching from hard layout to soft layout.

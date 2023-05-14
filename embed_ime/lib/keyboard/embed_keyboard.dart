@@ -176,7 +176,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     final editableRB = _editableTransform.transform3(
       vector.Vector3(_editableSize.width, _editableSize.height, 0),
     );
-    final switcherLeft = editableRB.x + 10 + switcherWidth > Util.windowWidth
+    final switcherLeft = editableRB.x + 10 + switcherWidth > context.windowWidth
         ? editableLT.x - 10 - switcherWidth
         : editableRB.x + 10;
 

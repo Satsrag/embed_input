@@ -168,7 +168,7 @@ class MongolCandidate {
   /// Candidate overlay is shown at the top of the soft keyboard in vertical and
   /// follows the caret position in horizontal.
   Widget _buildSoftContent(BuildContext context) {
-    final windowSize = Util.windowSize;
+    final windowSize = context.windowSize;
     final candidateWidth =
         30 * min(5, layoutTextConverter.suggestionWords.length);
     final bottom = windowSize.height - softLayoutTop();
@@ -275,7 +275,7 @@ class MongolCandidate {
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
 
-    final windowSize = Util.windowSize;
+    final windowSize = context.windowSize;
     final left = caretRightBottomPoint.x + candidateWidth < windowSize.width
         ? caretRightBottomPoint.x
         : caretRightBottomPoint.x - candidateWidth - caretLongSize;
