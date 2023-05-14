@@ -17,3 +17,5 @@
 * fix: the candidate can not show the next suggestions sometimes.
 
 * fix: the candidate position is wrong when switching from hard layout to soft layout.
+
+* fix: window is deprecate
