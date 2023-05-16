@@ -3,10 +3,25 @@ import 'dart:collection';
 import 'package:zcode_embed_ime/zcode_embed_ime.dart';
 import 'db_web.dart' if (dart.library.io) 'db_other.dart';
 
+/// init zcode word database.
+///
+/// If your app support `Web`, I recommend you to set optional params `dbUrl` and `sqlite3Url`.
+///
+/// Upload [zcode_ime.db](https://github.com/Satsrag/embed_input/blob/main/zcode_embed_ime_db/db/zcode_ime.db)
+/// and [sqlite3.wasm](https://github.com/Satsrag/embed_input/blob/main/zcode_embed_ime_db/sqlite3.wasm)
+/// to your object server supporting CDN. These files are too large to maybe
+/// freeze your Web app server if you do not set [dbUrl] and [sqlite3Url]. If
+/// you not setting these parameters, this package will fetch these files from
+/// your Web app server.
+///
+/// [dbUrl] is the URL of the `zcode_ime.db` file you uploaded.
+/// [sqlite3Url] is the URL of the `sqlite3.wasm` file you uploaded.
 void initZcodeDB({String? dbUrl, String? sqlite3Url}) {
   internalZcodeDBInit(dbUrl: dbUrl, sqlite3Url: sqlite3Url);
 }
 
+/// Extend [ZcodeLayoutTextConverter] to produce extra words for the Candidate
+/// using the database. Also, support the next words suggestion.
 class DBZcodeLayoutConverter extends ZcodeLayoutTextConverter {
   @override
   void appendLayoutText(String text) {

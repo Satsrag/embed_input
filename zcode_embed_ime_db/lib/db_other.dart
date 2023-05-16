@@ -8,6 +8,8 @@ import 'package:sqlite3/sqlite3.dart';
 
 CommonDatabase? zcodeDB;
 
+/// init zcode word database for platform other than web.
+/// [dbUrl] and [sqlite3Url] will not need to set. They are for web platform.
 void internalZcodeDBInit({String? dbUrl, String? sqlite3Url}) async {
   if (zcodeDB == null) {
     final documentsDirectory = await getApplicationDocumentsDirectory();

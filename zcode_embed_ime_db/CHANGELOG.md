@@ -1,3 +1,5 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Using a word database to provide extra words for the Candidate.
+
+* Support next words suggestion.

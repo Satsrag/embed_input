@@ -1,4 +1,9 @@
 ```dart
+void main() {
+  runApp(const DemoApp());
+  initZcodeDB();
+}
+
 class DemoApp extends StatelessWidget {
   const DemoApp({Key? key}) : super(key: key);
 
@@ -13,8 +18,8 @@ class DemoApp extends StatelessWidget {
         body: Column(children: [
           const Expanded(child: TextField()),
           EmbedKeyboard(
-            layoutBuilders: const [
-              ZcodeLayout.create,
+            layoutBuilders: [
+              (i) => ZcodeLayout(i, converter: DBZcodeLayoutConverter()),
               EnglishLayout.create,
             ],
           ),

@@ -2,11 +2,21 @@ import 'package:http/http.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqlite3/wasm.dart';
-import 'dart:html';
 
 CommonDatabase? zcodeDB;
 const dbLength = 22212608;
 
+/// init zcode word database for web.
+///
+/// Upload [zcode_ime.db](https://github.com/Satsrag/embed_input/blob/main/zcode_embed_ime_db/db/zcode_ime.db)
+/// and [sqlite3.wasm](https://github.com/Satsrag/embed_input/blob/main/zcode_embed_ime_db/sqlite3.wasm)
+/// to your object server supporting CDN. These files are too large to maybe
+/// freeze your Web app server if you do not set [dbUrl] and [sqlite3Url]. If
+/// you not setting these parameters, this package will fetch these files from
+/// your Web app server.
+///
+/// [dbUrl] is the URL of the `zcode_ime.db` file you uploaded.
+/// [sqlite3Url] is the URL of the `sqlite3.wasm` file you uploaded.
 void internalZcodeDBInit({String? dbUrl, String? sqlite3Url}) async {
   final fs = await IndexedDbFileSystem.open(dbName: 'indexedDB');
   // do not ignore slash, use absolute path
