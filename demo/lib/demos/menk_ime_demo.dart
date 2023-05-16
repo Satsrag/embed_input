@@ -1,7 +1,5 @@
-import 'package:embed_ime/keyboard/embed_keyboard.dart';
-import 'package:embed_ime/layout/english_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:menk_embed_ime/menk_layout.dart';
+import 'package:menk_embed_ime_db/menk_embed_ime_db.dart';
 import 'package:mongol/mongol.dart';
 
 class MenkImeDemo extends StatefulWidget {
@@ -22,12 +20,12 @@ class _MenkImeDemoState extends State<MenkImeDemo> {
     return Theme(
       data: theme,
       child: Scaffold(
-        appBar: AppBar(title: const Text("Embed Ime Demo")),
+        appBar: AppBar(title: const Text("Menk Embed Ime Demo")),
         body: Column(
           children: [
-            Expanded(
+            const Expanded(
               child: Row(
-                children: const [
+                children: [
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
@@ -58,7 +56,10 @@ class _MenkImeDemoState extends State<MenkImeDemo> {
               ),
             ),
             EmbedKeyboard(
-              layoutBuilders: const [MenkLayout.create, EnglishLayout.create],
+              layoutBuilders: [
+                (i) => MenkLayout(i, converter: DBMenkLayoutConverter()),
+                EnglishLayout.create,
+              ],
             ),
           ],
         ),

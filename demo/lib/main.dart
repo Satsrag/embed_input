@@ -1,13 +1,15 @@
 import 'package:demo/demos/menk_ime_demo.dart';
 import 'package:flutter/material.dart';
-import 'package:mongol/mongol.dart';
+import 'package:menk_embed_ime_db/menk_embed_ime_db.dart';
 import 'package:zcode_embed_ime_db/zcode_embed_ime_db.dart';
+import 'package:mongol/mongol.dart';
 
 import 'demos/zcode_ime_demo.dart';
 
 void main() {
   runApp(const DemoApp());
   initZcodeDB();
+  initMenkDB();
 }
 
 class DemoApp extends StatelessWidget {

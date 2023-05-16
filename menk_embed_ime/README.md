@@ -32,11 +32,11 @@ dependencies:
 
 Run `Flutter pub get`.
 
-#### 2. Add Zcode 52 Mongol Font
+#### 2. Add Menksoft's Old Dtatdard Mongol Font
 
-> If you using the `mongol` library, skip this step. However, please ensure that you are using a `Menksoft's old standard font` in your project.
+> If you using the `mongol` library, skip this step. However, please ensure that you are using a `Menksoft's Old Dtatdard Mongol Font` in your project.
 
-* Get a [Menksoft's old standard font](https://www.mklai.cn/download-font?productId=a0ec7735b5714334934ff3c094ca0a5e)
+* Get a [Menksoft's Old Dtatdard Mongol Font](https://www.mklai.cn/download-font?productId=a0ec7735b5714334934ff3c094ca0a5e)
 
 * Add the font to your project
 
@@ -63,7 +63,7 @@ Run `Flutter pub get`.
 
    Now you won't have to manually set the font for every text widget. If you want to use a different font for some widgets, though, you can still set the fontFamily as you normally would inside TextStyle.
 
-#### 3. Use zcode_embed_ime
+#### 3. Use menk_embed_ime
 
 * Import library
 

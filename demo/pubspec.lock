@@ -148,9 +148,16 @@ packages:
     source: hosted
     version: "0.2.0"
   menk_embed_ime:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "../menk_embed_ime"
+      relative: true
+    source: path
+    version: "0.0.1"
+  menk_embed_ime_db:
+    dependency: "direct main"
+    description:
+      path: "../menk_embed_ime_db"
       relative: true
     source: path
     version: "0.0.1"
@@ -371,10 +378,9 @@ packages:
   zcode_embed_ime_db:
     dependency: "direct main"
     description:
-      name: zcode_embed_ime_db
-      sha256: "5a70f4420ff13ac1492e1edddc419dc581a5afae3fd95a6eaa0a64e5e61fdd25"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../zcode_embed_ime_db"
+      relative: true
+    source: path
     version: "0.0.1"
 sdks:
   dart: ">=3.0.0-417 <4.0.0"

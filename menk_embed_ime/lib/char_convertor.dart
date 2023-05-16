@@ -851,3 +851,79 @@ final Map<String, Converter> uncommonChars = {
     }
   }
 };
+
+String latinForCode(int code) {
+  if (code <= 57967) {
+    return "a";
+  } else if (code <= 57976) {
+    return "e";
+  } else if (code <= 57986) {
+    return "i";
+  } else if (code <= 0xE28A) {
+    return "ʊ";
+  } else if (code <= 0xE292) {
+    return "ʊ";
+  } else if (code <= 0xE29F) {
+    return "u";
+  } else if (code <= 0xE2AC) {
+    return "u";
+  } else if (code <= 0xE2B0) {
+    return "e";
+  } else if (code <= 0xE2BA) {
+    return "n";
+  } else if (code <= 0xE2BE) {
+    return "n";
+  } else if (code <= 0xE2C0) {
+    return "n";
+  } else if (code <= 0xE2C7) {
+    return "b";
+  } else if (code <= 0xE2CD) {
+    return "p";
+  } else if (code <= 0xE2E0) {
+    return "h";
+  } else if (code <= 0xE2F0) {
+    return "g";
+  } else if (code <= 0xE2F6) {
+    return "m";
+  } else if (code <= 0xE2FC) {
+    return "l";
+  } else if (code <= 0xE302) {
+    return "s";
+  } else if (code <= 0xE307) {
+    return "x";
+  } else if (code <= 0xE30D) {
+    return "t";
+  } else if (code <= 0xE314) {
+    return "d";
+  } else if (code <= 0xE317) {
+    return "q";
+  } else if (code <= 0xE31D) {
+    return "j";
+  } else if (code <= 0xE321) {
+    return "y";
+  } else if (code <= 0xE328) {
+    return "r";
+  } else if (code <= 0xE32C) {
+    return "w";
+  } else if (code <= 0xE332) {
+    return "f";
+  } else if (code <= 0xE338) {
+    return "k";
+  } else if (code <= 0xE33E) {
+    return "k";
+  } else if (code <= 0xE341) {
+    return "c";
+  } else if (code <= 0xE344) {
+    return "z";
+  } else if (code <= 0xE347) {
+    return "h";
+  } else if (code <= 0xE34A) {
+    return "z";
+  } else if (code <= 0xE34D) {
+    return "l";
+  } else if (code <= 0xE34E) {
+    return "z";
+  } else {
+    return "c";
+  }
+}
