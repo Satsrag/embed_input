@@ -150,10 +150,11 @@ packages:
   menk_embed_ime:
     dependency: transitive
     description:
-      path: "../menk_embed_ime"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: menk_embed_ime
+      sha256: "2e2316b6a2e5a2dbcabb91e943d7b0d210fd3c05d498f5b8228498ab4f992aac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   menk_embed_ime_db:
     dependency: "direct main"
     description:
@@ -172,12 +173,11 @@ packages:
   mongol:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "90c8ad812d19169b033900b6a45bc4f902b1ef5b"
-      url: "git@github.com:Satsrag/mongol.git"
-    source: git
-    version: "4.0.0"
+      name: mongol
+      sha256: bf4e8da8bf763b0fa567ff3e7125b90650eeff161ccb63e06eb26bcbd4a81672
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   mongol_code:
     dependency: transitive
     description:
@@ -381,7 +381,7 @@ packages:
       path: "../zcode_embed_ime_db"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
 sdks:
-  dart: ">=3.0.0-417 <4.0.0"
+  dart: ">=3.0.0 <4.0.0"
   flutter: ">=3.7.0"

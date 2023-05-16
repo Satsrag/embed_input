@@ -1,6 +1,6 @@
 name: zcode_embed_ime_db
 description: Zcode 52 standard Mongol embed IME. Soft/Hard layout, word database, words suggestion and next word suggestion.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/Satsrag/embed_input
 
 environment:

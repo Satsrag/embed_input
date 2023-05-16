@@ -91,10 +91,14 @@ Run `Flutter pub get`.
    ```
 After completing this step, the library is imported at the lowest cost. You run your project and see what's going on. 
 
-However, after this step, there is no supporting the thesaurus database. Some words cannot be typed without supporting the thesaurus database. In the next version, I will fix this issue so that it can type all the words without relying on the thesaurus database. Thesaurus database should only be auxiliary.
+However, after this step, there is no supporting the word database. Some words cannot be typed without supporting the word database. In the next version, I will fix this issue so that it can type all the words without relying on the word database. word database should only be auxiliary.
 
-There is no open source Menksoft's old standard thesaurus database. If you have a thesaurus, you can reference [zcode_embed_ime database-supporting](https://github.com/Satsrag/embed_input/tree/main/zcode_embed_ime#database-supporting) to import it to your Flutter app.
+### Supporting word database
+
+Please use [menk_embed_ime_db](https://pub.dev/packages/menk_embed_ime_db) instead of this library, if you want to support the word database. [menk_embed_ime_db](https://pub.dev/packages/menk_embed_ime_db) using [sqlite3](https://pub.dev/packages/sqlite3) libray and [menk_ime.db](https://github.com/Satsrag/embed_input/tree/main/menk_embed_ime_db/db) to show candidate words. 
 
 ## Statement
 This library uses the [mongol_code](https://pub.dev/packages/mongol_code) library.
 The copyright belongs to [Suragch](https://github.com/suragch)
+
+If someone finds cannot input some words or has any other problem with this library, please feel free to open an issue or PR.
