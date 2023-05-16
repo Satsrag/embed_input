@@ -1,3 +1,5 @@
+English is not my mother tongue, please correct the mistake.
+
 Zcode 52 standard Mongolian Embed IME with the word database. 
 
 ![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)

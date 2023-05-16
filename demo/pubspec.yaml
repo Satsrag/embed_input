@@ -14,8 +14,8 @@ dependencies:
       url: git@github.com:Satsrag/mongol.git
   menk_embed_ime: #^0.0.1
     path: ../menk_embed_ime
-  zcode_embed_ime_db: #^0.0.1
-    path: ../zcode_embed_ime_db
+  zcode_embed_ime_db: ^0.0.1
+    # path: ../zcode_embed_ime_db
   
 
 dev_dependencies:

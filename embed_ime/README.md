@@ -1,3 +1,5 @@
+English is not my mother tongue, please correct the mistake.
+
 # embed_ime
 
 ![](https://raw.githubusercontent.com/Satsrag/embed_input/main/desktop_screenshot.gif)
