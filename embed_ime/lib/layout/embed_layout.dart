@@ -65,7 +65,6 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
 
   @override
   void setEditingState(TextEditingValue value) {
-    debugPrint('base_layout -> $this setEditingState: $value');
     editingValue = value;
   }
 
@@ -96,9 +95,6 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
       ),
       composing: TextRange.empty,
     );
-    if (kDebugMode) {
-      print("embed_keyboard -> insert: $editingValue");
-    }
     // Request the attached client to update accordingly.
     widget.embedTextInput.updateEditingValue(editingValue);
   }

@@ -81,7 +81,6 @@ bool get isPressOtherThanShiftAndPrintableAsciiKeys {
     if (element != PhysicalKeyboardKey.shiftLeft &&
         element != PhysicalKeyboardKey.shiftRight &&
         !printableAsciiKeys.containsKey(element)) {
-      debugPrint('key_map -> pressed: ${element.debugName}');
       return true;
     }
   }

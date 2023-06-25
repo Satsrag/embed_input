@@ -52,10 +52,9 @@ packages:
   embed_ime:
     dependency: transitive
     description:
-      name: embed_ime
-      sha256: d4ad640f21a40b551810e43bca8a70b75938489b174790bcaf59ae2feba338fc
-      url: "https://pub.dev"
-    source: hosted
+      path: "../embed_ime"
+      relative: true
+    source: path
     version: "0.0.3"
   fake_async:
     dependency: transitive
@@ -150,10 +149,9 @@ packages:
   menk_embed_ime:
     dependency: transitive
     description:
-      name: menk_embed_ime
-      sha256: "2e2316b6a2e5a2dbcabb91e943d7b0d210fd3c05d498f5b8228498ab4f992aac"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../menk_embed_ime"
+      relative: true
+    source: path
     version: "0.0.2"
   menk_embed_ime_db:
     dependency: "direct main"
@@ -370,10 +368,9 @@ packages:
   zcode_embed_ime:
     dependency: transitive
     description:
-      name: zcode_embed_ime
-      sha256: "8ec50d9a79b147aa449904c251086cb5988384f78110bcf9be21a3b585ffcfbe"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../zcode_embed_ime"
+      relative: true
+    source: path
     version: "0.0.2"
   zcode_embed_ime_db:
     dependency: "direct main"

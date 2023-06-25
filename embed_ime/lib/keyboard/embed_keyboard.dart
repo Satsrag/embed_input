@@ -49,6 +49,8 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   Matrix4 _editableTransform = Matrix4.identity();
   Size _editableSize = Size.zero;
   Rect _caretRect = Rect.zero;
+  TextInputConfiguration? _configuration;
+  TextInputClient? _client;
 
   OverlayEntry? _keyboardSwitcher;
 
@@ -60,7 +62,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void initState() {
     super.initState();
-    debugPrint('embed_keyboard -> initState');
     _assumeControlNotifier.addListener(_assumeControlChange);
     _assumeControlNotifier.value = true;
   }
@@ -106,23 +107,31 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void attach(TextInputClient client, TextInputConfiguration configuration) {
     super.attach(client, configuration);
+    _client = client;
+    _configuration = configuration;
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
     HardwareKeyboard.instance.addHandler(onKeyEvent);
-    debugPrint(
-        'embed_keyboard -> attach: client: $client, config: ${configuration.toJson()}');
   }
 
   @override
   void detach(TextInputClient client) {
     super.detach(client);
     HardwareKeyboard.instance.removeHandler(onKeyEvent);
-    debugPrint('embed_keyboard -> detach');
+    if (client == _client) {
+      _configuration = null;
+      _client = null;
+    }
+  }
+
+  @override
+  void updateConfig(TextInputConfiguration configuration) {
+    super.updateConfig(configuration);
+    _configuration = configuration;
   }
 
   @override
   void show() {
     super.show();
-    debugPrint('embed_keyboard -> keyboard show');
     _inputControl?.attach();
     _layoutDidAttach = true;
     if (_handleShowLayout) {
@@ -137,7 +146,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void hide() {
     super.hide();
-    debugPrint('embed_keyboard -> keyboard hide');
     _softLayoutShowing = false;
     _inputControl?.hideSoftLayout();
     _inputControl?.detach();
@@ -236,7 +244,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void setEditingState(TextEditingValue value) {
     super.setEditingState(value);
-    debugPrint("embed_keyboard -> setEditingState($value)");
     _editingState = value;
     _inputControl?.setEditingState(_editingState);
   }
@@ -269,8 +276,16 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       switchLayout();
       return true;
     }
-
     final handled = _inputControl?.onKeyEvent(event) ?? false;
+    if (!handled && event.isEnter && event.isDown) {
+      final action = _configuration?.inputAction;
+      debugPrint('embed_keyboard -> inputAction: $action _client: $_client');
+      if (action != null) {
+        _client?.performAction(action);
+        return true;
+      }
+    }
+
     return handled;
   }
 

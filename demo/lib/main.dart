@@ -1,3 +1,4 @@
+import 'package:demo/demos/input_action_demo.dart';
 import 'package:demo/demos/menk_ime_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:menk_embed_ime_db/menk_embed_ime_db.dart';
@@ -48,6 +49,10 @@ class HomeScreen extends StatelessWidget {
         DemoTile(
           title: 'Menk Ime Demo',
           destination: MenkImeDemo(),
+        ),
+        DemoTile(
+          title: 'Input Action Demo',
+          destination: InputActionDemo(),
         ),
       ],
     );

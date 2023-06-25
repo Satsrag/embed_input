@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   mongol_code: ^0.3.0
-  embed_ime: ^0.0.3
-    # path: ../embed_ime
+  embed_ime: #^0.0.3
+    path: ../embed_ime
 
 dev_dependencies:
   flutter_test:

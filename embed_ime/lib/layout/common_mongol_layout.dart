@@ -137,8 +137,14 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
       return true;
     }
     if (event.isDown && event.isEnter) {
-      insert('\n');
-      return true;
+      final willInsertText = _candidate?.convertInsert('\n');
+      if ('\n' == willInsertText) {
+        return false;
+      }
+      if (willInsertText != null) {
+        super.insert(willInsertText);
+        return true;
+      }
     }
     if (event.isUp && _stopEditingState) {
       _stopEditingState = false;

@@ -10,8 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  embed_ime: ^0.0.3
-    # path: ../embed_ime
+  embed_ime: #^0.0.3
+    path: ../embed_ime
 
 dev_dependencies:
   flutter_test:
