@@ -240,12 +240,14 @@ class _EnglishLayoutState
   }
 
   Widget _buildIconKey(IconData icon, bool light, VoidCallback? onPressed,
-      {bool selected = false}) {
+      {Color? backgroundColor, Color? foregroundColor, bool selected = false}) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.zero,
-        backgroundColor: _iconKeyBackgroundColor(selected, light),
-        foregroundColor: light ? Colors.black : Colors.white,
+        backgroundColor:
+            backgroundColor ?? _iconKeyBackgroundColor(selected, light),
+        foregroundColor:
+            foregroundColor ?? (light ? Colors.black : Colors.white),
       ),
       onPressed: onPressed,
       child: Icon(icon),
@@ -310,9 +312,11 @@ class _EnglishLayoutState
           width: 2.5 * letterKeyWidth + 7.5,
           height: letterHeight,
           child: _buildIconKey(
-            Icons.keyboard_return,
+            configuration?.enterIcon ?? Icons.keyboard_return,
             light,
-            () => insert('\n'),
+            performEnter,
+            backgroundColor: configuration?.enterBackground,
+            foregroundColor: configuration?.enterForeground,
           ),
         ),
       ],

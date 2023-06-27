@@ -8,12 +8,12 @@
 
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import '../keyboard/embed_text_input.dart';
 import '../layout/layout_converter.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
 
 abstract class EmbedLayout extends StatefulWidget {
   const EmbedLayout(
@@ -32,24 +32,41 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
   TextEditingValue editingValue = TextEditingValue.empty;
   Point<double> caretRightBottomOffset = const Point(0, 0);
   bool visibleSoftLayout = false;
+  TextInputConfiguration? configuration;
 
   @override
   void initState() {
-    super.initState();
     widget.embedTextInput.setTextInputControl(this);
+    super.initState();
   }
 
   @override
   void didUpdateWidget(covariant T oldWidget) {
-    super.didUpdateWidget(oldWidget);
     widget.embedTextInput.setTextInputControl(this);
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    widget.embedTextInput.unsetTextInputControl(this);
+    super.dispose();
   }
 
   @override
   void attach() {}
 
   @override
-  void detach() {}
+  void detach() {
+    configuration = null;
+  }
+
+  @override
+  void updateConfig(TextInputConfiguration configuration) {
+    this.configuration = configuration;
+    if (visibleSoftLayout) {
+      setState(() {});
+    }
+  }
 
   @override
   void showSoftLayout() {
@@ -71,7 +88,8 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
   @override
   void setCaretRectAndTransform(Rect rect, Matrix4 transform) {
     super.setCaretRectAndTransform(rect, transform);
-    final didTrans = transform.transform3(Vector3(rect.right, rect.bottom, 0));
+    final didTrans =
+        transform.transform3(vector.Vector3(rect.right, rect.bottom, 0));
     caretRightBottomOffset = Point(didTrans.x, didTrans.y);
   }
 
@@ -80,11 +98,19 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
     return false;
   }
 
+  void performEnter() {
+    final didPeform = widget.embedTextInput.performTextInputAction();
+    if (didPeform) return;
+    insert('\n');
+  }
+
   void insert(String insert) {
     final text = editingValue.text;
     final textSelection = editingValue.selection;
     final start = textSelection.start;
     final end = textSelection.end;
+    print(
+        'editingValue: $editingValue insert: $insert, start: $start, end: $end');
     final newText = text.replaceRange(start, end, insert);
     final textLength = insert.length;
     editingValue = editingValue.copyWith(
@@ -95,6 +121,7 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
       ),
       composing: TextRange.empty,
     );
+
     // Request the attached client to update accordingly.
     widget.embedTextInput.updateEditingValue(editingValue);
   }
@@ -142,5 +169,62 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
     // Request the attached client to update accordingly.
     widget.embedTextInput.updateEditingValue(editingValue);
     return true;
+  }
+}
+
+extension TextInputConfigurationExtension on TextInputConfiguration {
+  IconData get enterIcon {
+    switch (inputAction) {
+      case TextInputAction.done:
+        return Icons.done;
+      case TextInputAction.go:
+      case TextInputAction.continueAction:
+      case TextInputAction.join:
+        return Icons.arrow_circle_right;
+      case TextInputAction.search:
+        return Icons.search;
+      case TextInputAction.send:
+        return Icons.send;
+      case TextInputAction.next:
+        return Icons.skip_next;
+      case TextInputAction.previous:
+        return Icons.skip_previous;
+      case TextInputAction.route:
+        return Icons.alt_route;
+      case TextInputAction.emergencyCall:
+        return Icons.call;
+      default:
+        return Icons.keyboard_return;
+    }
+  }
+
+  Color? get enterBackground {
+    switch (inputAction) {
+      case TextInputAction.done:
+      case TextInputAction.go:
+      case TextInputAction.search:
+      case TextInputAction.send:
+      case TextInputAction.join:
+      case TextInputAction.route:
+      case TextInputAction.emergencyCall:
+        return Colors.blue;
+      default:
+        return null;
+    }
+  }
+
+  Color? get enterForeground {
+    switch (inputAction) {
+      case TextInputAction.done:
+      case TextInputAction.go:
+      case TextInputAction.search:
+      case TextInputAction.send:
+      case TextInputAction.join:
+      case TextInputAction.route:
+      case TextInputAction.emergencyCall:
+        return Colors.white;
+      default:
+        return null;
+    }
   }
 }

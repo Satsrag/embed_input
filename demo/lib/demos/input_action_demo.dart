@@ -17,77 +17,87 @@ class _InputActionDemoState extends State<InputActionDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Input Action Demo")),
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                SizedBox(
-                  width: 200,
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
+    final Brightness brightnessValue =
+        MediaQuery.of(context).platformBrightness;
+    bool isDark = brightnessValue == Brightness.dark;
+    final brightness = isDark ? Brightness.dark : Brightness.light;
+    final theme = ThemeData(fontFamily: 'ZcodeQagan', brightness: brightness);
+    return Theme(
+      data: theme,
+      child: Scaffold(
+        appBar: AppBar(title: const Text("Input Action Demo")),
+        body: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(children: [
+                  SizedBox(
+                    width: 250,
+                    child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return Row(children: [
+                              Switch(
+                                value: _bindKeyboard,
+                                onChanged: (v) {
+                                  setState(() {
+                                    _bindKeyboard = v;
+                                  });
+                                },
+                              ),
+                              const Text("Bind Embed Keyboard"),
+                            ]);
+                          }
+                          index -= 1;
                           return Row(children: [
-                            Switch(
-                              value: _bindKeyboard,
+                            Radio(
+                              value: TextInputAction.values[index],
+                              groupValue: _inputAction,
                               onChanged: (v) {
-                                setState(() {
-                                  _bindKeyboard = v;
-                                });
+                                if (v != null) {
+                                  setState(() {
+                                    _inputAction = v;
+                                  });
+                                }
                               },
                             ),
-                            const Text("Bind Keyboard"),
+                            Text(TextInputAction.values[index].name),
                           ]);
-                        }
-                        index -= 1;
-                        return Row(children: [
-                          Radio(
-                            value: TextInputAction.values[index],
-                            groupValue: _inputAction,
-                            onChanged: (v) {
-                              if (v != null) {
-                                setState(() {
-                                  _inputAction = v;
-                                });
-                              }
-                            },
-                          ),
-                          Text(TextInputAction.values[index].name),
-                        ]);
-                      },
-                      itemCount: TextInputAction.values.length + 1),
-                ),
-                MongolTextField(
-                  decoration:
-                      const InputDecoration(border: OutlineInputBorder()),
-                  textInputAction: _inputAction,
-                  onSubmitted: (value) {
-                    debugPrint("onSubmitted: $value");
-                  },
-                ),
-                MongolTextField(
-                  decoration:
-                      const InputDecoration(border: OutlineInputBorder()),
-                  textInputAction: _inputAction,
-                  onSubmitted: (value) {
-                    debugPrint("onSubmitted: $value");
-                  },
-                ),
-              ]),
+                        },
+                        itemCount: TextInputAction.values.length + 1),
+                  ),
+                  MongolTextField(
+                    decoration:
+                        const InputDecoration(border: OutlineInputBorder()),
+                    textInputAction: _inputAction,
+                    onSubmitted: (value) {
+                      debugPrint("onSubmitted: $value");
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  MongolTextField(
+                    maxLines: 2,
+                    decoration:
+                        const InputDecoration(border: OutlineInputBorder()),
+                    textInputAction: _inputAction,
+                    onSubmitted: (value) {
+                      debugPrint("onSubmitted: $value");
+                    },
+                  ),
+                ]),
+              ),
             ),
-          ),
-          if (_bindKeyboard)
-            EmbedKeyboard(
-              layoutBuilders: [
-                (i) => ZcodeLayout(i, converter: DBZcodeLayoutConverter()),
-                EnglishLayout.create
-              ],
-            ),
-        ],
+            if (_bindKeyboard)
+              EmbedKeyboard(
+                layoutBuilders: [
+                  (i) => ZcodeLayout(i, converter: DBZcodeLayoutConverter()),
+                  EnglishLayout.create
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }
