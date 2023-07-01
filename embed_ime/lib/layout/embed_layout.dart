@@ -112,8 +112,6 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
     final textSelection = editingValue.selection;
     final start = textSelection.start;
     final end = textSelection.end;
-    print(
-        'editingValue: $editingValue insert: $insert, start: $start, end: $end');
     final newText = text.replaceRange(start, end, insert);
     final textLength = insert.length;
     editingValue = editingValue.copyWith(

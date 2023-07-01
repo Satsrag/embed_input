@@ -52,10 +52,11 @@ packages:
   embed_ime:
     dependency: transitive
     description:
-      path: "../embed_ime"
-      relative: true
-    source: path
-    version: "0.0.3"
+      name: embed_ime
+      sha256: "373840e386c74d3f0df4c11504b7667a211ad2c7c4b0d1ab786fbc76f5967c47"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   fake_async:
     dependency: transitive
     description:
@@ -89,10 +90,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: aeb0b80a8b3709709c9cc496cdc027c5b3216796bc0af0ce1007eaf24464fd4c
+      sha256: "2118df84ef0c3ca93f96123a616ae8540879991b8b57af2f81b76a7ada49b2a4"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -126,10 +127,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "6b0206b0bf4f04961fc5438198ccb3a885685cd67d4d4a32cc20ad7f8adbe015"
+      sha256: "0a217c6c989d21039f1498c3ed9f3ed71b354e69873f13a8dfc3c9fe76f1b452"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   matcher:
     dependency: transitive
     description:
@@ -149,16 +150,18 @@ packages:
   menk_embed_ime:
     dependency: transitive
     description:
-      path: "../menk_embed_ime"
-      relative: true
-    source: path
+      name: menk_embed_ime
+      sha256: "2e2316b6a2e5a2dbcabb91e943d7b0d210fd3c05d498f5b8228498ab4f992aac"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.2"
   menk_embed_ime_db:
     dependency: "direct main"
     description:
-      path: "../menk_embed_ime_db"
-      relative: true
-    source: path
+      name: menk_embed_ime_db
+      sha256: acb66d6c3c6bb955e50be27376497cd658d5714e58f1630158e659f09879a278
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.1"
   meta:
     dependency: transitive
@@ -220,10 +223,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_linux
-      sha256: "2ae08f2216225427e64ad224a24354221c2c7907e448e6e0e8b57b1eb9f10ad1"
+      sha256: ffbb8cc9ed2c9ec0e4b7a541e56fd79b138e8f47d2fb86815f15358a349b3b57
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.10"
+    version: "2.1.11"
   path_provider_platform_interface:
     dependency: transitive
     description:
@@ -236,10 +239,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_windows
-      sha256: d3f80b32e83ec208ac95253e0cd4d298e104fbc63cb29c5c69edaed43b0c69d6
+      sha256: "1cb68ba4cd3a795033de62ba1b7b4564dace301f952de6bfb3cd91b202b6ee96"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.6"
+    version: "2.1.7"
   platform:
     dependency: transitive
     description:
@@ -281,10 +284,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: "2cef47b59d310e56f8275b13734ee80a9cf4a48a43172020cb55a620121fbf66"
+      sha256: "281b672749af2edf259fc801f0fcba092257425bcd32a0ce1c8237130bc934c7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.1"
+    version: "1.11.2"
   sqlite3_flutter_libs:
     dependency: transitive
     description:
@@ -353,10 +356,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "5a751eddf9db89b3e5f9d50c20ab8612296e4e8db69009788d6c8b060a84191c"
+      sha256: dfdf0136e0aa7a1b474ea133e67cb0154a0acd2599c4f3ada3b49d38d38793ee
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.4"
+    version: "5.0.5"
   xdg_directories:
     dependency: transitive
     description:
@@ -368,16 +371,18 @@ packages:
   zcode_embed_ime:
     dependency: transitive
     description:
-      path: "../zcode_embed_ime"
-      relative: true
-    source: path
+      name: zcode_embed_ime
+      sha256: "8ec50d9a79b147aa449904c251086cb5988384f78110bcf9be21a3b585ffcfbe"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.2"
   zcode_embed_ime_db:
     dependency: "direct main"
     description:
-      path: "../zcode_embed_ime_db"
-      relative: true
-    source: path
+      name: zcode_embed_ime_db
+      sha256: "50bb4f1b466f5eabda6dcf4a821feccd9da8b00a0f69e748fd33fb04cb085d97"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.2"
 sdks:
   dart: ">=3.0.0 <4.0.0"

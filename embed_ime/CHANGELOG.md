@@ -19,3 +19,7 @@
 * fix: the candidate position is wrong when switching from hard layout to soft layout.
 
 * fix: window is deprecate
+
+## 0.0.4
+
+* feat: supported text input action.
