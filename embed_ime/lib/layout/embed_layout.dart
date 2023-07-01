@@ -8,11 +8,10 @@
 
 import 'dart:math';
 
+import 'package:embed_ime/embed_ime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../keyboard/embed_text_input.dart';
-import '../layout/layout_converter.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 abstract class EmbedLayout extends StatefulWidget {
@@ -95,6 +94,10 @@ abstract class BaseEmbedTextInputControlState<T extends EmbedLayout>
 
   @override
   bool onKeyEvent(KeyEvent event) {
+    if (event.isEnter && event.isDown) {
+      performEnter();
+      return true;
+    }
     return false;
   }
 

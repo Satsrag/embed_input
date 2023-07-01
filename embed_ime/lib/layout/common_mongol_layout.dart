@@ -139,7 +139,7 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
     if (event.isDown && event.isEnter) {
       final willInsertText = _candidate?.convertInsert('\n');
       if ('\n' == willInsertText) {
-        return false;
+        return super.onKeyEvent(event);
       }
       if (willInsertText != null) {
         super.insert(willInsertText);
@@ -151,7 +151,7 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
       widget.embedTextInput.updateEditingValue(editingValue);
       return true;
     }
-    return false;
+    return super.onKeyEvent(event);
   }
 
   @override

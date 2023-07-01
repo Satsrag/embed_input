@@ -103,7 +103,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     }
     _inputControl?.setCaretRectAndTransform(_caretRect, _editableTransform);
     _inputControl?.setEditingState(_editingState);
-    print("set input control _editingState: $_editingState");
     if (!_layoutDidAttach) {
       _inputControl?.detach();
     }
@@ -259,7 +258,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   @override
   void setEditingState(TextEditingValue value) {
     super.setEditingState(value);
-    print("set editing state: $value");
     _editingState = value;
     _inputControl?.setEditingState(_editingState);
   }
@@ -293,10 +291,6 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       return true;
     }
     final handled = _inputControl?.onKeyEvent(event) ?? false;
-    if (!handled && event.isEnter && event.isDown) {
-      return performTextInputAction();
-    }
-
     return handled;
   }
 
