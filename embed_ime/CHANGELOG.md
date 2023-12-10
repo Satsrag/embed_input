@@ -23,3 +23,7 @@
 ## 0.0.4
 
 * feat: supported text input action.
+
+## 0.0.5
+
+* Candidate Word will be Selected When Input Punctuation [#10](https://github.com/Satsrag/embed_input/issues/10)

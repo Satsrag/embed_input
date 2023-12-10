@@ -1,6 +1,6 @@
 name: menk_embed_ime
 description: Menksoft's old standard Mongol embed IME. Soft/Hard layout and Suggestion words.
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/Satsrag/embed_input
 
 environment:
@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   mongol_code: ^0.3.0
-  embed_ime: #^0.0.3
-    path: ../embed_ime
+  embed_ime: ^0.0.5
+    # path: ../embed_ime
 
 dev_dependencies:
   flutter_test:
