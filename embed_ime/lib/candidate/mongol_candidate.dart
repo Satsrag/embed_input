@@ -100,17 +100,10 @@ class MongolCandidate {
       _showOrRefresh();
       return null;
     } else {
-      final insertText = _selectWordFromSuggestionsIfNeeded(' ');
-      if (' ' == insertText) {
-        if (' ' == text) {
-          return text;
-        }
-        return '$text ';
-      } else {
-        layoutTextConverter.confirmWord(insertText);
-        _showOrRefresh();
-        return '$insertText$text ';
-      }
+      // Here the text is a Mongolian punctuation.
+      layoutTextConverter.confirmWord(text);
+      _showOrRefresh();
+      return '$text ';
     }
   }
 
