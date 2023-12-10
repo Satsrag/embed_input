@@ -138,6 +138,8 @@ class Context {
         Menksoft.FINA_SHA == previousCode ||
         // JA
         Menksoft.MEDI_JA_FVS1 == previousCode ||
+        // YA
+        Menksoft.MEDI_YA_FVS2 == previousCode ||
         // RA
         Menksoft.FINA_RA == previousCode ||
         // WA
