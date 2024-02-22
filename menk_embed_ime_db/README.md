@@ -82,22 +82,7 @@ void main() {
 }
 ```
 
-If your app support `Web`, I recommend you to set optional params `dbUrl` and `sqlite3Url`. 
-
-```dart
-void main() {
-  runApp(const DemoApp());
-  initMenkDB(
-    dbUrl: "https://menk_ime.db/remote/path",
-    sqlite3Url: "https://sqlite3.wasm/remote/path",
-  );
-}
-```
-
-Upload [menk_ime.db](https://github.com/Satsrag/embed_input/blob/main/menk_embed_ime_db/db/menk_ime.db) and [sqlite3.wasm](https://github.com/Satsrag/embed_input/blob/main/menk_embed_ime_db/sqlite3.wasm) to your object server supporting CDN. These files are too large to maybe freeze your Web app server if you do not set `dbUrl` and `sqlite3Url`. If you not setting these parameters, this package will fetch these files from your Web app server.
-
-`dbUrl` is the URL of the `menk_ime.db` file you uploaded.
-`sqlite3Url` is the URL of the `sqlite3.wasm` file you uploaded.
+> Note: This library is using asset files `sqlite3.wasm` and `menk_ime.db`. On the Web, these asset files may freeze your web app server because these files are too large and load from the web app server. In that case, I recommend you upload all asset files to your CDN server and customize initializing the engine using `initializeEngine`method with `assetBase`parameter, see [this](https://docs.flutter.dev/platform-integration/web/initialization#initializing-the-engine) for more details.
 
 #### 4. Use menk_embed_ime_db
 

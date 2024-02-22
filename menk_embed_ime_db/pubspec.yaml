@@ -16,7 +16,6 @@ dependencies:
   path: ^1.8.2
   sqlite3: ^1.11.1
   sqlite3_flutter_libs: ^0.5.15
-  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:

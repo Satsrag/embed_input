@@ -9,8 +9,7 @@ import 'package:sqlite3/sqlite3.dart';
 CommonDatabase? menkDB;
 
 /// init Menksoft old code word database for platform other than web.
-/// [dbUrl] and [sqlite3Url] will not need to set. They are for web platform.
-void internalMenkDBInit({String? dbUrl, String? sqlite3Url}) async {
+void internalMenkDBInit() async {
   if (menkDB == null) {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "menk_ime.db");

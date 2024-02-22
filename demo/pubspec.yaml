@@ -9,13 +9,13 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  mongol: ^6.0.0
-    # git:
-    #   url: git@github.com:Satsrag/mongol.git
+  mongol: ^7.0.0
+#    git:
+#      url: git@github.com:suragch/mongol.git
   menk_embed_ime_db: #^0.0.1
     path: ../menk_embed_ime_db
-  zcode_embed_ime_db: #^0.0.2
-    path: ../zcode_embed_ime_db
+  zcode_embed_ime_db: ^0.0.2
+#    path: ../zcode_embed_ime_db
   
 
 dev_dependencies:
