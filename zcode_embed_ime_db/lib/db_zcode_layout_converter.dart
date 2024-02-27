@@ -5,19 +5,14 @@ import 'db_web.dart' if (dart.library.io) 'db_other.dart';
 
 /// init zcode word database.
 ///
-/// If your app support `Web`, I recommend you to set optional params `dbUrl` and `sqlite3Url`.
-///
-/// Upload [zcode_ime.db](https://github.com/Satsrag/embed_input/blob/main/zcode_embed_ime_db/db/zcode_ime.db)
-/// and [sqlite3.wasm](https://github.com/Satsrag/embed_input/blob/main/zcode_embed_ime_db/sqlite3.wasm)
-/// to your object server supporting CDN. These files are too large to maybe
-/// freeze your Web app server if you do not set [dbUrl] and [sqlite3Url]. If
-/// you not setting these parameters, this package will fetch these files from
-/// your Web app server.
-///
-/// [dbUrl] is the URL of the `zcode_ime.db` file you uploaded.
-/// [sqlite3Url] is the URL of the `sqlite3.wasm` file you uploaded.
-void initZcodeDB({String? dbUrl, String? sqlite3Url}) {
-  internalZcodeDBInit(dbUrl: dbUrl, sqlite3Url: sqlite3Url);
+/// This library is using asset files `sqlite3.wasm` and `zcode_ime.db`.
+/// On the Web, these asset files may freeze your web app server because these
+/// files are too large and load from the web app server. In that case,
+/// I recommend you upload all asset files to your CDN server and customize
+/// initializing the engine using `initializeEngine` method with `assetBase`
+/// parameter, see [this](https://docs.flutter.dev/platform-integration/web/initialization#initializing-the-engine) for more details.
+void initZcodeDB() {
+  internalZcodeDBInit();
 }
 
 /// Extend [ZcodeLayoutTextConverter] to produce extra words for the Candidate

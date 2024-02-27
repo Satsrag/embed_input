@@ -99,22 +99,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  http:
-    dependency: transitive
-    description:
-      name: http
-      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.13.6"
-  http_parser:
-    dependency: transitive
-    description:
-      name: http_parser
-      sha256: "2aa08ce0341cc9b354a498388e30986515406668dbcc4f7c950c3e715496693b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.2"
   js:
     dependency: transitive
     description:
@@ -185,7 +169,7 @@ packages:
       path: "../menk_embed_ime_db"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   meta:
     dependency: transitive
     description:
@@ -359,14 +343,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
-  typed_data:
-    dependency: transitive
-    description:
-      name: typed_data
-      sha256: facc8d6582f16042dd49f2463ff1bd6e2c9ef9f3d5da3d9b087e244a7b564b3c
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.2"
   vector_math:
     dependency: transitive
     description:
@@ -410,10 +386,9 @@ packages:
   zcode_embed_ime_db:
     dependency: "direct main"
     description:
-      name: zcode_embed_ime_db
-      sha256: "50bb4f1b466f5eabda6dcf4a821feccd9da8b00a0f69e748fd33fb04cb085d97"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../zcode_embed_ime_db"
+      relative: true
+    source: path
     version: "0.0.2"
 sdks:
   dart: ">=3.2.0-0 <4.0.0"
