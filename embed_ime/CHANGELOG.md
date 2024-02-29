@@ -27,3 +27,7 @@
 ## 0.0.5
 
 * Candidate Word will be Selected When Input Punctuation [#10](https://github.com/Satsrag/embed_input/issues/10)
+
+## 0.0.6
+
+* Support Material3

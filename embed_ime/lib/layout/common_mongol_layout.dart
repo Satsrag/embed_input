@@ -366,6 +366,9 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
         padding: EdgeInsets.zero,
         backgroundColor: backgroundColor ??
             (light ? Colors.white : const Color.fromARGB(255, 130, 130, 130)),
@@ -406,6 +409,9 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
         backgroundColor:
             backgroundColor ?? _iconKeyBackgroundColor(selected, light),
         foregroundColor:

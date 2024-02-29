@@ -212,6 +212,9 @@ class _EnglishLayoutState
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
         padding: EdgeInsets.zero,
         backgroundColor: backgroundColor ??
             (light ? Colors.white : const Color.fromARGB(255, 130, 130, 130)),
@@ -243,6 +246,9 @@ class _EnglishLayoutState
       {Color? backgroundColor, Color? foregroundColor, bool selected = false}) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
         padding: EdgeInsets.zero,
         backgroundColor:
             backgroundColor ?? _iconKeyBackgroundColor(selected, light),

@@ -214,6 +214,9 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
           child: Theme(
             data: Theme.of(this.context),
             child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6.0),
+              ),
               child: SizedBox(
                 width: switcherWidth,
                 height: switcherHeight,
@@ -229,7 +232,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
                       },
                       child: const Icon(Icons.keyboard_outlined, size: 20),
                     ),
-                    const Divider(height: 0),
+                    const Divider(height: 0, color: Colors.grey),
                     InkWell(
                       onTap: () {
                         setState(switchLayout);

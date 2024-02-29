@@ -181,6 +181,10 @@ class MongolCandidate {
         data: Theme.of(this.context),
         child: TextFieldTapRegion(
           child: Card(
+            // set corner radius to 8
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: Builder(builder: (context) {
               final textTheme = Theme.of(context).textTheme;
               final textStyle = textTheme.bodyMedium ?? const TextStyle();
@@ -208,7 +212,7 @@ class MongolCandidate {
                         ),
                       ),
                     ),
-                    const Divider(height: 0),
+                    const Divider(height: 0, color: Colors.grey),
                     Expanded(
                       child: ListView(
                         scrollDirection: Axis.horizontal,
@@ -283,6 +287,9 @@ class MongolCandidate {
         top: top,
         child: TextFieldTapRegion(
           child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: Container(
               constraints: const BoxConstraints(
                 maxHeight: candidateHeight,
@@ -300,7 +307,7 @@ class MongolCandidate {
                   ),
                   SizedBox(
                     width: candidateWidth,
-                    child: const Divider(),
+                    child: const Divider(color: Colors.grey),
                   ),
                   Expanded(
                     child: Row(
