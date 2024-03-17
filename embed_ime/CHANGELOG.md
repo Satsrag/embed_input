@@ -31,3 +31,7 @@
 ## 0.0.6
 
 * Support Material3
+
+## 0.0.7
+
+* fix: `assumeControlNotifier` cannot enable or disable embed ime
