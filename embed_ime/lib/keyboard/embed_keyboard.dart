@@ -53,6 +53,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   TextInputClient? _client;
 
   OverlayEntry? _keyboardSwitcher;
+  bool _isSwitcherShowing = false;
 
   ValueNotifier<bool> get _assumeControlNotifier {
     return widget.assumeControlNotifier ??
@@ -122,14 +123,11 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _client = client;
     _configuration = configuration;
     _inputControl?.updateConfig(configuration);
-    HardwareKeyboard.instance.removeHandler(onKeyEvent);
-    HardwareKeyboard.instance.addHandler(onKeyEvent);
   }
 
   @override
   void detach(TextInputClient client) {
     super.detach(client);
-    HardwareKeyboard.instance.removeHandler(onKeyEvent);
     if (client == _client) {
       _configuration = null;
       _client = null;
@@ -153,13 +151,16 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       _inputControl?.showSoftLayout();
     }
     if (_hasHardKeyboard && !_softLayoutShowing) {
-      _showLayoutSwither();
+      _showOrRefreshLayoutSwitcher('show');
     }
+    HardwareKeyboard.instance.removeHandler(onKeyEvent);
+    HardwareKeyboard.instance.addHandler(onKeyEvent);
   }
 
   @override
   void hide() {
     super.hide();
+    HardwareKeyboard.instance.removeHandler(onKeyEvent);
     _softLayoutShowing = false;
     _inputControl?.hideSoftLayout();
     _inputControl?.detach();
@@ -167,23 +168,19 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
     _hideLayoutShower();
   }
 
-  void _showLayoutSwither() {
-    if (_keyboardSwitcher != null) {
-      _refreshLayoutSwitcher();
-      return;
-    }
-    _keyboardSwitcher = OverlayEntry(
-      builder: _buildKeyboardSwitcherContent,
-    );
-    Overlay.of(context).insert(_keyboardSwitcher!);
-  }
-
-  void _refreshLayoutSwitcher() {
-    if (_keyboardSwitcher != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  void _showOrRefreshLayoutSwitcher(String from) {
+    _isSwitcherShowing = true;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!_isSwitcherShowing) return;
+      if (_keyboardSwitcher != null) {
         _keyboardSwitcher?.markNeedsBuild();
-      });
-    }
+        return;
+      }
+      _keyboardSwitcher = OverlayEntry(
+        builder: _buildKeyboardSwitcherContent,
+      );
+      Overlay.of(context).insert(_keyboardSwitcher!);
+    });
   }
 
   Widget _buildKeyboardSwitcherContent(BuildContext context) {
@@ -256,6 +253,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
   void _hideLayoutShower() {
     _keyboardSwitcher?.remove();
     _keyboardSwitcher = null;
+    _isSwitcherShowing = false;
   }
 
   @override
@@ -287,7 +285,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       _inputControl?.hideSoftLayout();
     }
     _handleShowLayout = false;
-    _showLayoutSwither();
+    _showOrRefreshLayoutSwitcher('onKeyEvent');
 
     if (event.isDoubleClickShift) {
       switchLayout();
@@ -310,7 +308,7 @@ class EmbedKeyboardState extends State<EmbedKeyboard>
       _inputControl?.hideSoftLayout();
     }
     _inputControl?.detach();
-    _refreshLayoutSwitcher();
+    _showOrRefreshLayoutSwitcher('switchLayout');
     setState(() {
       ++_index;
       if (_index >= widget.layoutBuilders.length) _index = 0;

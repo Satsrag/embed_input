@@ -1,3 +1,4 @@
+import 'package:demo/demos/ime_switcher_demo.dart';
 import 'package:demo/demos/input_action_demo.dart';
 import 'package:demo/demos/menk_ime_demo.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,10 @@ class HomeScreen extends StatelessWidget {
         DemoTile(
           title: 'Input Action Demo',
           destination: InputActionDemo(),
+        ),
+        DemoTile(
+          title: 'Ime Switcher Demo',
+          destination: ImeSwitcherDemo(),
         ),
       ],
     );
