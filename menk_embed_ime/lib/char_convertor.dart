@@ -109,7 +109,7 @@ class Context {
     return Location.FINAL;
   }
 
-  bool get isPreviousRound {
+  bool get isPreviousRoundAnytime {
     return 'b' == previousLetter ||
         'p' == previousLetter ||
         'f' == previousLetter ||
@@ -233,13 +233,13 @@ final Map<String, Converter> converters = {
         ];
       case Location.MEDIAL:
         return [
-          context.isPreviousRound ? Menksoft.MEDI_A_BP : Menksoft.MEDI_A,
+          context.isPreviousRoundAnytime ? Menksoft.MEDI_A_BP : Menksoft.MEDI_A,
         ];
       case Location.FINAL:
         return [
           if (context.isPreviousMvs)
             Menksoft.FINA_A_MVS
-          else if (context.isPreviousRound)
+          else if (context.isPreviousRoundAnytime)
             Menksoft.FINA_A_BP
           else
             Menksoft.FINA_A,
@@ -256,7 +256,7 @@ final Map<String, Converter> converters = {
         ];
       case Location.MEDIAL:
         return [
-          if (context.isPreviousRound || context.isPreviousHG)
+          if (context.isPreviousRoundAnytime || context.isPreviousHG)
             Menksoft.MEDI_E_BP
           else
             Menksoft.MEDI_E,
@@ -265,7 +265,7 @@ final Map<String, Converter> converters = {
         return [
           if (context.isPreviousMvs)
             Menksoft.FINA_E_MVS
-          else if (context.isPreviousRound || context.isPreviousHG)
+          else if (context.isPreviousRoundAnytime || context.isPreviousHG)
             Menksoft.FINA_E_BP
           else
             Menksoft.FINA_E,
@@ -294,14 +294,17 @@ final Map<String, Converter> converters = {
               ('u' == context.previousLetter &&
                   !context.needToothU(context.index - 1)))
             Menksoft.MEDI_I_DOUBLE_TOOTH
-          else if (context.isPreviousRound)
+          else if (context.isPreviousRoundAnytime)
             Menksoft.MEDI_I_BP
           else
             Menksoft.MEDI_I
         ];
       case Location.FINAL:
         return [
-          if (context.isPreviousRound) Menksoft.FINA_I_BP else Menksoft.FINA_I,
+          if (context.isPreviousRoundAnytime || context.isPreviousHG)
+            Menksoft.FINA_I_BP
+          else
+            Menksoft.FINA_I,
         ];
     }
   },
@@ -313,12 +316,15 @@ final Map<String, Converter> converters = {
         return [Menksoft.INIT_O];
       case Location.MEDIAL:
         return [
-          context.isPreviousRound ? Menksoft.MEDI_O_BP : Menksoft.MEDI_O,
+          context.isPreviousRoundAnytime ? Menksoft.MEDI_O_BP : Menksoft.MEDI_O,
         ];
       case Location.FINAL:
         return [
-          if (context.isPreviousRound) Menksoft.FINA_O_BP else Menksoft.FINA_O,
-          if (!context.isPreviousRound) Menksoft.FINA_O_FVS1
+          if (context.isPreviousRoundAnytime)
+            Menksoft.FINA_O_BP
+          else
+            Menksoft.FINA_O,
+          if (!context.isPreviousRoundAnytime) Menksoft.FINA_O_FVS1
         ];
     }
   },
@@ -330,23 +336,23 @@ final Map<String, Converter> converters = {
         return [Menksoft.INIT_UE];
       case Location.MEDIAL:
         return [
-          if ((context.isPreviousRound || context.isPreviousHG) &&
+          if ((context.isPreviousRoundAnytime || context.isPreviousHG) &&
               context.needToothU(context.index))
             Menksoft.MEDI_UE_FVS1_BP
           else if (context.needToothU(context.index))
             Menksoft.MEDI_UE_FVS1
-          else if (context.isPreviousRound || context.isPreviousHG)
+          else if (context.isPreviousRoundAnytime || context.isPreviousHG)
             Menksoft.MEDI_U_BP
           else
             Menksoft.MEDI_U,
         ];
       case Location.FINAL:
         return [
-          if (context.isPreviousRound || context.isPreviousHG)
+          if (context.isPreviousRoundAnytime || context.isPreviousHG)
             Menksoft.FINA_UE_BP
           else
             Menksoft.FINA_UE,
-          if (context.isPreviousRound || context.isPreviousHG)
+          if (context.isPreviousRoundAnytime || context.isPreviousHG)
             Menksoft.FINA_UE_FVS1_BP
           else
             Menksoft.FINA_UE_FVS1,
@@ -449,7 +455,9 @@ final Map<String, Converter> converters = {
         ];
       case Location.MEDIAL:
         return [
-          if (context.isNextMale)
+          if (context.isNextMale && context.canUseMvs)
+            Menksoft.MEDI_QA_FVS3
+          else if (context.isNextMale)
             Menksoft.MEDI_QA_TOOTH
           else if (context.isNextOU)
             Menksoft.MEDI_QA_FEM_OU
@@ -509,7 +517,7 @@ final Map<String, Converter> converters = {
         return [Menksoft.INIT_MA_TOOTH];
       case Location.MEDIAL:
         return [
-          if (context.isPreviousRound ||
+          if (context.isPreviousRoundAnytime ||
               context.previousLetter == 'N' ||
               context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
             Menksoft.MEDI_MA_BP
@@ -530,7 +538,7 @@ final Map<String, Converter> converters = {
       case Location.MEDIAL:
         return [
           if (context.canUseMvs) Menksoft.FINA_LA,
-          if (context.isPreviousRound ||
+          if (context.isPreviousRoundAnytime ||
               context.previousLetter == 'N' ||
               context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
             Menksoft.MEDI_LA_BP
@@ -773,7 +781,7 @@ final Map<String, Converter> converters = {
         return [Menksoft.INIT_LHA];
       case Location.MEDIAL:
         return [
-          if (context.isPreviousRound ||
+          if (context.isPreviousRoundAnytime ||
               context.previousLetter == 'N' ||
               context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
             Menksoft.MEDI_LHA_BP
@@ -782,7 +790,7 @@ final Map<String, Converter> converters = {
         ];
       case Location.FINAL:
         return [
-          if (context.isPreviousRound ||
+          if (context.isPreviousRoundAnytime ||
               context.previousLetter == 'N' ||
               context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
             Menksoft.FINA_LHA_BP
@@ -841,11 +849,11 @@ final Map<String, Converter> uncommonChars = {
     switch (context.location) {
       case Location.MEDIAL:
         return [
-          if ((context.isPreviousRound || context.isPreviousHG))
+          if ((context.isPreviousRoundAnytime || context.isPreviousHG))
             Menksoft.MEDI_UE_FVS1_BP
           else
             Menksoft.MEDI_UE_FVS1,
-          if (!context.isPreviousRound && !context.isPreviousHG)
+          if (!context.isPreviousRoundAnytime && !context.isPreviousHG)
             Menksoft.MEDI_UE_FVS2,
         ];
       default:
