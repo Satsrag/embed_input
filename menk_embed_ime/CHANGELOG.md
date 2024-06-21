@@ -9,3 +9,7 @@
 ## 0.0.3
 
 * Fixed: Cannot input word like beye [#9](https://github.com/Satsrag/embed_input/issues/9)
+
+## 0.0.4
+
+* Fixed: Cannot input word like aha and dehi [#9](https://github.com/Satsrag/embed_input/issues/9)
