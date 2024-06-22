@@ -7,3 +7,7 @@
 ## 0.0.2
 
 * Remove params dbUrl and sqliteUrl from initMenkDB(). On Web, recommend to see [this](https://docs.flutter.dev/platform-integration/web/initialization#initializing-the-engine) to config assets loading.
+
+## 0.0.3
+
+* Fix: When we click the space button, we sometimes cannot type space.[#12](https://github.com/Satsrag/embed_input/issues/12)
