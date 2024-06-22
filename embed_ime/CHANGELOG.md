@@ -35,3 +35,7 @@
 ## 0.0.7
 
 * fix: `assumeControlNotifier` cannot enable or disable embed ime
+
+## 0.0.8
+
+* fix: When we click the space button, we sometimes type two spaces.
