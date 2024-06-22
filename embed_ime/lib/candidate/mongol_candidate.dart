@@ -103,6 +103,9 @@ class MongolCandidate {
       // Here the text is a Mongolian punctuation.
       layoutTextConverter.confirmWord(text);
       _showOrRefresh();
+      if (text == ' ') {
+        return ' ';
+      }
       return '$text ';
     }
   }

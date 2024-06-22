@@ -34,7 +34,9 @@ class DBMenkLayoutConverter extends MenkLayoutConverter {
   @override
   void confirmWord(String word) {
     super.confirmWord(word);
-    final table = latinForCode(word.trim().codeUnitAt(0));
+    final wordTrim = word.trim();
+    if (wordTrim.isEmpty) return;
+    final table = latinForCode(wordTrim.codeUnitAt(0));
     if (table.isNotEmpty) {
       final words = _nextSuggestion(table, word);
       suggestionWords.addAll(words);
