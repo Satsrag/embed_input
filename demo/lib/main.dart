@@ -10,8 +10,8 @@ import 'demos/zcode_ime_demo.dart';
 
 void main() {
   runApp(const DemoApp());
-  // initZcodeDB();
-  // initMenkDB();
+  initZcodeDB();
+  initMenkDB();
 }
 
 class DemoApp extends StatelessWidget {
