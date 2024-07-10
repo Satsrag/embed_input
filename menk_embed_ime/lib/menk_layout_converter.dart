@@ -15,14 +15,18 @@ class MenkLayoutConverter with LayoutConverter {
   void appendLayoutText(String text) {
     super.appendLayoutText(text);
     suggestionWords.clear();
-    suggestionWords.addAll(suggestion(layoutText));
+    final (latin, suggestions) = suggestion(layoutText);
+    layoutText = latin;
+    suggestionWords.addAll(suggestions);
   }
 
   @override
   void backspaceLayoutText(bool clear) {
     super.backspaceLayoutText(clear);
     suggestionWords.clear();
-    suggestionWords.addAll(suggestion(layoutText));
+    final (latin, suggestions) = suggestion(layoutText);
+    layoutText = latin;
+    suggestionWords.addAll(suggestions);
   }
 
   @override

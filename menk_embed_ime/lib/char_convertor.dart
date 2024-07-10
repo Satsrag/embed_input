@@ -26,13 +26,13 @@ final Map<String, String> memoryWords = {
   'ier': '',
   'ien': '',
   'iyen': '',
+  'dagan': '',
+  'degen': ''
 };
 
-List<String> suggestion(String latin) {
-  final suggestions = algorithmSuggestion(latin);
+(String, List<String>) suggestion(String latin) {
+  final (correctedLatin, suggestions) = algorithmSuggestion(latin);
   final memoryWord = memoryWords[latin];
-  // final dbSuggestions = db.dbSuggestion(latin);
-  // suggestions.insertAll(1, dbSuggestions);
   if (memoryWord != null) {
     suggestions.insert(0, memoryWord);
   }
@@ -42,40 +42,63 @@ List<String> suggestion(String latin) {
   for (var suggestion in suggestions) {
     removeDuplicate[ShapeUtil.getShape(suggestion)] = suggestion;
   }
-  return removeDuplicate.values.toList();
+  return (correctedLatin, removeDuplicate.values.toList());
 }
 
+// todo delete
 List<String> nextSuggestion(String latin, String menkString) {
   // return db.nextSuggestion(menkString);
   return List.empty();
 }
 
-List<String> algorithmSuggestion(String latin) {
-  latin = latin.replaceAll('ng', 'N');
+(String, List<String>) algorithmSuggestion(String latin) {
+  var correctedLatin = latin.replaceAll('ng', 'N');
   final List<String> menkStrings = [''];
-  for (int i = 0; i < latin.length; i++) {
-    final currentLetter = latin[i];
-    final length = menkStrings.length;
-    for (var j = 0; j < length; j++) {
-      final menkString = menkStrings[j];
-      final converterContext = Context(
-        index: i,
-        latin: latin,
-        previousCode: menkString.isNotEmpty
-            ? menkString.codeUnitAt(menkString.length - 1)
-            : null,
-      );
-      final codes = converters[currentLetter]?.call(converterContext);
-      if (codes == null) continue;
-      menkStrings[j] = menkString + String.fromCharCode(codes[0]);
-      if (codes.length > 1) {
-        for (var k = 1; k < codes.length; k++) {
-          menkStrings.add(menkString + String.fromCharCode(codes[k]));
+  for (;;) {
+    menkStrings.clear();
+    menkStrings.add('');
+    var shouldContine = false;
+    for (int i = 0; i < correctedLatin.length; i++) {
+      final currentLetter = correctedLatin[i];
+      final length = menkStrings.length;
+      var shouldBreak = false;
+      for (var j = 0; j < length; j++) {
+        final menkString = menkStrings[j];
+        final converterContext = Context(
+          index: i,
+          latin: correctedLatin,
+          previousCode: menkString.isNotEmpty
+              ? menkString.codeUnitAt(menkString.length - 1)
+              : null,
+        );
+        final codes = converters[currentLetter]?.call(converterContext);
+        if (codes == null) {
+          // current letter is not supported, delete the current letter
+          if (i == 0) {
+            correctedLatin = correctedLatin.substring(1);
+          } else if (i >= correctedLatin.length) {
+            correctedLatin = correctedLatin.substring(0, i - 1);
+          } else {
+            correctedLatin = correctedLatin.substring(0, i) +
+                correctedLatin.substring(i + 1);
+          }
+          shouldContine = true;
+          shouldBreak = true;
+          break;
+        }
+        menkStrings[j] = menkString + String.fromCharCode(codes[0]);
+        if (codes.length > 1) {
+          for (var k = 1; k < codes.length; k++) {
+            menkStrings.add(menkString + String.fromCharCode(codes[k]));
+          }
         }
       }
+      if (shouldBreak) break;
     }
+    if (shouldContine) continue;
+    break;
   }
-  return menkStrings;
+  return (correctedLatin, menkStrings);
 }
 
 typedef Converter = List<int> Function(Context context);
@@ -224,6 +247,11 @@ class Context {
   bool get isNaima {
     final naimaIndex = latin.indexOf('naima');
     return naimaIndex >= 0 && latin[index] == 'i' && naimaIndex + 2 == index;
+  }
+
+  bool get isJixiye {
+    final jixiyeIndex = latin.indexOf('jixiye');
+    return jixiyeIndex >= 0 && latin[index] == 'x' && jixiyeIndex + 2 == index;
   }
 }
 
@@ -641,6 +669,31 @@ final Map<String, Converter> converters = {
       case Location.ISOLATE:
         return [Menksoft.ISOL_SHA];
       case Location.INITIAL:
+        return [
+          if (context.nextLetter == 'i')
+            Menksoft.INIT_SA_TOOTH
+          else
+            Menksoft.INIT_SHA_TOOTH
+        ];
+      case Location.MEDIAL:
+        return [
+          if (context.isJixiye) ...[
+            Menksoft.MEDI_SHA_TOOTH,
+            Menksoft.MEDI_SA_TOOTH
+          ] else if (context.nextLetter == 'i')
+            Menksoft.MEDI_SA_TOOTH
+          else
+            Menksoft.MEDI_SHA_TOOTH
+        ];
+      case Location.FINAL:
+        return [Menksoft.FINA_SHA];
+    }
+  },
+  'X': (context) {
+    switch (context.location) {
+      case Location.ISOLATE:
+        return [Menksoft.ISOL_SHA];
+      case Location.INITIAL:
         return [Menksoft.INIT_SHA_TOOTH];
       case Location.MEDIAL:
         return [Menksoft.MEDI_SHA_TOOTH];
@@ -687,6 +740,8 @@ final Map<String, Converter> converters = {
   },
   'D': (context) {
     switch (context.location) {
+      case Location.ISOLATE:
+        return [Menksoft.ISOL_DA];
       case Location.INITIAL:
         return [Menksoft.INIT_DA_FVS1];
       default:

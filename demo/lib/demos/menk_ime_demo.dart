@@ -58,7 +58,7 @@ class _MenkImeDemoState extends State<MenkImeDemo> {
             TextFieldTapRegion(
               child: EmbedKeyboard(
                 layoutBuilders: [
-                  (i) => MenkLayout(i, converter: DBMenkLayoutConverter()),
+                  MenkLayout.create,
                   EnglishLayout.create,
                 ],
               ),
