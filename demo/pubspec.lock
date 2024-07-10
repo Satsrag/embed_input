@@ -55,7 +55,7 @@ packages:
       path: "../embed_ime"
       relative: true
     source: path
-    version: "0.0.7"
+    version: "0.0.8"
   fake_async:
     dependency: transitive
     description:
@@ -167,7 +167,7 @@ packages:
       path: "../menk_embed_ime_db"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   meta:
     dependency: transitive
     description:

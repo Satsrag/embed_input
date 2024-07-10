@@ -220,6 +220,11 @@ class Context {
     return (latin.endsWith('a') || latin.endsWith('e')) &&
         index == latin.length - 2;
   }
+
+  bool get isNaima {
+    final naimaIndex = latin.indexOf('naima');
+    return naimaIndex >= 0 && latin[index] == 'i' && naimaIndex + 2 == index;
+  }
 }
 
 final Map<String, Converter> converters = {
@@ -244,6 +249,14 @@ final Map<String, Converter> converters = {
           else
             Menksoft.FINA_A,
         ];
+    }
+  },
+  'A': (context) {
+    switch (context.location) {
+      case Location.MEDIAL:
+        return [Menksoft.MEDI_A_FVS1];
+      default:
+        return converters['a']!.call(context);
     }
   },
   'e': (context) {
@@ -272,6 +285,18 @@ final Map<String, Converter> converters = {
         ];
     }
   },
+  'E': (context) {
+    switch (context.location) {
+      case Location.ISOLATE:
+        return [Menksoft.ISOL_EE];
+      case Location.INITIAL:
+        return [Menksoft.INIT_EE];
+      case Location.MEDIAL:
+        return [Menksoft.MEDI_EE];
+      case Location.FINAL:
+        return [Menksoft.FINA_EE];
+    }
+  },
   'i': (context) {
     switch (context.location) {
       case Location.ISOLATE:
@@ -286,9 +311,8 @@ final Map<String, Converter> converters = {
         ];
       case Location.MEDIAL:
         return [
-          if (context.latin.endsWith('naima'))
-            Menksoft.MEDI_I
-          else if ('a' == context.previousLetter ||
+          if (context.isNaima) Menksoft.MEDI_I,
+          if ('a' == context.previousLetter ||
               'e' == context.previousLetter ||
               'o' == context.previousLetter ||
               ('u' == context.previousLetter &&
@@ -328,6 +352,16 @@ final Map<String, Converter> converters = {
         ];
     }
   },
+  'O': (context) {
+    switch (context.location) {
+      case Location.INITIAL:
+        return [Menksoft.MEDI_O];
+      case Location.MEDIAL:
+        return [Menksoft.MEDI_O_FVS1];
+      default:
+        return converters['o']!.call(context);
+    }
+  },
   'u': (context) {
     switch (context.location) {
       case Location.ISOLATE:
@@ -359,16 +393,19 @@ final Map<String, Converter> converters = {
         ];
     }
   },
-  'E': (context) {
+  'U': (context) {
     switch (context.location) {
-      case Location.ISOLATE:
-        return [Menksoft.ISOL_EE];
-      case Location.INITIAL:
-        return [Menksoft.INIT_EE];
       case Location.MEDIAL:
-        return [Menksoft.MEDI_EE];
-      case Location.FINAL:
-        return [Menksoft.FINA_EE];
+        return [
+          if ((context.isPreviousRoundAnytime || context.isPreviousHG))
+            Menksoft.MEDI_UE_FVS1_BP
+          else
+            Menksoft.MEDI_UE_FVS1,
+          if (!context.isPreviousRoundAnytime && !context.isPreviousHG)
+            Menksoft.MEDI_UE_FVS2,
+        ];
+      default:
+        return converters['u']!.call(context);
     }
   },
   'n': (context) {
@@ -468,6 +505,18 @@ final Map<String, Converter> converters = {
         return [Menksoft.FINA_QA];
     }
   },
+  'H': (context) {
+    switch (context.location) {
+      case Location.ISOLATE:
+        return [Menksoft.ISOL_HAA];
+      case Location.INITIAL:
+        return [Menksoft.INIT_HAA];
+      case Location.MEDIAL:
+        return [Menksoft.MEDI_HAA];
+      case Location.FINAL:
+        return [Menksoft.FINA_HAA];
+    }
+  },
   'g': (context) {
     switch (context.location) {
       case Location.ISOLATE:
@@ -549,6 +598,32 @@ final Map<String, Converter> converters = {
         return [Menksoft.FINA_LA];
     }
   },
+  'L': (context) {
+    switch (context.location) {
+      case Location.ISOLATE:
+        return [Menksoft.ISOL_LHA];
+      case Location.INITIAL:
+        return [Menksoft.INIT_LHA];
+      case Location.MEDIAL:
+        return [
+          if (context.isPreviousRoundAnytime ||
+              context.previousLetter == 'N' ||
+              context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
+            Menksoft.MEDI_LHA_BP
+          else
+            Menksoft.MEDI_LHA
+        ];
+      case Location.FINAL:
+        return [
+          if (context.isPreviousRoundAnytime ||
+              context.previousLetter == 'N' ||
+              context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
+            Menksoft.FINA_LHA_BP
+          else
+            Menksoft.FINA_LHA
+        ];
+    }
+  },
   's': (context) {
     switch (context.location) {
       case Location.ISOLATE:
@@ -593,7 +668,12 @@ final Map<String, Converter> converters = {
       case Location.ISOLATE:
         return [Menksoft.ISOL_DA];
       case Location.INITIAL:
-        return [Menksoft.INIT_DA_TOOTH, Menksoft.INIT_DA_FVS1];
+        return [
+          if (context.latin.length == 2)
+            Menksoft.INIT_DA_FVS1
+          else
+            Menksoft.INIT_DA_TOOTH
+        ];
       case Location.MEDIAL:
         return [
           if (context.isConsonant(context.nextLetter))
@@ -603,6 +683,14 @@ final Map<String, Converter> converters = {
         ];
       case Location.FINAL:
         return [Menksoft.FINA_DA, Menksoft.FINA_DA_FVS1];
+    }
+  },
+  'D': (context) {
+    switch (context.location) {
+      case Location.INITIAL:
+        return [Menksoft.INIT_DA_FVS1];
+      default:
+        return [];
     }
   },
   'q': (context) {
@@ -749,18 +837,6 @@ final Map<String, Converter> converters = {
         return [Menksoft.FINA_ZA];
     }
   },
-  'H': (context) {
-    switch (context.location) {
-      case Location.ISOLATE:
-        return [Menksoft.ISOL_HAA];
-      case Location.INITIAL:
-        return [Menksoft.INIT_HAA];
-      case Location.MEDIAL:
-        return [Menksoft.MEDI_HAA];
-      case Location.FINAL:
-        return [Menksoft.FINA_HAA];
-    }
-  },
   'R': (context) {
     switch (context.location) {
       case Location.ISOLATE:
@@ -771,32 +847,6 @@ final Map<String, Converter> converters = {
         return [Menksoft.MEDI_ZRA];
       case Location.FINAL:
         return [Menksoft.FINA_ZRA];
-    }
-  },
-  'L': (context) {
-    switch (context.location) {
-      case Location.ISOLATE:
-        return [Menksoft.ISOL_LHA];
-      case Location.INITIAL:
-        return [Menksoft.INIT_LHA];
-      case Location.MEDIAL:
-        return [
-          if (context.isPreviousRoundAnytime ||
-              context.previousLetter == 'N' ||
-              context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
-            Menksoft.MEDI_LHA_BP
-          else
-            Menksoft.MEDI_LHA
-        ];
-      case Location.FINAL:
-        return [
-          if (context.isPreviousRoundAnytime ||
-              context.previousLetter == 'N' ||
-              context.previousCode == Menksoft.MEDI_GA_FVS3_TOOTH)
-            Menksoft.FINA_LHA_BP
-          else
-            Menksoft.FINA_LHA
-        ];
     }
   },
   'Z': (context) {
@@ -823,43 +873,6 @@ final Map<String, Converter> converters = {
         return [Menksoft.FINA_CHI];
     }
   },
-  ...uncommonChars,
-};
-
-final Map<String, Converter> uncommonChars = {
-  'A': (context) {
-    switch (context.location) {
-      case Location.MEDIAL:
-        return [Menksoft.MEDI_A_FVS1];
-      default:
-        return converters['a']!.call(context);
-    }
-  },
-  'O': (context) {
-    switch (context.location) {
-      case Location.INITIAL:
-        return [Menksoft.MEDI_O];
-      case Location.MEDIAL:
-        return [Menksoft.MEDI_O_FVS1];
-      default:
-        return converters['o']!.call(context);
-    }
-  },
-  'U': (context) {
-    switch (context.location) {
-      case Location.MEDIAL:
-        return [
-          if ((context.isPreviousRoundAnytime || context.isPreviousHG))
-            Menksoft.MEDI_UE_FVS1_BP
-          else
-            Menksoft.MEDI_UE_FVS1,
-          if (!context.isPreviousRoundAnytime && !context.isPreviousHG)
-            Menksoft.MEDI_UE_FVS2,
-        ];
-      default:
-        return converters['u']!.call(context);
-    }
-  }
 };
 
 String latinForCode(int code) {
