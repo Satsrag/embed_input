@@ -39,3 +39,9 @@
 ## 0.0.8
 
 * fix: When we click the space button, we sometimes type two spaces.
+
+## 0.0.9
+
+* fix: Safe area of the keyboard is transparent.
+* fix: Tap the left bottom corner of the keyboard, the keyboard will disappear.
+* fix: Sometimes the soft candidate width is too small to cannot show the layout text (latin).

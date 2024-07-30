@@ -11,3 +11,7 @@
 ## 0.0.3
 
 * Fix: When we click the space button, we sometimes cannot type space.[#12](https://github.com/Satsrag/embed_input/issues/12)
+
+## 0.0.4
+
+* Fix: Crash when typing unsupported keyboard keys like `v`.

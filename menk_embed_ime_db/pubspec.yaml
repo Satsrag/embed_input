@@ -1,6 +1,6 @@
 name: menk_embed_ime_db
 description: Menksoft old code standard Mongol embed IME. Soft/Hard layout, word database, words suggestion and next word suggestion.
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/Satsrag/embed_input
 
 environment:
@@ -10,8 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  menk_embed_ime: #^0.0.4
-    path: ../menk_embed_ime
+  menk_embed_ime: ^0.0.5
+    # path: ../menk_embed_ime
   path_provider: ^2.0.14
   path: ^1.8.2
   sqlite3: ^1.11.1

@@ -35,7 +35,7 @@ If you want to use the `mongol` library, import the  the `mongol` library follow
 
 ```yaml
 dependencies:
-  menk_embed_ime_db: ^0.0.1
+  menk_embed_ime_db: ^0.0.4
 ```
 
 Run `Flutter pub get`.
