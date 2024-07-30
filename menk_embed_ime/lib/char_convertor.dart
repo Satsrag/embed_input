@@ -390,6 +390,8 @@ final Map<String, Converter> converters = {
         return converters['o']!.call(context);
     }
   },
+  'v': (context) => converters['o']!.call(context),
+  'V': (context) => converters['O']!.call(context),
   'u': (context) {
     switch (context.location) {
       case Location.ISOLATE:

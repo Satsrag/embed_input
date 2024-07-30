@@ -56,6 +56,7 @@ class DBMenkLayoutConverter extends MenkLayoutConverter {
     if (latin.isEmpty) return [];
     var qlatin = latin.toLowerCase();
     qlatin = qlatin.replaceAll('o', 'ʊ');
+    qlatin = qlatin.replaceAll('v', 'ʊ');
     final table = qlatin.substring(0, 1);
     final result = menkDB?.select(
         'select word from $table where latin like \'$qlatin%\' order by count desc limit 15');
