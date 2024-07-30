@@ -204,18 +204,23 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
     } else {
       _qwerty = _qwerty.toLowerCase();
     }
-    return SafeArea(
+    return InkWell(
+      // On IOS, user tap on left bottom corner of the screen, the keyboard will dismiss.
+      // So we need to intercept the tap event.
+      onTap: ()=>{},
       child: Container(
-        width: double.infinity,
-        color: light
-            ? const Color.fromARGB(255, 200, 201, 208)
-            : const Color.fromARGB(255, 83, 83, 83),
-        child: Center(
-          child: SizedBox(
-            width: width,
-            child: _type == EnglishLayoutType.letter
-                ? _buildLetterLayout(letterKeyWidth, letterHeight, light)
-                : _buildPunctuationLayout(letterKeyWidth, letterHeight, light),
+         width: double.infinity,
+            color: light
+                ? const Color.fromARGB(255, 200, 201, 208)
+                : const Color.fromARGB(255, 83, 83, 83),
+        child: SafeArea(
+          child: Center(
+            child: SizedBox(
+              width: width,
+              child: _type == EnglishLayoutType.letter
+                  ? _buildLetterLayout(letterKeyWidth, letterHeight, light)
+                  : _buildPunctuationLayout(letterKeyWidth, letterHeight, light),
+            ),
           ),
         ),
       ),

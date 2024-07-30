@@ -209,8 +209,8 @@ class MongolCandidate {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          layoutTextConverter.layoutText,
-                          style: textTheme.bodyLarge,
+                          labelText,
+                          style: textStyle,
                           maxLines: 1,
                         ),
                       ),

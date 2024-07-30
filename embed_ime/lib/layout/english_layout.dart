@@ -49,12 +49,12 @@ class _EnglishLayoutState
     } else {
       _qwerty = _qwerty.toLowerCase();
     }
-    return SafeArea(
-      child: Container(
-        width: double.infinity,
-        color: light
-            ? const Color.fromARGB(255, 200, 201, 208)
-            : const Color.fromARGB(255, 83, 83, 83),
+    return Container(
+      width: double.infinity,
+      color: light
+          ? const Color.fromARGB(255, 200, 201, 208)
+          : const Color.fromARGB(255, 83, 83, 83),
+      child: SafeArea(
         child: Center(
           child: SizedBox(
             width: width,
