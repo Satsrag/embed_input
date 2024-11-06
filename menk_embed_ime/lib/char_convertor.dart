@@ -446,6 +446,9 @@ final Map<String, Converter> converters = {
         return [Menksoft.INIT_NA_TOOTH];
       case Location.MEDIAL:
         return [
+          if (context.isConsonant(context.nextLetter) &&
+              context.findForeignLetterPrevious(context.index))
+            Menksoft.MEDI_NA_FVS1_TOOTH,
           if (context.canUseMvs)
             Menksoft.MEDI_NA_FVS2
           else if (context.isConsonant(context.nextLetter) ||
@@ -455,9 +458,6 @@ final Map<String, Converter> converters = {
             Menksoft.MEDI_NA_TOOTH
           else
             Menksoft.MEDI_NA_FVS1_TOOTH,
-          // todo MEDI_NA_TOOTH in foreign word 
-          // if (context.findForeignLetterPrevious(context.index))
-          //   Menksoft.MEDI_NA_TOOTH
         ];
       case Location.FINAL:
         return [Menksoft.FINA_NA];
