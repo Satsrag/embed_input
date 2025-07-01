@@ -17,33 +17,28 @@ void internalZcodeDBInit() async {
   final fs = await IndexedDbFileSystem.open(dbName: 'indexedDB');
   // do not ignore slash, use absolute path
   final wordDbName = "/${basename("/zcode_ime.db")}";
-  final exists = fs.exists(wordDbName);
-  final int size;
-  if (exists) {
-    size = fs.sizeOfFile(wordDbName);
-  } else {
-    size = 0;
-  }
-  if (!exists || size != dbLength) {
+  final xOpenResult =
+        fs.xOpen(Sqlite3Filename(wordDbName), SqlFlag.SQLITE_OPEN_READWRITE|SqlFlag.SQLITE_OPEN_CREATE);
+  final int size = xOpenResult.file.xFileSize();
+  xOpenResult.file.xClose();
+  if (size != dbLength) {
     final Uint8List data;
     final key = "packages/zcode_embed_ime_db/db$wordDbName";
     final byteData = await rootBundle.load(key);
     final offset = byteData.offsetInBytes;
     final length = byteData.lengthInBytes;
     data = byteData.buffer.asUint8List(offset, length);
-    if (!exists) {
-      fs.createFile(wordDbName);
-    }
-    fs.write(wordDbName, data, 0);
+    final xOpenResult =
+        fs.xOpen(Sqlite3Filename(wordDbName), SqlFlag.SQLITE_OPEN_READWRITE|SqlFlag.SQLITE_OPEN_CREATE);
+    xOpenResult.file.xWrite(data, 0);
     await fs.flush();
   }
-  final WasmSqlite3 sqlite;
-  final env = SqliteEnvironment(fileSystem: fs);
   const key = "packages/zcode_embed_ime_db/sqlite3.wasm";
   final byteData = await rootBundle.load(key);
   final offset = byteData.offsetInBytes;
   final length = byteData.lengthInBytes;
   final data = byteData.buffer.asUint8List(offset, length);
-  sqlite = await WasmSqlite3.load(data, env);
+  final sqlite = await WasmSqlite3.load(data);
+  sqlite.registerVirtualFileSystem(fs, makeDefault: true);
   zcodeDB = sqlite.open(wordDbName);
 }
