@@ -11,3 +11,9 @@
 ## 0.0.3
 
 * Remove params dbUrl and sqliteUrl from initZcodeDB(). On Web, recommend to see [this](https://docs.flutter.dev/platform-integration/web/initialization#initializing-the-engine) to config assets loading.
+
+## 0.0.4
+
+* Upgrade sqlite3 to 2.4.0.
+
+* Upgrade zcode_embed_ime to 0.0.3.
