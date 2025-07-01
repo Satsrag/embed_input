@@ -15,3 +15,8 @@
 ## 0.0.4
 
 * Fix: Crash when typing unsupported keyboard keys like `v`.
+
+## 0.0.5
+
+* Upgrade menk_embed_ime to 0.0.6.
+* Upgrade sqlite3 to 2.4.0.
