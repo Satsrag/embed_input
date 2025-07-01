@@ -20,3 +20,9 @@
 * From now, lowercase `d` will be typed as `ᠲ` and uppercase `D` will be typed as `ᠳ` except for `do`, `du`, `dagan` and `degen` words.
 * From now, lowercase `xi` will be typed as `ᠰᠢ` and uppercase `Xi` will be typed as `ᠱᠢ` except for `jixiye*`.
 * Special handling for `naima*` word.
+
+## 0.0.6
+
+* Upgrade embed_ime to 0.0.9.
+* Upgrade sqlite3 to 2.4.0.
+* Fixed: Cannot input word sekunt [#16](https://github.com/Satsrag/embed_input/issues/16)
