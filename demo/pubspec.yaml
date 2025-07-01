@@ -13,10 +13,10 @@ dependencies:
     # path: ../../mongol
 #    git:
 #      url: git@github.com:suragch/mongol.git
-  menk_embed_ime_db: #^0.0.1
-    path: ../menk_embed_ime_db
-  zcode_embed_ime_db: #^0.0.2
-    path: ../zcode_embed_ime_db
+  menk_embed_ime_db: ^0.0.5
+    # path: ../menk_embed_ime_db
+  zcode_embed_ime_db: ^0.0.4
+    # path: ../zcode_embed_ime_db
 
 
 dev_dependencies:
