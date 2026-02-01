@@ -196,30 +196,42 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
     final query = MediaQuery.of(context);
     final portrait = query.orientation == Orientation.portrait;
     final width = min(query.size.width, (portrait ? 450.0 : 600.0));
-    final letterKeyWidth = width / 10 - 5;
-    final letterHeight =
-        portrait ? letterKeyWidth * 9 / 7 : letterKeyWidth * 32 / 53;
+
     if (_capslock) {
       _qwerty = _qwerty.toUpperCase();
     } else {
       _qwerty = _qwerty.toLowerCase();
     }
-    return InkWell(
+
+    final backgroundColor = light
+        ? const Color.fromARGB(255, 200, 201, 208)
+        : const Color.fromARGB(255, 83, 83, 83);
+
+    final builder = KeyboardLayoutBuilder(
+      keyboardWidth: width,
+      portrait: portrait,
+    );
+
+    final keys = _type == EnglishLayoutType.letter
+        ? _buildLetterKeys(builder, light)
+        : _buildPunctuationKeys(builder, light);
+
+    return GestureDetector(
       // On IOS, user tap on left bottom corner of the screen, the keyboard will dismiss.
       // So we need to intercept the tap event.
-      onTap: ()=>{},
+      onTap: () {},
       child: Container(
-         width: double.infinity,
-            color: light
-                ? const Color.fromARGB(255, 200, 201, 208)
-                : const Color.fromARGB(255, 83, 83, 83),
+        width: double.infinity,
+        color: backgroundColor,
         child: SafeArea(
           child: Center(
-            child: SizedBox(
-              width: width,
-              child: _type == EnglishLayoutType.letter
-                  ? _buildLetterLayout(letterKeyWidth, letterHeight, light)
-                  : _buildPunctuationLayout(letterKeyWidth, letterHeight, light),
+            child: PaintedKeyboard(
+              keys: keys,
+              keyboardWidth: width,
+              keyboardHeight: builder.totalHeight,
+              light: light,
+              backgroundColor: backgroundColor,
+              onKeyTap: _onKeyTap,
             ),
           ),
         ),
@@ -227,204 +239,15 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
     );
   }
 
-  Widget _buildLetterLayout(
-      double letterKeyWidth, double letterHeight, bool light) {
-    return Column(children: [
-      const SizedBox(height: 5),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          for (int i = 0; i < 10; i++)
-            SizedBox(
-              width: letterKeyWidth,
-              height: letterHeight,
-              child: _buildLetterKey(_qwerty[i], light),
-            ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          SizedBox(width: (letterKeyWidth) / 2),
-          for (int i = 10; i < 19; i++)
-            SizedBox(
-              width: letterKeyWidth,
-              height: letterHeight,
-              child: _buildLetterKey(_qwerty[i], light),
-            ),
-          SizedBox(width: (letterKeyWidth) / 2),
-        ],
-      ),
-      const SizedBox(height: 10),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          SizedBox(
-            width: letterKeyWidth * 3 / 2 + 2.5,
-            height: letterHeight,
-            child: _buildIconKey(Icons.keyboard_capslock, light, () {
-              setState(() => _capslock = !_capslock);
-            }, selected: _capslock),
-          ),
-          for (int i = 19; i < 26; i++)
-            SizedBox(
-              width: letterKeyWidth,
-              height: letterHeight,
-              child: _buildLetterKey(_qwerty[i], light),
-            ),
-          SizedBox(
-            width: letterKeyWidth * 3 / 2 + 2.5,
-            height: letterHeight,
-            child: _buildIconKey(Icons.backspace_outlined, light, () {
-              backspace();
-            }),
-          ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      _buildFourthLine(letterKeyWidth, letterHeight, light),
-      const SizedBox(height: 5),
-    ]);
-  }
-
-  Widget _buildPunctuationLayout(
-      double letterKeyWidth, double letterHeight, bool light) {
-    final punctuation = _type == EnglishLayoutType.punctuation1
-        ? softPunctuation
-        : softPunctuationShift;
-    return Column(children: [
-      const SizedBox(height: 5),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          for (int i = 0; i < 10; i++)
-            SizedBox(
-              width: letterKeyWidth,
-              height: letterHeight,
-              child: _buildLetterKey(punctuation[i], light),
-            ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          for (int i = 10; i < 20; i++)
-            SizedBox(
-              width: letterKeyWidth,
-              height: letterHeight,
-              child: _buildLetterKey(punctuation[i], light),
-            ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          SizedBox(
-            /// reference [punctuation.jpg]
-            width: (letterKeyWidth + 2) * 5 / 3,
-            height: letterHeight,
-            child: _buildLetterKey(
-              _type == EnglishLayoutType.punctuation1 ? '#+=' : '123',
-              light,
-              fontSize: 20,
-              backgroundColor: _iconKeyBackgroundColor(false, light),
-              onPressed: () => setState(() {
-                if (_type == EnglishLayoutType.punctuation1) {
-                  _type = EnglishLayoutType.punctuation2;
-                } else {
-                  _type = EnglishLayoutType.punctuation1;
-                }
-              }),
-            ),
-          ),
-          for (int i = 20; i < 25; i++)
-            SizedBox(
-              width: letterKeyWidth * 4 / 3 + 5 / 3,
-              height: letterHeight,
-              child: _buildLetterKey(punctuation[i], light),
-            ),
-          SizedBox(
-            width: (letterKeyWidth + 2) * 5 / 3,
-            height: letterHeight,
-            child: _buildIconKey(Icons.backspace_outlined, light, () {
-              backspace();
-            }),
-          ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      _buildFourthLine(letterKeyWidth, letterHeight, light),
-      const SizedBox(height: 5),
-    ]);
-  }
-
-  Widget _buildLetterKey(
-    String letter,
-    bool light, {
-    double? fontSize,
-    Color? backgroundColor,
-    VoidCallback? onPressed,
-    bool enableLongPress = true,
-  }) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: EdgeInsets.zero,
-        backgroundColor: backgroundColor ??
-            (light ? Colors.white : const Color.fromARGB(255, 130, 130, 130)),
-        foregroundColor: light ? Colors.black : Colors.white,
-      ),
-      onPressed: onPressed ??
-          () {
-            insert(letter);
-            if (letter == letter.toUpperCase()) {
-              setState(() => _capslock = false);
-            }
-          },
-      onLongPress: enableLongPress
-          ? () {
-              final uppercase = letter.toUpperCase();
-              final lowercase = letter.toLowerCase();
-              final isUppercase = uppercase == letter;
-              insert(isUppercase ? lowercase : uppercase);
-            }
-          : null,
-      child: verticalLetters.contains(letter)
-          ? RotatedBox(
-              quarterTurns: 1,
-              child: Text(
-                letter,
-                style: TextStyle(fontSize: fontSize ?? 20, height: 1),
-              ),
-            )
-          : Text(
-              letter,
-              style: TextStyle(fontSize: fontSize ?? 20, height: 1),
-            ),
-    );
-  }
-
-  Widget _buildIconKey(IconData icon, bool light, VoidCallback? onPressed,
-      {bool selected = false, Color? backgroundColor, Color? foregroundColor}) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        backgroundColor:
-            backgroundColor ?? _iconKeyBackgroundColor(selected, light),
-        foregroundColor:
-            foregroundColor ?? (light ? Colors.black : Colors.white),
-      ),
-      onPressed: onPressed,
-      child: Icon(icon),
-    );
+  void _onKeyTap(KeyData key) {
+    insert(key.textToInsert);
+    // Reset capslock after typing uppercase letter
+    if (_capslock && key.type == KeyType.letter) {
+      final letter = key.textToInsert;
+      if (letter == letter.toUpperCase() && letter != letter.toLowerCase()) {
+        setState(() => _capslock = false);
+      }
+    }
   }
 
   Color _iconKeyBackgroundColor(bool selected, bool light) {
@@ -437,72 +260,345 @@ abstract class CommonMongolLayoutState<Layout extends EmbedLayout>
     }
   }
 
-  Widget _buildFourthLine(
-      double letterKeyWidth, double letterHeight, bool light) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        SizedBox(
-          width: letterKeyWidth * 5 / 4 + 1.25,
-          height: letterHeight,
-          child: _buildLetterKey(
-            _type == EnglishLayoutType.letter ? '123' : mongolEA,
-            light,
-            fontSize: 16,
-            backgroundColor: _iconKeyBackgroundColor(false, light),
-            onPressed: () {
-              setState(() {
-                if (_type == EnglishLayoutType.letter) {
-                  _type = EnglishLayoutType.punctuation1;
-                } else {
-                  _type = EnglishLayoutType.letter;
-                }
-              });
-            },
-            enableLongPress: false,
-          ),
+  List<KeyData> _buildLetterKeys(KeyboardLayoutBuilder builder, bool light) {
+    final List<KeyData> keys = [];
+    final letterKeyWidth = builder.letterKeyWidth;
+    final letterKeyHeight = builder.letterKeyHeight;
+    final keyboardWidth = builder.keyboardWidth;
+    final horizontalGap = builder.horizontalGap;
+
+    // Row 1: q-p (10 keys)
+    keys.addAll(_buildRow(
+      rowIndex: 0,
+      labels: _qwerty.substring(0, 10).split(''),
+      startX: horizontalGap / 2,
+      keyWidth: letterKeyWidth,
+      builder: builder,
+      light: light,
+    ));
+
+    // Row 2: a-l (9 keys) with half-key padding on sides
+    final row2StartX = letterKeyWidth / 2 + horizontalGap;
+    keys.addAll(_buildRow(
+      rowIndex: 1,
+      labels: _qwerty.substring(10, 19).split(''),
+      startX: row2StartX,
+      keyWidth: letterKeyWidth,
+      builder: builder,
+      light: light,
+    ));
+
+    // Row 3: capslock + z-m + backspace
+    final capslockWidth = letterKeyWidth * 3 / 2 + 2.5;
+    final backspaceWidth = letterKeyWidth * 3 / 2 + 2.5;
+    final row3Letters = _qwerty.substring(19, 26).split('');
+
+    // Calculate row 3 layout
+    final row3TotalKeyWidth = capslockWidth + 7 * letterKeyWidth + backspaceWidth;
+    final row3TotalGaps = keyboardWidth - row3TotalKeyWidth;
+    final row3Gap = row3TotalGaps / 10;
+
+    double x = row3Gap / 2;
+    final y = KeyboardLayoutBuilder.topPadding + 2 * (letterKeyHeight + KeyboardLayoutBuilder.rowGap);
+
+    // Capslock key
+    keys.add(KeyData(
+      label: '',
+      icon: Icons.keyboard_capslock,
+      type: KeyType.function,
+      selected: _capslock,
+      visualRect: Rect.fromLTWH(x, y, capslockWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, capslockWidth, letterKeyHeight, 2, builder, isFirst: true),
+      onTap: () => setState(() => _capslock = !_capslock),
+    ));
+    x += capslockWidth + row3Gap;
+
+    // Letter keys z-m
+    for (int i = 0; i < 7; i++) {
+      final letter = row3Letters[i];
+      keys.add(KeyData(
+        label: letter,
+        type: KeyType.letter,
+        isVertical: verticalLetters.contains(letter),
+        visualRect: Rect.fromLTWH(x, y, letterKeyWidth, letterKeyHeight),
+        hitRect: _buildHitRect(x, y, letterKeyWidth, letterKeyHeight, 2, builder),
+        onLongPress: () {
+          final uppercase = letter.toUpperCase();
+          final lowercase = letter.toLowerCase();
+          final isUppercase = uppercase == letter;
+          insert(isUppercase ? lowercase : uppercase);
+        },
+      ));
+      x += letterKeyWidth + row3Gap;
+    }
+
+    // Backspace key
+    keys.add(KeyData(
+      label: '',
+      icon: Icons.backspace_outlined,
+      type: KeyType.function,
+      visualRect: Rect.fromLTWH(x, y, backspaceWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, backspaceWidth, letterKeyHeight, 2, builder, isLast: true),
+      onTap: backspace,
+    ));
+
+    // Row 4
+    keys.addAll(_buildFourthRowKeys(builder, light));
+
+    return keys;
+  }
+
+  List<KeyData> _buildPunctuationKeys(KeyboardLayoutBuilder builder, bool light) {
+    final List<KeyData> keys = [];
+    final letterKeyWidth = builder.letterKeyWidth;
+    final letterKeyHeight = builder.letterKeyHeight;
+    final keyboardWidth = builder.keyboardWidth;
+    final horizontalGap = builder.horizontalGap;
+
+    final punctuation = _type == EnglishLayoutType.punctuation1
+        ? softPunctuation
+        : softPunctuationShift;
+
+    // Row 1: first 10 punctuation
+    keys.addAll(_buildRow(
+      rowIndex: 0,
+      labels: punctuation.substring(0, 10).split(''),
+      startX: horizontalGap / 2,
+      keyWidth: letterKeyWidth,
+      builder: builder,
+      light: light,
+      enableLongPress: false,
+    ));
+
+    // Row 2: next 10 punctuation
+    keys.addAll(_buildRow(
+      rowIndex: 1,
+      labels: punctuation.substring(10, 20).split(''),
+      startX: horizontalGap / 2,
+      keyWidth: letterKeyWidth,
+      builder: builder,
+      light: light,
+      enableLongPress: false,
+    ));
+
+    // Row 3: #+= + 5 punctuation + backspace
+    final switchWidth = (letterKeyWidth + 2) * 5 / 3;
+    final punctKeyWidth = letterKeyWidth * 4 / 3 + 5 / 3;
+    final backspaceWidth = (letterKeyWidth + 2) * 5 / 3;
+
+    final row3TotalKeyWidth = switchWidth + 5 * punctKeyWidth + backspaceWidth;
+    final row3TotalGaps = keyboardWidth - row3TotalKeyWidth;
+    final row3Gap = row3TotalGaps / 8;
+
+    double x = row3Gap / 2;
+    final y = KeyboardLayoutBuilder.topPadding + 2 * (letterKeyHeight + KeyboardLayoutBuilder.rowGap);
+
+    // #+= or 123 switch key
+    keys.add(KeyData(
+      label: _type == EnglishLayoutType.punctuation1 ? '#+=' : '123',
+      type: KeyType.function,
+      fontSize: 20,
+      backgroundColor: _iconKeyBackgroundColor(false, light),
+      visualRect: Rect.fromLTWH(x, y, switchWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, switchWidth, letterKeyHeight, 2, builder, isFirst: true),
+      onTap: () => setState(() {
+        if (_type == EnglishLayoutType.punctuation1) {
+          _type = EnglishLayoutType.punctuation2;
+        } else {
+          _type = EnglishLayoutType.punctuation1;
+        }
+      }),
+    ));
+    x += switchWidth + row3Gap;
+
+    // 5 punctuation keys
+    for (int i = 20; i < 25; i++) {
+      final label = punctuation[i];
+      keys.add(KeyData(
+        label: label,
+        type: KeyType.letter,
+        isVertical: verticalLetters.contains(label),
+        visualRect: Rect.fromLTWH(x, y, punctKeyWidth, letterKeyHeight),
+        hitRect: _buildHitRect(x, y, punctKeyWidth, letterKeyHeight, 2, builder),
+      ));
+      x += punctKeyWidth + row3Gap;
+    }
+
+    // Backspace key
+    keys.add(KeyData(
+      label: '',
+      icon: Icons.backspace_outlined,
+      type: KeyType.function,
+      visualRect: Rect.fromLTWH(x, y, backspaceWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, backspaceWidth, letterKeyHeight, 2, builder, isLast: true),
+      onTap: backspace,
+    ));
+
+    // Row 4
+    keys.addAll(_buildFourthRowKeys(builder, light));
+
+    return keys;
+  }
+
+  List<KeyData> _buildRow({
+    required int rowIndex,
+    required List<String> labels,
+    required double startX,
+    required double keyWidth,
+    required KeyboardLayoutBuilder builder,
+    required bool light,
+    bool enableLongPress = true,
+  }) {
+    final List<KeyData> keys = [];
+    final letterKeyHeight = builder.letterKeyHeight;
+    final horizontalGap = builder.horizontalGap;
+    final y = KeyboardLayoutBuilder.topPadding + rowIndex * (letterKeyHeight + KeyboardLayoutBuilder.rowGap);
+
+    double x = startX;
+    for (int i = 0; i < labels.length; i++) {
+      final label = labels[i];
+      keys.add(KeyData(
+        label: label,
+        type: KeyType.letter,
+        isVertical: verticalLetters.contains(label),
+        visualRect: Rect.fromLTWH(x, y, keyWidth, letterKeyHeight),
+        hitRect: _buildHitRect(
+          x, y, keyWidth, letterKeyHeight, rowIndex, builder,
+          isFirst: i == 0,
+          isLast: i == labels.length - 1,
         ),
-        SizedBox(
-          width: letterKeyWidth * 5 / 4 + 1.25,
-          height: letterHeight,
-          child: _buildIconKey(
-            Icons.language,
-            light,
-            () => widget.embedTextInput.switchLayout(),
-          ),
-        ),
-        SizedBox(
-          width: letterKeyWidth,
-          height: letterHeight,
-          child: _buildLetterKey(mongolCommaFullstop[0], light),
-        ),
-        SizedBox(
-          width: 3 * letterKeyWidth + 10,
-          height: letterHeight,
-          child: _buildLetterKey(
-            layoutName,
-            light,
-            fontSize: 16,
-            onPressed: () => insert(' '),
-          ),
-        ),
-        SizedBox(
-          width: letterKeyWidth,
-          height: letterHeight,
-          child: _buildLetterKey(mongolCommaFullstop[1], light),
-        ),
-        SizedBox(
-          width: 2.5 * letterKeyWidth + 7.5,
-          height: letterHeight,
-          child: _buildIconKey(
-            configuration?.enterIcon ?? Icons.keyboard_return,
-            light,
-            performEnter,
-            foregroundColor: configuration?.enterForeground,
-            backgroundColor: configuration?.enterBackground,
-          ),
-        ),
-      ],
-    );
+        onLongPress: enableLongPress
+            ? () {
+                final uppercase = label.toUpperCase();
+                final lowercase = label.toLowerCase();
+                final isUppercase = uppercase == label;
+                insert(isUppercase ? lowercase : uppercase);
+              }
+            : null,
+      ));
+      x += keyWidth + horizontalGap;
+    }
+    return keys;
+  }
+
+  List<KeyData> _buildFourthRowKeys(KeyboardLayoutBuilder builder, bool light) {
+    final List<KeyData> keys = [];
+    final letterKeyWidth = builder.letterKeyWidth;
+    final letterKeyHeight = builder.letterKeyHeight;
+    final keyboardWidth = builder.keyboardWidth;
+
+    final switchKeyWidth = letterKeyWidth * 5 / 4 + 1.25;
+    final languageKeyWidth = letterKeyWidth * 5 / 4 + 1.25;
+    final commaKeyWidth = letterKeyWidth;
+    final spaceKeyWidth = 3 * letterKeyWidth + 10;
+    final fullstopKeyWidth = letterKeyWidth;
+    final enterKeyWidth = 2.5 * letterKeyWidth + 7.5;
+
+    final totalKeyWidth = switchKeyWidth + languageKeyWidth + commaKeyWidth +
+        spaceKeyWidth + fullstopKeyWidth + enterKeyWidth;
+    final totalGaps = keyboardWidth - totalKeyWidth;
+    final gap = totalGaps / 7; // 6 keys = 7 gaps with spaceAround
+
+    double x = gap / 2;
+    final y = KeyboardLayoutBuilder.topPadding + 3 * (letterKeyHeight + KeyboardLayoutBuilder.rowGap);
+
+    // 123/mongolEA switch key
+    final switchLabel = _type == EnglishLayoutType.letter ? '123' : mongolEA;
+    keys.add(KeyData(
+      label: switchLabel,
+      type: KeyType.function,
+      fontSize: 16,
+      isVertical: verticalLetters.contains(switchLabel),
+      backgroundColor: _iconKeyBackgroundColor(false, light),
+      visualRect: Rect.fromLTWH(x, y, switchKeyWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, switchKeyWidth, letterKeyHeight, 3, builder, isFirst: true),
+      onTap: () => setState(() {
+        if (_type == EnglishLayoutType.letter) {
+          _type = EnglishLayoutType.punctuation1;
+        } else {
+          _type = EnglishLayoutType.letter;
+        }
+      }),
+    ));
+    x += switchKeyWidth + gap;
+
+    // Language switch key
+    keys.add(KeyData(
+      label: '',
+      icon: Icons.language,
+      type: KeyType.function,
+      visualRect: Rect.fromLTWH(x, y, languageKeyWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, languageKeyWidth, letterKeyHeight, 3, builder),
+      onTap: () => widget.embedTextInput.switchLayout(),
+    ));
+    x += languageKeyWidth + gap;
+
+    // Comma key
+    final comma = mongolCommaFullstop[0];
+    keys.add(KeyData(
+      label: comma,
+      type: KeyType.letter,
+      isVertical: verticalLetters.contains(comma),
+      visualRect: Rect.fromLTWH(x, y, commaKeyWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, commaKeyWidth, letterKeyHeight, 3, builder),
+    ));
+    x += commaKeyWidth + gap;
+
+    // Space bar
+    keys.add(KeyData(
+      label: layoutName,
+      insertText: ' ',
+      type: KeyType.space,
+      fontSize: 16,
+      visualRect: Rect.fromLTWH(x, y, spaceKeyWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, spaceKeyWidth, letterKeyHeight, 3, builder),
+    ));
+    x += spaceKeyWidth + gap;
+
+    // Full-stop key
+    final fullstop = mongolCommaFullstop[1];
+    keys.add(KeyData(
+      label: fullstop,
+      type: KeyType.letter,
+      isVertical: verticalLetters.contains(fullstop),
+      visualRect: Rect.fromLTWH(x, y, fullstopKeyWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, fullstopKeyWidth, letterKeyHeight, 3, builder),
+    ));
+    x += fullstopKeyWidth + gap;
+
+    // Enter key
+    keys.add(KeyData(
+      label: '',
+      icon: configuration?.enterIcon ?? Icons.keyboard_return,
+      type: KeyType.enter,
+      backgroundColor: configuration?.enterBackground,
+      foregroundColor: configuration?.enterForeground,
+      visualRect: Rect.fromLTWH(x, y, enterKeyWidth, letterKeyHeight),
+      hitRect: _buildHitRect(x, y, enterKeyWidth, letterKeyHeight, 3, builder, isLast: true),
+      onTap: performEnter,
+    ));
+
+    return keys;
+  }
+
+  Rect _buildHitRect(
+    double x,
+    double y,
+    double width,
+    double height,
+    int rowIndex,
+    KeyboardLayoutBuilder builder, {
+    bool isFirst = false,
+    bool isLast = false,
+  }) {
+    final horizontalGap = builder.horizontalGap;
+    final keyboardWidth = builder.keyboardWidth;
+
+    double hitLeft = isFirst ? 0 : x - horizontalGap / 2;
+    double hitRight = isLast ? keyboardWidth : x + width + horizontalGap / 2;
+    double hitTop = y - (rowIndex == 0 ? KeyboardLayoutBuilder.topPadding : KeyboardLayoutBuilder.rowGap / 2);
+    double hitBottom = y + height + (rowIndex == 3 ? KeyboardLayoutBuilder.bottomPadding : KeyboardLayoutBuilder.rowGap / 2);
+
+    return Rect.fromLTRB(hitLeft, hitTop, hitRight, hitBottom);
   }
 }

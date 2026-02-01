@@ -12,6 +12,7 @@ export 'candidate/mongol_candidate.dart';
 export 'keyboard/embed_keyboard.dart';
 export 'keyboard/embed_text_input.dart';
 export 'keyboard/key_map.dart';
+export 'keyboard/painted_keyboard.dart';
 export 'layout/common_mongol_layout.dart';
 export 'layout/embed_layout.dart';
 export 'layout/english_layout.dart';
